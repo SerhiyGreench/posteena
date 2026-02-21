@@ -1,0 +1,11 @@
+# temporary added
+storybook-static/
+
+node_modules
+dist
+.vite-cache
+.output
+.nitro
+ui
+src/paraglide
+src/routeTree.gen.ts

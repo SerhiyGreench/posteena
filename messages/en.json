@@ -1,0 +1,10 @@
+{
+    "$schema": "https://inlang.com/schema/inlang-message-format",
+    "projectName": "posteena",
+    "description": "This project is a web application multitool for sharing posts, managing personal notes, and storing passwords — focused on anonymity and user-controlled storage. It supports adapters for saving data to various cloud drive services.",
+    "createPost": "create a post",
+    "themeLight": "Light",
+    "themeDark": "Dark",
+    "themeSystem": "System",
+    "notFound": "page not found"
+}

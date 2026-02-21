@@ -1,0 +1,9 @@
+node_modules/
+dist/
+.vite-cache/
+storybook-static/
+ui/
+ui/**
+src/paraglide/
+src/paraglide/**
+src/routeTree.gen.ts
