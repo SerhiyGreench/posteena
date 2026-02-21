@@ -4,11 +4,17 @@ To maintain high code quality and consistency, all contributors (including LLMs)
 
 ## 1. TypeScript & Strong Typing
 
-- **No `any`:** Never use `any`. Use strong typing and generics to ensure type safety.
+- **Strict No `any` Policy:** The use of `any` is strictly prohibited in the entire codebase. No exceptions.
+    - Use proper interfaces or types for all data structures.
+    - Use generics (`<T>`) for flexible, type-safe functions and components.
+    - Use `unknown` if the type is truly unknown at compile time, then use type guards or assertions to safely narrow it down.
+    - Ensure all third-party library integrations are properly typed, using `@types` packages or custom `.d.ts` declarations if necessary.
 - **Interfaces over Types:** Prefer `interface` over `type` for object definitions.
 - **Return Types:** Explicit return types are **mandatory** for all functions and components.
-- **Constants as Enums:** Use `as const` for enums and prefer aliases using `as const` over union types.
+- **Constants as Enums:** Use `as const` for enums and prefer aliases using `as const` over union types. This applies to all routes and i18n message paths. Use `UpperCamelCase` for constant names.
     - _Example:_ `Theme.Light` instead of `'light'`.
+    - _Example:_ `Routes.Home` instead of `'/'`.
+- **Naming Conventions:** All files should be named according to their main export (e.g., if a file exports a component `Header`, it must be named `Header.tsx`).
 - **Documentation:** All constants (routes, themes, languages, etc.) should be clearly described/commented.
 - **Storage:** Use the custom reactive storage utility (via `src/lib/storage.ts`) for all persistent data instead of direct `localStorage` access. This utility uses `useSyncExternalStore` for reactive updates across components and tabs without external library dependencies.
 
@@ -28,12 +34,19 @@ To maintain high code quality and consistency, all contributors (including LLMs)
 - **Variables:** Use `lowerCamelCase` for all variable names. Prefer `const` over `let`; avoid `var` entirely.
 - **Components:** Use `UpperCamelCase` for component names and their file names (e.g., `Header.tsx`).
 - **Functions & Hooks:** Use `lowerCamelCase` for functions and hooks, and their file names (e.g., `useLocale.ts`).
+- **Constants:** Use `UpperCamelCase` for global constants and their file names (e.g., `Routes.ts`). Types derived from these constants should be named by appending `Type` to the constant name (e.g., `RoutesType` for the type derived from `Routes`).
+- **Instances & Utilities:** Use `lowerCamelCase` for instances (like `i18n`) and utilities, and their file names (e.g., `i18n.ts`, `storage.ts`).
 - **Folders:** Use `hyphen-case` (kebab-case) for all directory names. No other case is allowed for folders.
 - **Modules:** Modules containing components should also use `UpperCamelCase` and match the component name.
 - **Imports:** Use absolute paths with aliases (e.g., `@/components/Header` or `#/paraglide/messages`) instead of relative paths (e.g., `../components/Header`).
-- **Paraglide messages:** Message IDs must be written in `lowerCamelCase` (e.g., `createPost`, `themeLight`). This ensures generated exports from Paraglide are also `lowerCamelCase` and align with our variable naming rule.
-- **Structure:** Only one component per file/module.
+- **i18next messages:** All translation resources must be defined with `as const` in `src/constants/Translations.ts`. The `Messages` constant in `src/constants/Messages.ts` is automatically generated from the English translations (`Translations.en`) using the utility in `src/utils/generateMessages.ts`. This includes support for nested objects (which are flattened to `UpperCamelCase` keys), ensuring translation keys stay in sync while providing full type safety throughout the application.
+    - _Example:_ If `Translations.en` has `theme: { light: "..." }`, use `t(Messages.ThemeLight)`.
+- **Routes:** All route paths must be defined in `src/constants/Routes.ts` using `as const`. Components and route definitions must use these constants instead of hardcoded strings.
 - **Exports:** All components must have a `default export` of the component. Export props separately if they are necessary for external use.
+- **One File - One Export:** Follow the "one file, one export" principle as a general rule. Exceptions are allowed only when:
+    - A file contains a component and its associated props interface.
+    - A file contains a context provider and its associated custom hook.
+    - A file contains a main export and its closely related small helper types or constants that are not used elsewhere.
 - **Index Files:** Use `index.ts/tsx` for re-exporting only if a component or function uses other internal functions or components that are specific to it. Single-purpose files should remain standalone without a dedicated folder.
     - _Example:_ A `Header` folder is only justified if it contains `Header.tsx` and a `HeaderLink.tsx` used exclusively within `Header`. Otherwise, use `Header.tsx` directly in `src/components/`.
     - Mandatory `export { default } from './MyComponent';` in the `index` file for such folders.

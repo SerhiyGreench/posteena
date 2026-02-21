@@ -3,14 +3,21 @@ import { Link } from '@tanstack/react-router';
 import { Languages, Moon, Sun } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { useTranslation } from 'react-i18next';
-import { Button } from 'ui/button';
+import { Button } from 'ui/Button';
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuRadioGroup,
     DropdownMenuRadioItem,
     DropdownMenuTrigger,
-} from 'ui/dropdown-menu';
+} from 'ui/DropdownMenu';
+import { Messages } from '@/constants/Messages';
+import { Routes } from '@/constants/Routes';
+import { Translations } from '@/constants/Translations.ts';
+
+const availableLocales = Object.keys(
+    Translations,
+) as (keyof typeof Translations)[];
 
 export default function Header(): ReactElement {
     const { theme, setTheme } = useTheme();
@@ -20,16 +27,14 @@ export default function Header(): ReactElement {
         void i18n.changeLanguage(lng);
     };
 
-    const availableLocales = ['en', 'uk'];
-
     return (
         <header>
             <div className="flex h-18 items-center justify-between gap-5 px-7.5 py-5">
                 <Link
-                    to="/"
-                    className="text-2xl font-bold tracking-tight lowercase @lg:text-4xl"
+                    to={Routes.Home}
+                    className="text-4xl font-bold tracking-tight lowercase"
                 >
-                    {t('projectName')}
+                    {t(Messages.ProjectName)}
                 </Link>
 
                 <div className="flex gap-2.5">
@@ -83,13 +88,13 @@ export default function Header(): ReactElement {
                                 onValueChange={setTheme}
                             >
                                 <DropdownMenuRadioItem value="light">
-                                    {t('themeLight')}
+                                    {t(Messages.ThemeLight)}
                                 </DropdownMenuRadioItem>
                                 <DropdownMenuRadioItem value="dark">
-                                    {t('themeDark')}
+                                    {t(Messages.ThemeDark)}
                                 </DropdownMenuRadioItem>
                                 <DropdownMenuRadioItem value="system">
-                                    {t('themeSystem')}
+                                    {t(Messages.ThemeSystem)}
                                 </DropdownMenuRadioItem>
                             </DropdownMenuRadioGroup>
                         </DropdownMenuContent>

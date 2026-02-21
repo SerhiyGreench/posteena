@@ -1,10 +1,3 @@
-import { useEffect, useState, useSyncExternalStore } from 'react';
-
-/**
- * Custom reactive storage utility for the application.
- * Synchronizes with localStorage and provides cross-tab reactivity.
- */
-
 const STORAGE_KEY = 'posteena-storage';
 
 /**
@@ -80,7 +73,7 @@ if (typeof window !== 'undefined') {
 /**
  * Public imperative storage API.
  */
-export const storage = {
+export const Storage = {
     get: <T>(key: string, defaultValue: T): T => {
         return (storageState[key] as T) ?? defaultValue;
     },
@@ -101,33 +94,3 @@ export const storage = {
     },
     getSnapshot: (): Record<string, unknown> => storageState,
 };
-
-/**
- * React hook to use a value from storage with reactive updates.
- * Safe for SSR: returns defaultValue during server-side rendering and initial hydration.
- */
-export function useStorage<T>(
-    key: string,
-    defaultValue: T,
-): readonly [T, (value: T) => void] {
-    const [isMounted, setIsMounted] = useState(false);
-
-    useEffect((): void => {
-        setIsMounted(true);
-    }, []);
-
-    const state = useSyncExternalStore(
-        storage.subscribe,
-        storage.getSnapshot,
-        (): Record<string, unknown> => ({}), // Server snapshot
-    );
-
-    const value = (state[key] as T) ?? defaultValue;
-    const returnValue = isMounted ? value : defaultValue;
-
-    const setValue = (newValue: T): void => {
-        storage.set(key, newValue);
-    };
-
-    return [returnValue, setValue] as const;
-}

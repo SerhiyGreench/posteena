@@ -1,10 +1,11 @@
 import { type ReactElement } from 'react';
 import { createRouter as createTanStackRouter } from '@tanstack/react-router';
+import { Messages } from '@/constants/Messages';
 import i18n from '@/i18n';
 import { routeTree } from './routeTree.gen';
 
 function DefaultNotFound(): ReactElement {
-    return <p>{i18n.t('notFound')}</p>;
+    return <p>{i18n.t(Messages.NotFound)}</p>;
 }
 
 export const router = createTanStackRouter({
@@ -15,10 +16,6 @@ export const router = createTanStackRouter({
     defaultPreloadStaleTime: 0,
     defaultNotFoundComponent: DefaultNotFound,
 });
-
-export function getRouter(): typeof router {
-    return router;
-}
 
 declare module '@tanstack/react-router' {
     interface Register {

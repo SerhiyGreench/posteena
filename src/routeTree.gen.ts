@@ -9,8 +9,14 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as CreatePostRouteImport } from './routes/CreatePost'
 import { Route as IndexRouteImport } from './routes/index'
 
+const CreatePostRoute = CreatePostRouteImport.update({
+  id: '/CreatePost',
+  path: '/CreatePost',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -19,28 +25,39 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/CreatePost': typeof CreatePostRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/CreatePost': typeof CreatePostRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/CreatePost': typeof CreatePostRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/CreatePost'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/CreatePost'
+  id: '__root__' | '/' | '/CreatePost'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CreatePostRoute: typeof CreatePostRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/CreatePost': {
+      id: '/CreatePost'
+      path: '/CreatePost'
+      fullPath: '/CreatePost'
+      preLoaderRoute: typeof CreatePostRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -53,6 +70,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CreatePostRoute: CreatePostRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

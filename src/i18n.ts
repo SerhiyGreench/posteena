@@ -1,35 +1,21 @@
 import i18n from 'i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import { initReactI18next } from 'react-i18next';
+import { Translations } from '@/constants/Translations';
+
+export type TranslationKeys = keyof typeof Translations.en;
 
 const resources = {
     en: {
-        translation: {
-            projectName: 'posteena',
-            description:
-                'This project is a web application multitool for sharing posts, managing personal notes, and storing passwords — focused on anonymity and user-controlled storage. It supports adapters for saving data to various cloud drive services.',
-            createPost: 'create a post',
-            themeLight: 'Light',
-            themeDark: 'Dark',
-            themeSystem: 'System',
-            notFound: 'page not found',
-        },
+        translation: Translations.en,
     },
     uk: {
-        translation: {
-            projectName: 'posteena',
-            description:
-                'Цей проєкт — це багатофункціональний вебзастосунок для публікації дописів, ведення особистих нотаток і зберігання паролів, орієнтований на анонімність та контроль користувача над власним сховищем. Підтримує адаптери для збереження даних у різних хмарних сервісах зберігання.',
-            createPost: 'створити пост',
-            themeLight: 'Світла',
-            themeDark: 'Темна',
-            themeSystem: 'Системна',
-            notFound: 'сторінку не знайдено',
-        },
+        translation: Translations.uk,
     },
 };
 
-i18n.use(LanguageDetector)
+void i18n
+    .use(LanguageDetector)
     .use(initReactI18next)
     .init({
         resources,
