@@ -1,10 +1,10 @@
 import { type ReactElement } from 'react';
 import { createRouter as createTanStackRouter } from '@tanstack/react-router';
-import { m } from '#/paraglide/messages';
+import i18n from '@/i18n';
 import { routeTree } from './routeTree.gen';
 
 function DefaultNotFound(): ReactElement {
-    return <p>{m.notFound()}</p>;
+    return <p>{i18n.t('notFound')}</p>;
 }
 
 export const router = createTanStackRouter({

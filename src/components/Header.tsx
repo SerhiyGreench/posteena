@@ -2,6 +2,7 @@ import { type ReactElement } from 'react';
 import { Link } from '@tanstack/react-router';
 import { Languages, Moon, Sun } from 'lucide-react';
 import { useTheme } from 'next-themes';
+import { useTranslation } from 'react-i18next';
 import { Button } from 'ui/button';
 import {
     DropdownMenu,
@@ -10,14 +11,16 @@ import {
     DropdownMenuRadioItem,
     DropdownMenuTrigger,
 } from 'ui/dropdown-menu';
-import { m } from '#/paraglide/messages';
-import { locales } from '#/paraglide/runtime';
-import ClientOnly from '@/components/ClientOnly';
-import { useLocale } from '@/hooks/useLocale';
 
 export default function Header(): ReactElement {
     const { theme, setTheme } = useTheme();
-    const [currentLocale, updateLocale] = useLocale();
+    const { t, i18n } = useTranslation();
+
+    const changeLanguage = (lng: string): void => {
+        void i18n.changeLanguage(lng);
+    };
+
+    const availableLocales = ['en', 'uk'];
 
     return (
         <header>
@@ -26,81 +29,72 @@ export default function Header(): ReactElement {
                     to="/"
                     className="text-2xl font-bold tracking-tight lowercase @lg:text-4xl"
                 >
-                    {m.projectName()}
+                    {t('projectName')}
                 </Link>
 
-                <ClientOnly>
-                    <div className="flex gap-2.5">
-                        <DropdownMenu>
-                            <DropdownMenuTrigger
-                                render={<Button variant="ghost" size="icon" />}
+                <div className="flex gap-2.5">
+                    <DropdownMenu>
+                        <DropdownMenuTrigger
+                            render={<Button variant="ghost" size="icon" />}
+                        >
+                            <Languages className="size-5" />
+                            <span className="sr-only">Switch language</span>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="start">
+                            <DropdownMenuRadioGroup
+                                value={i18n.language}
+                                onValueChange={changeLanguage}
                             >
-                                <Languages className="size-5" />
-                                <span className="sr-only">Switch language</span>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="start">
-                                <DropdownMenuRadioGroup
-                                    value={currentLocale}
-                                    onValueChange={(value: string): void =>
-                                        updateLocale(
-                                            value as (typeof locales)[number],
-                                        )
-                                    }
-                                >
-                                    {locales.map(
-                                        (locale: (typeof locales)[number]) => {
-                                            const languageNames =
-                                                new Intl.DisplayNames(
-                                                    [locale],
-                                                    {
-                                                        type: 'language',
-                                                    },
-                                                );
-                                            const label =
-                                                languageNames.of(locale) ??
-                                                locale.toUpperCase();
-
-                                            return (
-                                                <DropdownMenuRadioItem
-                                                    key={locale}
-                                                    value={locale}
-                                                >
-                                                    {label}
-                                                </DropdownMenuRadioItem>
-                                            );
+                                {availableLocales.map((locale: string) => {
+                                    const languageNames = new Intl.DisplayNames(
+                                        [locale],
+                                        {
+                                            type: 'language',
                                         },
-                                    )}
-                                </DropdownMenuRadioGroup>
-                            </DropdownMenuContent>
-                        </DropdownMenu>
+                                    );
+                                    const label =
+                                        languageNames.of(locale) ??
+                                        locale.toUpperCase();
 
-                        <DropdownMenu>
-                            <DropdownMenuTrigger
-                                render={<Button variant="ghost" size="icon" />}
+                                    return (
+                                        <DropdownMenuRadioItem
+                                            key={locale}
+                                            value={locale}
+                                        >
+                                            {label}
+                                        </DropdownMenuRadioItem>
+                                    );
+                                })}
+                            </DropdownMenuRadioGroup>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+
+                    <DropdownMenu>
+                        <DropdownMenuTrigger
+                            render={<Button variant="ghost" size="icon" />}
+                        >
+                            <Sun className="size-5 scale-100 rotate-0 transition-all dark:scale-0 dark:-rotate-90" />
+                            <Moon className="absolute size-5 scale-0 rotate-90 transition-all dark:scale-100 dark:rotate-0" />
+                            <span className="sr-only">Toggle theme</span>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                            <DropdownMenuRadioGroup
+                                value={theme}
+                                onValueChange={setTheme}
                             >
-                                <Sun className="size-5 scale-100 rotate-0 transition-all dark:scale-0 dark:-rotate-90" />
-                                <Moon className="absolute size-5 scale-0 rotate-90 transition-all dark:scale-100 dark:rotate-0" />
-                                <span className="sr-only">Toggle theme</span>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                                <DropdownMenuRadioGroup
-                                    value={theme}
-                                    onValueChange={setTheme}
-                                >
-                                    <DropdownMenuRadioItem value="light">
-                                        {m.themeLight()}
-                                    </DropdownMenuRadioItem>
-                                    <DropdownMenuRadioItem value="dark">
-                                        {m.themeDark()}
-                                    </DropdownMenuRadioItem>
-                                    <DropdownMenuRadioItem value="system">
-                                        {m.themeSystem()}
-                                    </DropdownMenuRadioItem>
-                                </DropdownMenuRadioGroup>
-                            </DropdownMenuContent>
-                        </DropdownMenu>
-                    </div>
-                </ClientOnly>
+                                <DropdownMenuRadioItem value="light">
+                                    {t('themeLight')}
+                                </DropdownMenuRadioItem>
+                                <DropdownMenuRadioItem value="dark">
+                                    {t('themeDark')}
+                                </DropdownMenuRadioItem>
+                                <DropdownMenuRadioItem value="system">
+                                    {t('themeSystem')}
+                                </DropdownMenuRadioItem>
+                            </DropdownMenuRadioGroup>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                </div>
             </div>
         </header>
     );

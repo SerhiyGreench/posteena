@@ -53,3 +53,8 @@ To maintain high code quality and consistency, all contributors (including LLMs)
 - **Readability:** Maintain clean code by adding an empty line before and after blocks (e.g., `if`, `for`, `switch`) and before `return` statements.
 - **Minimalism:** Avoid unnecessary code, such as redundant `return` statements in functions (use early returns or simplify logic where possible).
 - **Client-Side Rendering (SSR/Hydration Safety):** For components or hooks that must only execute or render on the client-side (e.g., to prevent hydration mismatches or server-side execution of client-only libraries), use the `ClientOnly` component (`src/components/ClientOnly.tsx`) as a wrapper.
+
+## 6. Localization
+
+- **Up-to-date Messages:** All localized messages must be kept up to date. English (`en.json`) is the primary source of truth. Whenever `en.json` is changed, all other translation files (e.g., `uk.json`) must be updated accordingly to maintain parity and avoid missing translations in other locales.
+- **Message IDs:** As noted in naming conventions, use `lowerCamelCase` for message IDs.
