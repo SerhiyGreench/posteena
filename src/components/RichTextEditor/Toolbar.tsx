@@ -27,6 +27,7 @@ import {
     Undo,
     Video,
 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { Button } from 'ui/button';
 import { Input } from 'ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from 'ui/popover';
@@ -38,6 +39,7 @@ export interface ToolbarProps {
 }
 
 const Toolbar = ({ editor }: ToolbarProps): ReactElement | null => {
+    const { t } = useTranslation();
     const [linkUrl, setLinkUrl] = useState('');
     const [imageUrl, setImageUrl] = useState('');
     const [youtubeUrl, setYoutubeUrl] = useState('');
@@ -80,7 +82,7 @@ const Toolbar = ({ editor }: ToolbarProps): ReactElement | null => {
 
         if (file) {
             if (file.size > 5 * 1024 * 1024) {
-                alert('File size too large. Max 5MB.');
+                alert(t('errorFileSize'));
                 return;
             }
 
@@ -113,14 +115,14 @@ const Toolbar = ({ editor }: ToolbarProps): ReactElement | null => {
                 <MenuButton
                     onClick={() => editor.chain().focus().undo().run()}
                     disabled={!editor.can().undo()}
-                    tooltip="Undo"
+                    tooltip={t('undo')}
                 >
                     <Undo className="size-4" />
                 </MenuButton>
                 <MenuButton
                     onClick={() => editor.chain().focus().redo().run()}
                     disabled={!editor.can().redo()}
-                    tooltip="Redo"
+                    tooltip={t('redo')}
                 >
                     <Redo className="size-4" />
                 </MenuButton>
@@ -132,7 +134,7 @@ const Toolbar = ({ editor }: ToolbarProps): ReactElement | null => {
                         editor.chain().focus().toggleHeading({ level: 1 }).run()
                     }
                     isActive={editor.isActive('heading', { level: 1 })}
-                    tooltip="Heading 1"
+                    tooltip={t('heading1')}
                 >
                     <Heading1 className="size-4" />
                 </MenuButton>
@@ -141,7 +143,7 @@ const Toolbar = ({ editor }: ToolbarProps): ReactElement | null => {
                         editor.chain().focus().toggleHeading({ level: 2 }).run()
                     }
                     isActive={editor.isActive('heading', { level: 2 })}
-                    tooltip="Heading 2"
+                    tooltip={t('heading2')}
                 >
                     <Heading2 className="size-4" />
                 </MenuButton>
@@ -150,7 +152,7 @@ const Toolbar = ({ editor }: ToolbarProps): ReactElement | null => {
                         editor.chain().focus().toggleHeading({ level: 3 }).run()
                     }
                     isActive={editor.isActive('heading', { level: 3 })}
-                    tooltip="Heading 3"
+                    tooltip={t('heading3')}
                 >
                     <Heading3 className="size-4" />
                 </MenuButton>
@@ -160,14 +162,14 @@ const Toolbar = ({ editor }: ToolbarProps): ReactElement | null => {
                 <MenuButton
                     onClick={() => editor.chain().focus().toggleBold().run()}
                     isActive={editor.isActive('bold')}
-                    tooltip="Bold"
+                    tooltip={t('bold')}
                 >
                     <Bold className="size-4" />
                 </MenuButton>
                 <MenuButton
                     onClick={() => editor.chain().focus().toggleItalic().run()}
                     isActive={editor.isActive('italic')}
-                    tooltip="Italic"
+                    tooltip={t('italic')}
                 >
                     <Italic className="size-4" />
                 </MenuButton>
@@ -176,21 +178,21 @@ const Toolbar = ({ editor }: ToolbarProps): ReactElement | null => {
                         editor.chain().focus().toggleUnderline().run()
                     }
                     isActive={editor.isActive('underline')}
-                    tooltip="Underline"
+                    tooltip={t('underline')}
                 >
                     <UnderlineIcon className="size-4" />
                 </MenuButton>
                 <MenuButton
                     onClick={() => editor.chain().focus().toggleStrike().run()}
                     isActive={editor.isActive('strike')}
-                    tooltip="Strike"
+                    tooltip={t('strike')}
                 >
                     <Strikethrough className="size-4" />
                 </MenuButton>
                 <MenuButton
                     onClick={() => editor.chain().focus().toggleCode().run()}
                     isActive={editor.isActive('code')}
-                    tooltip="Code"
+                    tooltip={t('code')}
                 >
                     <Code className="size-4" />
                 </MenuButton>
@@ -199,7 +201,7 @@ const Toolbar = ({ editor }: ToolbarProps): ReactElement | null => {
                         editor.chain().focus().toggleHighlight().run()
                     }
                     isActive={editor.isActive('highlight')}
-                    tooltip="Highlight"
+                    tooltip={t('highlight')}
                 >
                     <Highlighter className="size-4" />
                 </MenuButton>
@@ -211,7 +213,7 @@ const Toolbar = ({ editor }: ToolbarProps): ReactElement | null => {
                         editor.chain().focus().setTextAlign('left').run()
                     }
                     isActive={editor.isActive({ textAlign: 'left' })}
-                    tooltip="Align Left"
+                    tooltip={t('alignLeft')}
                 >
                     <AlignLeft className="size-4" />
                 </MenuButton>
@@ -220,7 +222,7 @@ const Toolbar = ({ editor }: ToolbarProps): ReactElement | null => {
                         editor.chain().focus().setTextAlign('center').run()
                     }
                     isActive={editor.isActive({ textAlign: 'center' })}
-                    tooltip="Align Center"
+                    tooltip={t('alignCenter')}
                 >
                     <AlignCenter className="size-4" />
                 </MenuButton>
@@ -229,7 +231,7 @@ const Toolbar = ({ editor }: ToolbarProps): ReactElement | null => {
                         editor.chain().focus().setTextAlign('right').run()
                     }
                     isActive={editor.isActive({ textAlign: 'right' })}
-                    tooltip="Align Right"
+                    tooltip={t('alignRight')}
                 >
                     <AlignRight className="size-4" />
                 </MenuButton>
@@ -238,7 +240,7 @@ const Toolbar = ({ editor }: ToolbarProps): ReactElement | null => {
                         editor.chain().focus().setTextAlign('justify').run()
                     }
                     isActive={editor.isActive({ textAlign: 'justify' })}
-                    tooltip="Align Justify"
+                    tooltip={t('alignJustify')}
                 >
                     <AlignJustify className="size-4" />
                 </MenuButton>
@@ -250,7 +252,7 @@ const Toolbar = ({ editor }: ToolbarProps): ReactElement | null => {
                         editor.chain().focus().toggleBulletList().run()
                     }
                     isActive={editor.isActive('bulletList')}
-                    tooltip="Bullet List"
+                    tooltip={t('bulletList')}
                 >
                     <List className="size-4" />
                 </MenuButton>
@@ -259,7 +261,7 @@ const Toolbar = ({ editor }: ToolbarProps): ReactElement | null => {
                         editor.chain().focus().toggleOrderedList().run()
                     }
                     isActive={editor.isActive('orderedList')}
-                    tooltip="Ordered List"
+                    tooltip={t('orderedList')}
                 >
                     <ListOrdered className="size-4" />
                 </MenuButton>
@@ -268,7 +270,7 @@ const Toolbar = ({ editor }: ToolbarProps): ReactElement | null => {
                         editor.chain().focus().toggleTaskList().run()
                     }
                     isActive={editor.isActive('taskList')}
-                    tooltip="Task List"
+                    tooltip={t('taskList')}
                 >
                     <CheckSquare className="size-4" />
                 </MenuButton>
@@ -277,7 +279,7 @@ const Toolbar = ({ editor }: ToolbarProps): ReactElement | null => {
                         editor.chain().focus().toggleBlockquote().run()
                     }
                     isActive={editor.isActive('blockquote')}
-                    tooltip="Blockquote"
+                    tooltip={t('blockquote')}
                 >
                     <Quote className="size-4" />
                 </MenuButton>
@@ -285,7 +287,7 @@ const Toolbar = ({ editor }: ToolbarProps): ReactElement | null => {
                     onClick={() =>
                         editor.chain().focus().setHorizontalRule().run()
                     }
-                    tooltip="Horizontal Rule"
+                    tooltip={t('horizontalRule')}
                 >
                     <Minus className="size-4" />
                 </MenuButton>
@@ -308,17 +310,17 @@ const Toolbar = ({ editor }: ToolbarProps): ReactElement | null => {
                         >
                             <LinkIcon className="size-4" />
                         </TooltipTrigger>
-                        <TooltipContent>Insert Link</TooltipContent>
+                        <TooltipContent>{t('insertLink')}</TooltipContent>
                     </Tooltip>
                     <PopoverContent className="w-80">
                         <div className="flex gap-2">
                             <Input
-                                placeholder="https://example.com"
+                                placeholder={t('insertLink')}
                                 value={linkUrl}
                                 onChange={e => setLinkUrl(e.target.value)}
                             />
                             <Button size="sm" onClick={setLink}>
-                                Set
+                                {t('set')}
                             </Button>
                         </div>
                     </PopoverContent>
@@ -340,17 +342,17 @@ const Toolbar = ({ editor }: ToolbarProps): ReactElement | null => {
                         >
                             <ImageIcon className="size-4" />
                         </TooltipTrigger>
-                        <TooltipContent>Insert Image URL</TooltipContent>
+                        <TooltipContent>{t('insertImage')}</TooltipContent>
                     </Tooltip>
                     <PopoverContent className="w-80">
                         <div className="flex gap-2">
                             <Input
-                                placeholder="https://example.com/image.jpg"
+                                placeholder={t('insertImage')}
                                 value={imageUrl}
                                 onChange={e => setImageUrl(e.target.value)}
                             />
                             <Button size="sm" onClick={addImage}>
-                                Add
+                                {t('add')}
                             </Button>
                         </div>
                     </PopoverContent>
@@ -372,17 +374,17 @@ const Toolbar = ({ editor }: ToolbarProps): ReactElement | null => {
                         >
                             <Video className="size-4" />
                         </TooltipTrigger>
-                        <TooltipContent>Insert YouTube Video</TooltipContent>
+                        <TooltipContent>{t('insertYoutube')}</TooltipContent>
                     </Tooltip>
                     <PopoverContent className="w-80">
                         <div className="flex gap-2">
                             <Input
-                                placeholder="YouTube URL"
+                                placeholder={t('insertYoutube')}
                                 value={youtubeUrl}
                                 onChange={e => setYoutubeUrl(e.target.value)}
                             />
                             <Button size="sm" onClick={addYoutubeVideo}>
-                                Add
+                                {t('add')}
                             </Button>
                         </div>
                     </PopoverContent>
@@ -399,12 +401,17 @@ const Toolbar = ({ editor }: ToolbarProps): ReactElement | null => {
                                     onChange={onFileChange}
                                     accept="image/*,video/*,.pdf,.doc,.docx"
                                 />
+                                <span className="sr-only">
+                                    {t('uploadFile')}
+                                </span>
                             </label>
                         }
                     >
-                        Upload File
+                        {t('uploadFile')}
                     </TooltipTrigger>
-                    <TooltipContent>Upload File (Max 5MB)</TooltipContent>
+                    <TooltipContent>
+                        {t('uploadFile')} ({t('maxFileSize')})
+                    </TooltipContent>
                 </Tooltip>
 
                 <MenuButton
@@ -419,7 +426,7 @@ const Toolbar = ({ editor }: ToolbarProps): ReactElement | null => {
                             })
                             .run()
                     }
-                    tooltip="Insert Table"
+                    tooltip={t('insertTable')}
                 >
                     <TableIcon className="size-4" />
                 </MenuButton>

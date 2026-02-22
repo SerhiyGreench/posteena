@@ -19,3 +19,10 @@ This file tracks common mistakes made during development to avoid repeating them
     - **Correction:** Add `: void`, `: ReactElement`, or other appropriate return types.
 - **Adding file extensions in imports:** Do not include `.ts` or `.tsx` extensions in import statements. This is now technically enforced via `tsconfig.json`.
     - **Correction:** Remove the extension (e.g., `import { MyComponent } from './MyComponent';`).
+
+## Internationalization (i18n)
+
+- **Hardcoded strings in components:** All user-facing text, including tooltips, placeholders, and labels, must be internationalized.
+    - **Correction:** Use the `t()` function from `useTranslation` hook or the `Messages` constant. Ensure all keys are added to `src/constants/Translations.ts` for all supported languages.
+- **Dynamic validation messages:** When using Zod or other validation libraries, do not use hardcoded error messages.
+    - **Correction:** Pass the `t` function to your schema or use translation keys that can be resolved at runtime.

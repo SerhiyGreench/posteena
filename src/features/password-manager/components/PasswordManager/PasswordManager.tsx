@@ -2,6 +2,7 @@ import { type ReactElement, useEffect, useState } from 'react';
 import { useForm } from '@tanstack/react-form';
 import {
     Calendar,
+    Key,
     Loader2,
     Lock,
     LogOut,
@@ -31,9 +32,17 @@ import type { PasswordGroup, PasswordItem } from '../../types';
 import ItemForm from './ItemForm';
 import PasswordCard from './PasswordCard';
 
-const groupSchema = z.object({
-    name: z.string().min(1, 'Group name is required'),
-});
+const groupSchema = (
+    t: (key: string) => string,
+): z.ZodObject<{ name: z.ZodString }> =>
+    z.object({
+        name: z
+            .string()
+            .min(
+                1,
+                t('validation.required').replace('{{field}}', t('groupName')),
+            ),
+    });
 
 export default function PasswordManager(): ReactElement {
     const { t } = useTranslation();
@@ -68,6 +77,12 @@ export default function PasswordManager(): ReactElement {
         defaultValues: {
             name: '',
         },
+        validators: {
+            onChange: ({ value }) => {
+                const res = groupSchema(t).safeParse(value);
+                return res.success ? undefined : res.error.errors[0].message;
+            },
+        },
         onSubmit: async ({ value }) => {
             await addGroup(value.name);
             groupForm.reset();
@@ -99,7 +114,7 @@ export default function PasswordManager(): ReactElement {
                     <CardHeader className="space-y-1 text-center">
                         <div className="mb-4 flex justify-center">
                             <div className="bg-primary/10 rounded-full p-4">
-                                <Lock className="text-primary h-8 w-8" />
+                                <Key className="text-primary h-8 w-8" />
                             </div>
                         </div>
                         <CardTitle className="text-3xl font-bold tracking-tight">
@@ -112,13 +127,10 @@ export default function PasswordManager(): ReactElement {
                                 <ShieldCheck className="text-primary mt-0.5 h-4 w-4 shrink-0" />
                                 <div className="space-y-1">
                                     <p className="font-medium">
-                                        End-to-end encrypted
+                                        {t('clientSideEncryption')}
                                     </p>
                                     <p className="text-muted-foreground leading-snug">
-                                        Your passwords are encrypted on your
-                                        device using your Google account and
-                                        stored securely in your own Google
-                                        Drive.
+                                        {t('clientSideEncryptionDesc')}
                                     </p>
                                 </div>
                             </div>
@@ -186,10 +198,10 @@ export default function PasswordManager(): ReactElement {
                             <Skeleton className="h-9 w-9" />
                         </CardHeader>
                         <CardContent className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
-                            <Skeleton className="h-[200px] w-full" />
-                            <Skeleton className="h-[200px] w-full" />
-                            <Skeleton className="h-[200px] w-full" />
-                            <Skeleton className="h-[200px] w-full" />
+                            <Skeleton className="h-50 w-full" />
+                            <Skeleton className="h-50 w-full" />
+                            <Skeleton className="h-50 w-full" />
+                            <Skeleton className="h-50 w-full" />
                         </CardContent>
                     </Card>
                 </div>
@@ -240,6 +252,10 @@ export default function PasswordManager(): ReactElement {
 
     const handleDeleteItem = async (itemId: string): Promise<void> => {
         if (!currentGroup) {
+            return;
+        }
+
+        if (!confirm(t('confirmDeleteItem'))) {
             return;
         }
 
@@ -299,7 +315,7 @@ export default function PasswordManager(): ReactElement {
                             {t('passwordGroups')}
                         </CardTitle>
                     </CardHeader>
-                    <CardContent className="flex max-h-72 min-h-72 flex-col space-y-4 md:max-h-[calc(100vh-240px)] md:min-h-0">
+                    <CardContent className="flex max-h-72 flex-col space-y-4 md:max-h-[calc(100vh-240px)] md:min-h-0">
                         <form
                             onSubmit={e => {
                                 e.preventDefault();
@@ -313,7 +329,7 @@ export default function PasswordManager(): ReactElement {
                                 validators={{
                                     onChange: ({ value }) => {
                                         const res =
-                                            groupSchema.shape.name.safeParse(
+                                            groupSchema(t).shape.name.safeParse(
                                                 value,
                                             );
                                         return res.success
@@ -325,6 +341,7 @@ export default function PasswordManager(): ReactElement {
                                 {field => (
                                     <div className="flex-1">
                                         <Input
+                                            key={`group-name-${t('groupName')}`}
                                             value={field.state.value}
                                             onBlur={field.handleBlur}
                                             onChange={e =>
@@ -355,7 +372,7 @@ export default function PasswordManager(): ReactElement {
                                 )}
                             </Button>
                         </form>
-                        <div className="no-scrollbar flex-1 overflow-y-auto pr-1">
+                        <div className="flex-1 overflow-y-auto">
                             <div className="space-y-1">
                                 {isGroupsLoading && groups.length === 0 && (
                                     <div className="space-y-2">
@@ -385,6 +402,7 @@ export default function PasswordManager(): ReactElement {
                                                 {group.modifiedTime && (
                                                     <span className="flex items-center gap-1">
                                                         <Calendar className="h-3 w-3" />
+                                                        {t('updated')}:{' '}
                                                         {new Date(
                                                             group.modifiedTime,
                                                         ).toLocaleString()}
@@ -393,6 +411,7 @@ export default function PasswordManager(): ReactElement {
                                                 {group.lastModifyingUser && (
                                                     <span className="flex items-center gap-1">
                                                         <User className="h-3 w-3" />
+                                                        {t('lastModifiedBy')}:{' '}
                                                         {
                                                             group.lastModifyingUser
                                                         }
@@ -409,7 +428,12 @@ export default function PasswordManager(): ReactElement {
                                                     e.stopPropagation();
                                                     if (
                                                         confirm(
-                                                            `Are you sure you want to delete group "${group.name}"?`,
+                                                            t(
+                                                                'confirmDeleteGroup',
+                                                            ).replace(
+                                                                '{{name}}',
+                                                                group.name,
+                                                            ),
                                                         )
                                                     ) {
                                                         void deleteGroup(
@@ -444,12 +468,10 @@ export default function PasswordManager(): ReactElement {
 
                 <Card className="w-full flex-1">
                     <CardHeader className="flex flex-row items-center justify-between pb-2">
-                        <CardTitle className="text-lg">
-                            {currentGroup
-                                ? currentGroup.name
-                                : t('passwordManager')}
+                        <CardTitle className="text-lg empty:hidden">
+                            {currentGroup ? currentGroup.name : null}
                         </CardTitle>
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 empty:hidden">
                             {currentGroup && (
                                 <Button
                                     size="icon"
@@ -466,7 +488,7 @@ export default function PasswordManager(): ReactElement {
                             <div className="relative flex-1">
                                 <Search className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
                                 <Input
-                                    placeholder={t('search')}
+                                    key={`search-${t('search')}`}
                                     value={searchTerm}
                                     onChange={e =>
                                         setSearchTerm(e.target.value)
@@ -475,6 +497,7 @@ export default function PasswordManager(): ReactElement {
                                 />
                             </div>
                             <Select
+                                key={`sort-${t('sortBy')}`}
                                 value={sortBy ?? ''}
                                 onValueChange={value =>
                                     setSortBy(
@@ -487,8 +510,16 @@ export default function PasswordManager(): ReactElement {
                                 }
                             >
                                 <SelectTrigger className="w-full md:w-40">
-                                    <SortAsc className="mr-2 h-4 w-4" />
-                                    <SelectValue placeholder={t('sortBy')} />
+                                    <SelectValue placeholder={t('sortBy')}>
+                                        <div className="flex items-center gap-2">
+                                            <SortAsc className="h-4 w-4" />
+                                            <span>
+                                                {sortBy
+                                                    ? t(sortBy)
+                                                    : t('sortBy')}
+                                            </span>
+                                        </div>
+                                    </SelectValue>
                                 </SelectTrigger>
                                 <SelectContent>
                                     <SelectItem value="name">
@@ -571,19 +602,20 @@ export default function PasswordManager(): ReactElement {
                                     <div className="col-span-1 flex flex-col items-center justify-center py-12 text-center lg:col-span-2">
                                         <Search className="text-muted-foreground mb-4 h-12 w-12 opacity-20" />
                                         <h3 className="text-xl font-semibold">
-                                            No results found
+                                            {t('noResults')}
                                         </h3>
                                         <p className="text-muted-foreground mt-2 max-w-xs text-sm">
-                                            We couldn't find any passwords
-                                            matching "{searchTerm}". Try a
-                                            different search term.
+                                            {t('tryDifferent').replace(
+                                                '{{searchTerm}}',
+                                                searchTerm,
+                                            )}
                                         </p>
                                         <Button
                                             variant="ghost"
                                             className="mt-4"
                                             onClick={() => setSearchTerm('')}
                                         >
-                                            Clear search
+                                            {t('clearSearch')}
                                         </Button>
                                     </div>
                                 )}
@@ -597,12 +629,10 @@ export default function PasswordManager(): ReactElement {
                                             <ShieldCheck className="h-10 w-10" />
                                         </div>
                                         <h3 className="text-xl font-semibold">
-                                            No passwords yet
+                                            {t('noPasswords')}
                                         </h3>
                                         <p className="text-muted-foreground mt-2 max-w-xs text-sm">
-                                            This group is empty. Start by adding
-                                            your first password to keep it safe
-                                            and accessible.
+                                            {t('addFirstPassword')}
                                         </p>
                                         <Button
                                             variant="outline"
@@ -620,12 +650,12 @@ export default function PasswordManager(): ReactElement {
                             {!currentGroup &&
                                 !loading &&
                                 !isLoadingGroupItems && (
-                                    <div className="text-muted-foreground col-span-1 py-12 text-center md:col-span-2">
+                                    <div className="text-muted-foreground col-span-1 py-12 pb-28 text-center md:col-span-2">
                                         <div className="mb-4 flex justify-center">
                                             <Lock className="h-12 w-12 opacity-10" />
                                         </div>
                                         <p className="text-lg">
-                                            Select a group to view passwords
+                                            {t('selectGroup')}
                                         </p>
                                     </div>
                                 )}

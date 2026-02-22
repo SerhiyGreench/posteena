@@ -50,7 +50,7 @@ export default function Header({ scrolled }: HeaderProps): ReactElement {
                 render={<Button variant="ghost" size="icon" />}
             >
                 <Languages className="size-5" />
-                <span className="sr-only">Switch language</span>
+                <span className="sr-only">{t('switchLanguage')}</span>
             </DropdownMenuTrigger>
             <DropdownMenuContent align={align}>
                 <DropdownMenuRadioGroup
@@ -84,7 +84,7 @@ export default function Header({ scrolled }: HeaderProps): ReactElement {
             >
                 <Sun className="size-5 scale-100 rotate-0 transition-all dark:scale-0 dark:-rotate-90" />
                 <Moon className="absolute size-5 scale-0 rotate-90 transition-all dark:scale-100 dark:rotate-0" />
-                <span className="sr-only">Toggle theme</span>
+                <span className="sr-only">{t('toggleTheme')}</span>
             </DropdownMenuTrigger>
             <DropdownMenuContent align={align}>
                 <DropdownMenuRadioGroup value={theme} onValueChange={setTheme}>
@@ -153,11 +153,11 @@ export default function Header({ scrolled }: HeaderProps): ReactElement {
                                             />
                                         </div>
                                         <span className="sr-only">
-                                            Toggle Menu
+                                            {t('navigationMenu')}
                                         </span>
                                     </div>
                                     <span className="hidden h-8 items-center text-lg leading-none font-medium sm:flex">
-                                        Menu
+                                        {t('menu')}
                                     </span>
                                 </Button>
                             </div>
@@ -171,20 +171,20 @@ export default function Header({ scrolled }: HeaderProps): ReactElement {
                                         {t(Messages.ProjectName)}
                                     </SheetTitle>
                                     <SheetDescription>
-                                        Navigation menu
+                                        {t('navigationMenu')}
                                     </SheetDescription>
                                 </SheetHeader>
                                 <div className="mx-auto flex w-full max-w-full flex-col gap-12 overflow-x-hidden px-6 pt-24 pb-12">
                                     <div className="flex flex-col gap-4">
                                         <div className="text-muted-foreground text-sm font-medium">
-                                            Menu
+                                            {t('menu')}
                                         </div>
                                         <div className="flex flex-col gap-3">
                                             <MobileLink
                                                 to={Routes.Home}
                                                 onOpenChange={setOpen}
                                             >
-                                                Home
+                                                {t('home')}
                                             </MobileLink>
                                             <MobileLink
                                                 to={Routes.CreatePost}
@@ -202,19 +202,19 @@ export default function Header({ scrolled }: HeaderProps): ReactElement {
                                     </div>
                                     <div className="flex flex-col gap-4 sm:hidden">
                                         <div className="text-muted-foreground text-sm font-medium">
-                                            Settings
+                                            {t('settings')}
                                         </div>
                                         <div className="flex flex-col gap-4">
                                             <div className="flex items-center justify-between">
                                                 <span className="shrink-0 text-2xl font-medium">
-                                                    Language
+                                                    {t('language')}
                                                 </span>
                                                 <div className="flex-1" />
                                                 {renderLanguageSwitcher('end')}
                                             </div>
                                             <div className="flex items-center justify-between">
                                                 <span className="shrink-0 text-2xl font-medium">
-                                                    Theme
+                                                    {t('themeTitle')}
                                                 </span>
                                                 <div className="flex-1" />
                                                 {renderThemeSwitcher('end')}

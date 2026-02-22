@@ -1,5 +1,6 @@
 import { type ReactElement, useState } from 'react';
 import { Copy, Edit, Eye, EyeOff, Trash } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { Button } from 'ui/button';
 import { Card, CardContent } from 'ui/card';
 import type { PasswordItem } from '../../types';
@@ -15,6 +16,7 @@ export default function PasswordCard({
     onEdit,
     onDelete,
 }: PasswordCardProps): ReactElement {
+    const { t } = useTranslation();
     const [showPassword, setShowPassword] = useState(false);
 
     const copyToClipboard = (text: string): void => {
@@ -42,7 +44,7 @@ export default function PasswordCard({
                                 e.stopPropagation();
                                 onEdit();
                             }}
-                            title="Edit"
+                            title={t('editItem')}
                         >
                             <Edit className="h-4 w-4" />
                         </Button>
@@ -54,7 +56,7 @@ export default function PasswordCard({
                                 e.stopPropagation();
                                 onDelete();
                             }}
-                            title="Delete"
+                            title={t('deleteItem')}
                         >
                             <Trash className="h-4 w-4" />
                         </Button>

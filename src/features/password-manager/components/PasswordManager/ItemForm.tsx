@@ -9,12 +9,35 @@ import { Input } from 'ui/input';
 import type { PasswordItem } from '../../types';
 import { generatePassword } from '../../utils/crypto';
 
-const itemSchema = z.object({
-    name: z.string().min(1, 'Name is required'),
-    email: z.string().email('Invalid email address').or(z.string().length(0)),
-    username: z.string().min(1, 'Username is required'),
-    password: z.string().min(1, 'Password is required'),
-});
+const itemSchema = (
+    t: (key: string) => string,
+): z.ZodObject<{
+    name: z.ZodString;
+    email: z.ZodUnion<[z.ZodString, z.ZodString]>;
+    username: z.ZodString;
+    password: z.ZodString;
+}> =>
+    z.object({
+        name: z
+            .string()
+            .min(1, t('validation.required').replace('{{field}}', t('name'))),
+        email: z
+            .string()
+            .email(t('validation.invalidEmail'))
+            .or(z.string().length(0)),
+        username: z
+            .string()
+            .min(
+                1,
+                t('validation.required').replace('{{field}}', t('username')),
+            ),
+        password: z
+            .string()
+            .min(
+                1,
+                t('validation.required').replace('{{field}}', t('password')),
+            ),
+    });
 
 export interface ItemFormProps {
     item?: PasswordItem;
@@ -67,7 +90,9 @@ export default function ItemForm({
                             validators={{
                                 onChange: ({ value }) => {
                                     const res =
-                                        itemSchema.shape.name.safeParse(value);
+                                        itemSchema(t).shape.name.safeParse(
+                                            value,
+                                        );
                                     return res.success
                                         ? undefined
                                         : res.error.errors[0].message;
@@ -77,6 +102,7 @@ export default function ItemForm({
                             {field => (
                                 <div className="space-y-1">
                                     <Input
+                                        key={`item-name-${t('name')}`}
                                         id={field.name}
                                         value={field.state.value}
                                         onBlur={field.handleBlur}
@@ -104,7 +130,9 @@ export default function ItemForm({
                             validators={{
                                 onChange: ({ value }) => {
                                     const res =
-                                        itemSchema.shape.email.safeParse(value);
+                                        itemSchema(t).shape.email.safeParse(
+                                            value,
+                                        );
                                     return res.success
                                         ? undefined
                                         : res.error.errors[0].message;
@@ -114,6 +142,7 @@ export default function ItemForm({
                             {field => (
                                 <div className="space-y-1">
                                     <Input
+                                        key={`item-email-${t('email')}`}
                                         id={field.name}
                                         type="email"
                                         value={field.state.value}
@@ -142,7 +171,7 @@ export default function ItemForm({
                             validators={{
                                 onChange: ({ value }) => {
                                     const res =
-                                        itemSchema.shape.username.safeParse(
+                                        itemSchema(t).shape.username.safeParse(
                                             value,
                                         );
                                     return res.success
@@ -154,6 +183,7 @@ export default function ItemForm({
                             {field => (
                                 <div className="space-y-1">
                                     <Input
+                                        key={`item-username-${t('username')}`}
                                         id={field.name}
                                         value={field.state.value}
                                         onBlur={field.handleBlur}
@@ -181,7 +211,7 @@ export default function ItemForm({
                             validators={{
                                 onChange: ({ value }) => {
                                     const res =
-                                        itemSchema.shape.password.safeParse(
+                                        itemSchema(t).shape.password.safeParse(
                                             value,
                                         );
                                     return res.success
@@ -194,6 +224,7 @@ export default function ItemForm({
                                 <div className="space-y-1">
                                     <div className="group/password relative">
                                         <Input
+                                            key={`item-password-${t('password')}`}
                                             id={field.name}
                                             type="text"
                                             value={field.state.value}
