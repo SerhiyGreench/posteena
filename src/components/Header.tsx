@@ -1,46 +1,29 @@
 import { type ReactElement, useState } from 'react';
-import { Link, useRouter } from '@tanstack/react-router';
+import { Link } from '@tanstack/react-router';
 import { Languages, Moon, Sun } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { useTranslation } from 'react-i18next';
 import { Button } from 'ui/button';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuTrigger } from 'ui/dropdown-menu';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuRadioGroup,
+    DropdownMenuRadioItem,
+    DropdownMenuTrigger,
+} from 'ui/dropdown-menu';
 import { cn } from 'ui/lib/utils';
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from 'ui/sheet';
+import {
+    Sheet,
+    SheetContent,
+    SheetDescription,
+    SheetHeader,
+    SheetTitle,
+} from 'ui/sheet';
+import MobileLink from '@/components/MobileLink';
 import { Messages } from '@/constants/Messages';
 import { Routes } from '@/constants/Routes';
 import { Themes } from '@/constants/Themes';
 import { Translations } from '@/constants/Translations';
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 type Language = keyof typeof Translations;
 
@@ -173,7 +156,7 @@ export default function Header({ scrolled }: HeaderProps): ReactElement {
                                             Toggle Menu
                                         </span>
                                     </div>
-                                    <span className="sm:flex hidden h-8 items-center text-lg leading-none font-medium">
+                                    <span className="hidden h-8 items-center text-lg leading-none font-medium sm:flex">
                                         Menu
                                     </span>
                                 </Button>
@@ -239,36 +222,5 @@ export default function Header({ scrolled }: HeaderProps): ReactElement {
                 </div>
             </div>
         </header>
-    );
-}
-
-function MobileLink({
-    to,
-    onOpenChange,
-    className,
-    children,
-    ...props
-}: {
-    to: string;
-    onOpenChange?: (open: boolean) => void;
-    children: React.ReactNode;
-    className?: string;
-}) {
-    const router = useRouter();
-    return (
-        <Link
-            to={to}
-            onClick={() => {
-                void router.navigate({ to });
-                onOpenChange?.(false);
-            }}
-            className={cn(
-                'flex items-center gap-2 text-2xl font-medium',
-                className,
-            )}
-            {...props}
-        >
-            {children}
-        </Link>
     );
 }

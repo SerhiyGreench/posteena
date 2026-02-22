@@ -3,16 +3,12 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 import { initReactI18next } from 'react-i18next';
 import { Translations } from '@/constants/Translations';
 
-export type TranslationKeys = keyof typeof Translations.en;
-
-const resources = {
-    en: {
-        translation: Translations.en,
-    },
-    uk: {
-        translation: Translations.uk,
-    },
-};
+const resources = Object.fromEntries(
+    Object.entries(Translations).map(([lang, messages]) => [
+        lang,
+        { translation: messages },
+    ]),
+);
 
 void i18n
     .use(LanguageDetector)
@@ -21,7 +17,7 @@ void i18n
         resources,
         fallbackLng: 'en',
         interpolation: {
-            escapeValue: false, // react already safes from xss
+            escapeValue: false,
         },
         detection: {
             order: [
