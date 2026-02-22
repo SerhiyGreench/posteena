@@ -112,7 +112,7 @@ export default function Header({ scrolled }: HeaderProps): ReactElement {
             <div className="flex h-18 items-center justify-between gap-5 px-4 py-5">
                 <Link
                     to={Routes.Home}
-                    className="text-4xl font-bold tracking-tight lowercase"
+                    className="min-w-0 flex-1 truncate text-4xl font-bold lowercase sm:flex-none"
                 >
                     {t(Messages.ProjectName)}
                 </Link>
@@ -131,7 +131,7 @@ export default function Header({ scrolled }: HeaderProps): ReactElement {
                                     onClick={() => {
                                         setOpen(!open);
                                     }}
-                                    className="extend-touch-target h-8 touch-manipulation items-center justify-start gap-2.5 p-0! pt-1! hover:bg-transparent focus-visible:bg-transparent focus-visible:ring-0 active:bg-transparent dark:hover:bg-transparent"
+                                    className="extend-touch-target h-8 touch-manipulation items-center justify-start gap-2.5 p-0! pt-3! hover:bg-transparent focus-visible:bg-transparent focus-visible:ring-0 active:bg-transparent sm:pt-1! dark:hover:bg-transparent"
                                 >
                                     <div className="relative flex h-8 w-5 items-center justify-center">
                                         <div className="relative size-5">
