@@ -1,33 +1,50 @@
-import { type ReactElement } from 'react';
-import { Link } from '@tanstack/react-router';
-import { Languages, Menu, Moon, Sun } from 'lucide-react';
+import { type ReactElement, useState } from 'react';
+import { Link, useRouter } from '@tanstack/react-router';
+import { Languages, Moon, Sun } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { useTranslation } from 'react-i18next';
 import { Button } from 'ui/button';
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuRadioGroup,
-    DropdownMenuRadioItem,
-    DropdownMenuTrigger,
-} from 'ui/dropdown-menu';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuTrigger } from 'ui/dropdown-menu';
 import { cn } from 'ui/lib/utils';
-import {
-    Sheet,
-    SheetContent,
-    SheetDescription,
-    SheetHeader,
-    SheetTitle,
-    SheetTrigger,
-} from 'ui/sheet';
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from 'ui/sheet';
 import { Messages } from '@/constants/Messages';
 import { Routes } from '@/constants/Routes';
 import { Themes } from '@/constants/Themes';
 import { Translations } from '@/constants/Translations';
 
-const availableLocales = Object.keys(
-    Translations,
-) as (keyof typeof Translations)[];
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+type Language = keyof typeof Translations;
+
+const availableLocales = Object.keys(Translations) as Language[];
 
 interface HeaderProps {
     scrolled: boolean;
@@ -36,16 +53,19 @@ interface HeaderProps {
 export default function Header({ scrolled }: HeaderProps): ReactElement {
     const { theme, setTheme } = useTheme();
     const { t, i18n } = useTranslation();
+    const [open, setOpen] = useState(false);
 
-    const changeLanguage = (lng: string): void => {
-        void i18n.changeLanguage(lng);
+    const changeLanguage = (lang: Language): void => {
+        void i18n.changeLanguage(lang);
     };
 
     const renderLanguageSwitcher = (
         align: 'start' | 'end' = 'start',
     ): ReactElement => (
         <DropdownMenu>
-            <DropdownMenuTrigger render={<Button variant="ghost" size="icon" />}>
+            <DropdownMenuTrigger
+                render={<Button variant="ghost" size="icon" />}
+            >
                 <Languages className="size-5" />
                 <span className="sr-only">Switch language</span>
             </DropdownMenuTrigger>
@@ -54,7 +74,7 @@ export default function Header({ scrolled }: HeaderProps): ReactElement {
                     value={i18n.language}
                     onValueChange={changeLanguage}
                 >
-                    {availableLocales.map((locale: string) => {
+                    {availableLocales.map(locale => {
                         const languageNames = new Intl.DisplayNames([locale], {
                             type: 'language',
                         });
@@ -76,7 +96,9 @@ export default function Header({ scrolled }: HeaderProps): ReactElement {
         align: 'start' | 'end' = 'end',
     ): ReactElement => (
         <DropdownMenu>
-            <DropdownMenuTrigger render={<Button variant="ghost" size="icon" />}>
+            <DropdownMenuTrigger
+                render={<Button variant="ghost" size="icon" />}
+            >
                 <Sun className="size-5 scale-100 rotate-0 transition-all dark:scale-0 dark:-rotate-90" />
                 <Moon className="absolute size-5 scale-0 rotate-90 transition-all dark:scale-100 dark:rotate-0" />
                 <span className="sr-only">Toggle theme</span>
@@ -100,55 +122,153 @@ export default function Header({ scrolled }: HeaderProps): ReactElement {
     return (
         <header
             className={cn(
-                'bg-background/95 supports-backdrop-filter:bg-background/60 sticky top-0 z-50 w-full backdrop-blur transition-all duration-200',
+                'bg-background/95 supports-backdrop-filter:bg-background/60 sticky top-0 z-100 w-full backdrop-blur transition-all duration-200',
                 scrolled && 'border-b',
             )}
         >
             <div className="flex h-18 items-center justify-between gap-5 px-4 py-5">
                 <Link
                     to={Routes.Home}
-                    className="text-2xl font-bold tracking-tight sm:text-4xl lowercase"
+                    className="text-4xl font-bold tracking-tight lowercase"
                 >
                     {t(Messages.ProjectName)}
                 </Link>
 
-                <div className="hidden items-center gap-2.5 sm:flex">
-                    {renderLanguageSwitcher('start')}
-                    {renderThemeSwitcher('end')}
-                </div>
+                <div className="flex items-center gap-5">
+                    <div className="hidden items-center gap-2.5 sm:flex">
+                        {renderLanguageSwitcher('start')}
+                        {renderThemeSwitcher('end')}
+                    </div>
 
-                <div className="flex items-center sm:hidden">
-                    <Sheet>
-                        <SheetTrigger
-                            render={<Button variant="ghost" size="icon" />}
-                        >
-                            <Menu className="size-5" />
-                        </SheetTrigger>
-                        <SheetContent side="right">
-                            <SheetHeader>
-                                <SheetTitle>{t(Messages.ProjectName)}</SheetTitle>
-                                <SheetDescription className="sr-only">
-                                    Navigation menu
-                                </SheetDescription>
-                            </SheetHeader>
-                            <div className="flex flex-col gap-4 p-4">
-                                <div className="flex items-center justify-between">
-                                    <span className="text-sm font-medium">
-                                        Language
+                    <div className="flex items-center">
+                        <Sheet open={open} onOpenChange={setOpen}>
+                            <div className="relative z-60">
+                                <Button
+                                    variant="ghost"
+                                    onClick={() => {
+                                        setOpen(!open);
+                                    }}
+                                    className="extend-touch-target h-8 touch-manipulation items-center justify-start gap-2.5 p-0! pt-1! hover:bg-transparent focus-visible:bg-transparent focus-visible:ring-0 active:bg-transparent dark:hover:bg-transparent"
+                                >
+                                    <div className="relative flex h-8 w-4 items-center justify-center">
+                                        <div className="relative size-4">
+                                            <span
+                                                className={cn(
+                                                    'bg-foreground absolute left-0 block h-0.5 w-4 transition-all duration-100',
+                                                    open
+                                                        ? 'top-[0.4rem] -rotate-45'
+                                                        : 'top-1',
+                                                )}
+                                            />
+                                            <span
+                                                className={cn(
+                                                    'bg-foreground absolute left-0 block h-0.5 w-4 transition-all duration-100',
+                                                    open
+                                                        ? 'top-[0.4rem] rotate-45'
+                                                        : 'top-2.5',
+                                                )}
+                                            />
+                                        </div>
+                                        <span className="sr-only">
+                                            Toggle Menu
+                                        </span>
+                                    </div>
+                                    <span className="sm:flex hidden h-8 items-center text-lg leading-none font-medium">
+                                        Menu
                                     </span>
-                                    {renderLanguageSwitcher('end')}
-                                </div>
-                                <div className="flex items-center justify-between">
-                                    <span className="text-sm font-medium">
-                                        Theme
-                                    </span>
-                                    {renderThemeSwitcher('end')}
-                                </div>
+                                </Button>
                             </div>
-                        </SheetContent>
-                    </Sheet>
+                            <SheetContent
+                                side="bottom"
+                                showCloseButton={false}
+                                className="bg-background/70 no-scrollbar fixed inset-0 z-50 h-dvh w-screen overflow-y-auto rounded-none border-none p-0 shadow-none backdrop-blur-xl duration-100 data-open:animate-none!"
+                            >
+                                <SheetHeader className="sr-only">
+                                    <SheetTitle>
+                                        {t(Messages.ProjectName)}
+                                    </SheetTitle>
+                                    <SheetDescription>
+                                        Navigation menu
+                                    </SheetDescription>
+                                </SheetHeader>
+                                <div className="mx-auto flex w-full max-w-full flex-col gap-12 overflow-x-hidden px-6 pt-24 pb-12">
+                                    <div className="flex flex-col gap-4">
+                                        <div className="text-muted-foreground text-sm font-medium">
+                                            Menu
+                                        </div>
+                                        <div className="flex flex-col gap-3">
+                                            <MobileLink
+                                                to={Routes.Home}
+                                                onOpenChange={setOpen}
+                                            >
+                                                Home
+                                            </MobileLink>
+                                            <MobileLink
+                                                to={Routes.CreatePost}
+                                                onOpenChange={setOpen}
+                                            >
+                                                {t(Messages.CreatePost)}
+                                            </MobileLink>
+                                        </div>
+                                    </div>
+                                    <div className="flex flex-col gap-4 sm:hidden">
+                                        <div className="text-muted-foreground text-sm font-medium">
+                                            Settings
+                                        </div>
+                                        <div className="flex flex-col gap-4">
+                                            <div className="flex items-center justify-between">
+                                                <span className="shrink-0 text-2xl font-medium">
+                                                    Language
+                                                </span>
+                                                <div className="flex-1" />
+                                                {renderLanguageSwitcher('end')}
+                                            </div>
+                                            <div className="flex items-center justify-between">
+                                                <span className="shrink-0 text-2xl font-medium">
+                                                    Theme
+                                                </span>
+                                                <div className="flex-1" />
+                                                {renderThemeSwitcher('end')}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </SheetContent>
+                        </Sheet>
+                    </div>
                 </div>
             </div>
         </header>
+    );
+}
+
+function MobileLink({
+    to,
+    onOpenChange,
+    className,
+    children,
+    ...props
+}: {
+    to: string;
+    onOpenChange?: (open: boolean) => void;
+    children: React.ReactNode;
+    className?: string;
+}) {
+    const router = useRouter();
+    return (
+        <Link
+            to={to}
+            onClick={() => {
+                void router.navigate({ to });
+                onOpenChange?.(false);
+            }}
+            className={cn(
+                'flex items-center gap-2 text-2xl font-medium',
+                className,
+            )}
+            {...props}
+        >
+            {children}
+        </Link>
     );
 }

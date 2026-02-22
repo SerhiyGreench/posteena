@@ -16,7 +16,7 @@ function App(): ReactElement {
                 <p className="text-muted-foreground text-sm leading-relaxed">
                     {t(Messages.Description)}
                 </p>
-                <div className="pt-4">
+                <div className="pt-4 pb-18">
                     <Link to={Routes.CreatePost}>
                         <Button className="font-bold" size="lg">
                             {t(Messages.CreatePost)}
