@@ -133,22 +133,22 @@ export default function Header({ scrolled }: HeaderProps): ReactElement {
                                     }}
                                     className="extend-touch-target h-8 touch-manipulation items-center justify-start gap-2.5 p-0! pt-1! hover:bg-transparent focus-visible:bg-transparent focus-visible:ring-0 active:bg-transparent dark:hover:bg-transparent"
                                 >
-                                    <div className="relative flex h-8 w-4 items-center justify-center">
-                                        <div className="relative size-4">
+                                    <div className="relative flex h-8 w-5 items-center justify-center">
+                                        <div className="relative size-5">
                                             <span
                                                 className={cn(
-                                                    'bg-foreground absolute left-0 block h-0.5 w-4 transition-all duration-100',
+                                                    'bg-foreground absolute left-0 block h-0.5 w-5 transition-all duration-100',
                                                     open
-                                                        ? 'top-[0.4rem] -rotate-45'
-                                                        : 'top-1',
+                                                        ? 'top-[0.55rem] -rotate-45'
+                                                        : 'top-1.5',
                                                 )}
                                             />
                                             <span
                                                 className={cn(
-                                                    'bg-foreground absolute left-0 block h-0.5 w-4 transition-all duration-100',
+                                                    'bg-foreground absolute left-0 block h-0.5 w-5 transition-all duration-100',
                                                     open
-                                                        ? 'top-[0.4rem] rotate-45'
-                                                        : 'top-2.5',
+                                                        ? 'top-[0.55rem] rotate-45'
+                                                        : 'top-3.5',
                                                 )}
                                             />
                                         </div>
