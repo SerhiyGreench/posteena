@@ -43,6 +43,7 @@ declare const gapi: {
 
 interface TokenResponse {
     access_token: string;
+    expires_in: number;
     error?: unknown;
 }
 
@@ -50,6 +51,11 @@ interface TokenClient {
     callback: (response: TokenResponse) => void;
     error_callback: (err: { message: string }) => void;
     requestAccessToken: (args: { prompt: string }) => void;
+}
+
+interface StoredSession {
+    accessToken: string;
+    expiresAt: number;
 }
 
 declare const google: {
@@ -75,6 +81,7 @@ const GDRIVE_TOKEN_KEY = 'gdrive_access_token';
 export class GoogleDriveAdapter implements StorageAdapter {
     private tokenClient: TokenClient | null = null;
     private accessToken: string | null = null;
+    private expiresAt: number | null = null;
     private isGapiInitialized = false;
 
     constructor(private clientId: string) {}
@@ -110,8 +117,7 @@ export class GoogleDriveAdapter implements StorageAdapter {
                         if (response.error !== undefined) {
                             throw response;
                         }
-                        this.accessToken = response.access_token;
-                        Storage.set(GDRIVE_TOKEN_KEY, this.accessToken);
+                        this.setSession(response);
                     },
                 });
                 resolve();
@@ -119,16 +125,69 @@ export class GoogleDriveAdapter implements StorageAdapter {
             document.body.appendChild(script);
         });
 
-        const storedToken = Storage.get<string | null>(GDRIVE_TOKEN_KEY, null);
-        if (storedToken) {
-            this.accessToken = storedToken;
+        const stored = Storage.get<StoredSession | null>(
+            GDRIVE_TOKEN_KEY,
+            null,
+        );
+        if (stored) {
+            this.accessToken = stored.accessToken;
+            this.expiresAt = stored.expiresAt;
             gapi.client.setToken({ access_token: this.accessToken });
         }
     }
 
-    async login(): Promise<void> {
-        await this.init();
+    private setSession(response: TokenResponse): void {
+        this.accessToken = response.access_token;
+        this.expiresAt = Date.now() + response.expires_in * 1000;
+        Storage.set(GDRIVE_TOKEN_KEY, {
+            accessToken: this.accessToken,
+            expiresAt: this.expiresAt,
+        } as StoredSession);
+        gapi.client.setToken({ access_token: this.accessToken });
+    }
 
+    isAuthenticated(): boolean {
+        // Return true if we have a token that's not expired
+        if (this.accessToken && this.expiresAt && Date.now() < this.expiresAt) {
+            return true;
+        }
+
+        // Check if we have a token in storage
+        const stored = Storage.get<StoredSession | null>(
+            GDRIVE_TOKEN_KEY,
+            null,
+        );
+        return stored !== null;
+    }
+
+    private async checkAndRefreshToken(): Promise<void> {
+        await this.init();
+        if (
+            this.accessToken &&
+            this.expiresAt &&
+            Date.now() < this.expiresAt - 60000 // Refresh if within 1 minute of expiration
+        ) {
+            return;
+        }
+
+        // Attempt silent refresh if we have an access token (even if expired)
+        if (this.accessToken) {
+            try {
+                await this.loginWithPrompt('');
+            } catch (err) {
+                console.error('Silent refresh failed:', err);
+                // If silent refresh fails, we clear the session to force login
+                this.accessToken = null;
+                this.expiresAt = null;
+                Storage.set(GDRIVE_TOKEN_KEY, null);
+                throw new Error('Session expired, please login again');
+            }
+        } else {
+            throw new Error('Not authenticated');
+        }
+    }
+
+    private async loginWithPrompt(prompt: string): Promise<void> {
         if (!this.tokenClient) {
             throw new Error('Token client not initialized');
         }
@@ -147,52 +206,57 @@ export class GoogleDriveAdapter implements StorageAdapter {
                 fn(arg);
             };
 
-            // If the user closes the popup or nothing comes back, timeout and stop loading
             const timer = window.setTimeout(() => {
                 finish(reject, new Error('Login was cancelled or timed out'));
             }, 60000);
 
-            try {
-                this.tokenClient!.callback = (response: TokenResponse) => {
-                    if (response?.error) {
-                        return finish(reject, response);
-                    }
-                    this.accessToken = response.access_token;
-                    Storage.set(GDRIVE_TOKEN_KEY, this.accessToken);
-                    gapi.client.setToken({
-                        access_token: this.accessToken ?? '',
-                    });
-                    finish(resolve as (arg?: unknown) => void);
-                };
+            this.tokenClient!.callback = (response: TokenResponse) => {
+                if (response?.error) {
+                    return finish(reject, response);
+                }
+                this.setSession(response);
+                finish(resolve as (arg?: unknown) => void);
+            };
 
-                // Handle popup close or other flow errors if surfaced by GIS
-                this.tokenClient!.error_callback = (err: {
-                    message: string;
-                }) => {
-                    finish(reject, err);
-                };
-
-                this.tokenClient!.requestAccessToken({ prompt: 'consent' });
-            } catch (err) {
+            this.tokenClient!.error_callback = (err: { message: string }) => {
                 finish(reject, err);
-            }
+            };
+
+            this.tokenClient!.requestAccessToken({ prompt });
         });
+    }
+
+    async login(): Promise<void> {
+        await this.init();
+
+        if (this.accessToken && this.expiresAt && Date.now() < this.expiresAt) {
+            return; // Already have a valid session
+        }
+
+        // Try silent first if we have a token
+        if (this.accessToken) {
+            try {
+                await this.loginWithPrompt('');
+                return;
+            } catch {
+                // Ignore silent failure and fall through to consent
+            }
+        }
+
+        await this.loginWithPrompt('consent');
     }
 
     async logout(): Promise<void> {
         if (this.accessToken) {
             google.accounts.oauth2.revoke(this.accessToken, () => {});
             this.accessToken = null;
+            this.expiresAt = null;
             Storage.set(GDRIVE_TOKEN_KEY, null);
         }
     }
 
-    isAuthenticated(): boolean {
-        return !!this.accessToken;
-    }
-
     async getGroups(): Promise<GroupMetadata[]> {
-        await this.init();
+        await this.checkAndRefreshToken();
         const response = await gapi.client.drive.files.list({
             q: `appProperties has { key='${APP_PROPERTY_KEY}' and value='${APP_PROPERTY_VERSION}' } and trashed = false`,
             fields: 'files(id, name, modifiedTime, lastModifyingUser(displayName), appProperties)',
@@ -209,7 +273,7 @@ export class GoogleDriveAdapter implements StorageAdapter {
     }
 
     async createGroup(name: string): Promise<GroupMetadata> {
-        await this.init();
+        await this.checkAndRefreshToken();
         const id = crypto.randomUUID();
         const filename = `posteena_group_${id}.dat`; // Use .dat for encrypted content
 
@@ -277,7 +341,7 @@ export class GoogleDriveAdapter implements StorageAdapter {
     async saveGroup(
         group: PasswordGroup & { encryptedContent?: string },
     ): Promise<void> {
-        await this.init();
+        await this.checkAndRefreshToken();
         const response = await gapi.client.drive.files.list({
             q: `appProperties has { key='group_id' and value='${group.id}' } and trashed = false`,
             fields: 'files(id)',
@@ -302,7 +366,7 @@ export class GoogleDriveAdapter implements StorageAdapter {
     }
 
     async loadGroup(fileId: string): Promise<PasswordGroup | string> {
-        await this.init();
+        await this.checkAndRefreshToken();
         const response = await fetch(
             `https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`,
             {
@@ -325,12 +389,12 @@ export class GoogleDriveAdapter implements StorageAdapter {
     }
 
     async deleteGroup(fileId: string): Promise<void> {
-        await this.init();
+        await this.checkAndRefreshToken();
         await gapi.client.drive.files.delete({ fileId });
     }
 
     async getUserIdentifier(): Promise<string | null> {
-        await this.init();
+        await this.checkAndRefreshToken();
         try {
             const response = await gapi.client.drive.about.get({
                 fields: 'user(emailAddress, permissionId)',

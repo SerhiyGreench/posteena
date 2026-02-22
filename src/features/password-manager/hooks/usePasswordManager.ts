@@ -44,15 +44,18 @@ export function usePasswordManager(): {
 
     useEffect(() => {
         const checkAuth = async (): Promise<void> => {
-            if (adapter.isAuthenticated()) {
+            const hasStoredSession = adapter.isAuthenticated();
+            if (hasStoredSession) {
                 setLoading(true);
                 try {
+                    // This will trigger script loading and session restoration from Storage
                     await initializeEncryption();
                     const fetchedGroups = await adapter.getGroups();
                     setGroups(fetchedGroups);
                     setIsAuthenticated(true);
                 } catch (err: unknown) {
                     console.error('Initial auth check failed:', err);
+                    setIsAuthenticated(false);
                     const errorMessage =
                         err instanceof Error
                             ? err.message
