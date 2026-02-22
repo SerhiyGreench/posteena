@@ -192,6 +192,12 @@ export default function Header({ scrolled }: HeaderProps): ReactElement {
                                             >
                                                 {t(Messages.CreatePost)}
                                             </MobileLink>
+                                            <MobileLink
+                                                to={Routes.PasswordManager}
+                                                onOpenChange={setOpen}
+                                            >
+                                                {t(Messages.PasswordManager)}
+                                            </MobileLink>
                                         </div>
                                     </div>
                                     <div className="flex flex-col gap-4 sm:hidden">

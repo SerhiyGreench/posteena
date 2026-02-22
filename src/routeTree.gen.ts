@@ -10,12 +10,18 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as PostRouteImport } from './routes/post'
+import { Route as PasswordManagerRouteImport } from './routes/password-manager'
 import { Route as CreatePostRouteImport } from './routes/create-post'
 import { Route as IndexRouteImport } from './routes/index'
 
 const PostRoute = PostRouteImport.update({
   id: '/post',
   path: '/post',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PasswordManagerRoute = PasswordManagerRouteImport.update({
+  id: '/password-manager',
+  path: '/password-manager',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CreatePostRoute = CreatePostRouteImport.update({
@@ -32,30 +38,34 @@ const IndexRoute = IndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/create-post': typeof CreatePostRoute
+  '/password-manager': typeof PasswordManagerRoute
   '/post': typeof PostRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/create-post': typeof CreatePostRoute
+  '/password-manager': typeof PasswordManagerRoute
   '/post': typeof PostRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/create-post': typeof CreatePostRoute
+  '/password-manager': typeof PasswordManagerRoute
   '/post': typeof PostRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/create-post' | '/post'
+  fullPaths: '/' | '/create-post' | '/password-manager' | '/post'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/create-post' | '/post'
-  id: '__root__' | '/' | '/create-post' | '/post'
+  to: '/' | '/create-post' | '/password-manager' | '/post'
+  id: '__root__' | '/' | '/create-post' | '/password-manager' | '/post'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CreatePostRoute: typeof CreatePostRoute
+  PasswordManagerRoute: typeof PasswordManagerRoute
   PostRoute: typeof PostRoute
 }
 
@@ -66,6 +76,13 @@ declare module '@tanstack/react-router' {
       path: '/post'
       fullPath: '/post'
       preLoaderRoute: typeof PostRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/password-manager': {
+      id: '/password-manager'
+      path: '/password-manager'
+      fullPath: '/password-manager'
+      preLoaderRoute: typeof PasswordManagerRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/create-post': {
@@ -88,6 +105,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CreatePostRoute: CreatePostRoute,
+  PasswordManagerRoute: PasswordManagerRoute,
   PostRoute: PostRoute,
 }
 export const routeTree = rootRouteImport

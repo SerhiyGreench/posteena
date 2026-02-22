@@ -28,50 +28,53 @@ const RichTextEditor = ({
     content = '',
     onUpdate,
 }: RichTextEditorProps): ReactElement => {
-    const editor = useEditor({
-        extensions: [
-            StarterKit,
-            Underline,
-            TextAlign.configure({
-                types: ['heading', 'paragraph'],
-            }),
-            Highlight,
-            TextStyle,
-            Color,
-            FontFamily,
-            Link.configure({
-                openOnClick: false,
-            }),
-            Image,
-            Youtube.configure({
-                width: 480,
-                height: 320,
-            }),
-            Placeholder.configure({
-                placeholder: 'Write something amazing...',
-            }),
-            TaskList,
-            TaskItem.configure({
-                nested: true,
-            }),
-            Table.configure({
-                resizable: true,
-            }),
-            TableRow,
-            TableHeader,
-            TableCell,
-        ],
-        content,
-        onUpdate: ({ editor }) => {
-            onUpdate?.(editor.getHTML());
-        },
-        editorProps: {
-            attributes: {
-                class: 'prose prose-sm dark:prose-invert max-w-none focus:outline-none min-h-[400px] p-4',
+    const editor = useEditor(
+        {
+            extensions: [
+                StarterKit,
+                Underline,
+                TextAlign.configure({
+                    types: ['heading', 'paragraph'],
+                }),
+                Highlight,
+                TextStyle,
+                Color,
+                FontFamily,
+                Link.configure({
+                    openOnClick: false,
+                }),
+                Image,
+                Youtube.configure({
+                    width: 480,
+                    height: 320,
+                }),
+                Placeholder.configure({
+                    placeholder: 'Write something amazing...',
+                }),
+                TaskList,
+                TaskItem.configure({
+                    nested: true,
+                }),
+                Table.configure({
+                    resizable: true,
+                }),
+                TableRow,
+                TableHeader,
+                TableCell,
+            ],
+            content,
+            onUpdate: ({ editor }) => {
+                onUpdate?.(editor.getHTML());
             },
+            editorProps: {
+                attributes: {
+                    class: 'prose prose-sm dark:prose-invert max-w-none focus:outline-none min-h-[400px] p-4',
+                },
+            },
+            immediatelyRender: false,
         },
-        immediatelyRender: false,
-    }, [content]);
+        [content],
+    );
 
     return (
         <div className="focus-within:ring-ring flex flex-col overflow-hidden rounded-md border shadow-sm focus-within:ring-1">
