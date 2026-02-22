@@ -22,3 +22,5 @@ To maintain high code quality and consistency, all LLMs MUST follow these rules 
 ## 3. Core Guidelines
 
 - **Follow Core Rules:** All LLMs MUST strictly adhere to the guidelines documented in [RULES](../RULES.md).
+- **Check Common Errors:** Before starting any task, check `.junie/common-errors.md` to avoid repeating documented mistakes.
+- **Update Common Errors:** If you make a mistake and the user points it out, you MUST update `.junie/common-errors.md` with the mistake and its correct solution to prevent recurrence.

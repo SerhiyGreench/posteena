@@ -83,7 +83,10 @@
         "oxc/uninvoked-array-callback": "warn",
         "react/exhaustive-deps": "off",
         "typescript/await-thenable": "warn",
-        "typescript/explicit-function-return-type": "warn",
+        "typescript/explicit-function-return-type": [
+            "error",
+            { "allowExpressions": true }
+        ],
         "typescript/no-explicit-any": "error",
         "typescript/no-array-delete": "warn",
         "typescript/no-base-to-string": "warn",
@@ -104,7 +107,7 @@
         "typescript/no-unsafe-unary-minus": "warn",
         "typescript/no-useless-empty-export": "warn",
         "typescript/no-wrapper-object-types": "warn",
-        "typescript/prefer-as-const": "warn",
+        "typescript/prefer-as-const": "error",
         "typescript/require-array-sort-compare": "warn",
         "typescript/restrict-template-expressions": "warn",
         "typescript/triple-slash-reference": "warn",
@@ -123,6 +126,14 @@
         "unicorn/prefer-set-size": "warn",
         "unicorn/prefer-string-starts-ends-with": "warn"
     },
+    "overrides": [
+        {
+            "files": ["ui/**/*.tsx", "ui/**/*.ts"],
+            "rules": {
+                "typescript/explicit-function-return-type": "off"
+            }
+        }
+    ],
     "settings": {
         "jsx-a11y": {
             "polymorphicPropName": null,

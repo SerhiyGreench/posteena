@@ -2,7 +2,7 @@ import { Translations } from '@/constants/Translations';
 import {
     type GenerateConstantsType,
     generateConstants,
-} from '@/utils/generateConstants.ts';
+} from '@/utils/generateConstants';
 
 type TranslationType = typeof Translations.en;
 

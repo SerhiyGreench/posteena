@@ -10,7 +10,7 @@ To maintain high code quality and consistency, all contributors (including LLMs)
     - Use `unknown` if the type is truly unknown at compile time, then use type guards or assertions to safely narrow it down.
     - Ensure all third-party library integrations are properly typed, using `@types` packages or custom `.d.ts` declarations if necessary.
 - **Interfaces over Types:** Prefer `interface` over `type` for object definitions.
-- **Return Types:** Explicit return types are **mandatory** for all functions and components.
+- **Return Types:** Explicit return types are **mandatory** for all functions and components. (Exception: components in the protected `ui/` folder).
 - **Constants as Enums:** Use `as const` for enums and prefer aliases using `as const` over union types. This applies to all routes and i18n message paths. Use `UpperCamelCase` for constant names.
     - _Example:_ `Theme.Light` instead of `'light'`.
     - _Example:_ `Routes.Home` instead of `'/'`.
@@ -25,8 +25,9 @@ To maintain high code quality and consistency, all contributors (including LLMs)
 - **Providers:** Use providers for global data storage and bypassing data through the component tree.
 - **Hooks:** Extract common workflows into custom hooks to avoid duplication and keep components clean.
 - **Libraries:** Prefer implementing small hooks or functions over installing new external libraries for simple tasks.
-- **Specific Imports (mandatory):** Only use named imports from React (e.g., `import { useState, useEffect } from 'react'`). Do not use `import * as React from 'react'` or `import React from 'react'`.
-- **JSX Types:** Do not use `JSX.*` types (e.g., prefer `React.ReactElement` or `React.ReactNode` over `JSX.Element`).
+- **Specific Imports (mandatory):** Only use named imports from React (e.g., `import { useState, useEffect, type ReactNode, type PropsWithChildren } from 'react'`). Do not use `import * as React from 'react'` or `import React from 'react'`. Strictly avoid using the `React.` prefix in the code (e.g., use `ReactNode` instead of `React.ReactNode`, `PropsWithChildren` instead of `React.PropsWithChildren`).
+- **Props with Children:** Use `PropsWithChildren` type from `react` for components that accept children, instead of manually defining `children: ReactNode`.
+- **JSX Types:** Do not use `JSX.*` types (e.g., prefer `ReactElement` or `ReactNode` over `JSX.Element`).
 - **SSR Safety:** Use `ClientOnly` component (`src/components/ClientOnly.tsx`) for components/hooks that depend on browser APIs.
 
 ## 3. Naming Conventions
@@ -38,18 +39,22 @@ To maintain high code quality and consistency, all contributors (including LLMs)
 - **Instances & Utilities:** Use `lowerCamelCase` for instances (like `i18n`) and utilities, and their file names (e.g., `i18n.ts`, `storage.ts`).
 - **Folders:** Use `hyphen-case` (kebab-case) for all directory names. No other case is allowed for folders.
 - **Modules:** Modules containing components should also use `UpperCamelCase` and match the component name.
-- **Imports:** Use absolute paths with aliases (e.g., `@/components/Header` or `#/paraglide/messages`) instead of relative paths (e.g., `../components/Header`).
+- **Imports:** Use absolute paths with aliases (e.g., `@/components/Header` or `#/paraglide/messages`) instead of relative paths (e.g., `../components/Header`). Do not include file extensions (e.g., `.ts`, `.tsx`) in import statements. This is enforced by `tsconfig.json` setting `"allowImportingTsExtensions": false`.
+    - _Example:_ `import { Header } from '@/components/Header';` (Correct)
+    - _Example:_ `import { Header } from '@/components/Header.tsx';` (Incorrect)
 - **i18next messages:** All translation resources must be defined with `as const` in `src/constants/Translations.ts`. The `Messages` constant in `src/constants/Messages.ts` is automatically generated from the English translations (`Translations.en`) using the utility in `src/utils/generateMessages.ts`. This includes support for nested objects (which are flattened to `UpperCamelCase` keys), ensuring translation keys stay in sync while providing full type safety throughout the application.
     - _Example:_ If `Translations.en` has `theme: { light: "..." }`, use `t(Messages.ThemeLight)`.
-- **Routes:** All route paths must be defined in `src/constants/Routes.ts` using `as const`. Components and route definitions must use these constants instead of hardcoded strings.
+- **Routes:** All route paths must be hyphen-cased (dash-cased) and defined in `src/constants/Routes.ts` using `as const`. Components and route definitions must use these constants instead of hardcoded strings.
 - **Exports:** All components must have a `default export` of the component. Export props separately if they are necessary for external use.
-- **One File - One Export:** Follow the "one file, one export" principle as a general rule. Exceptions are allowed only when:
-    - A file contains a component and its associated props interface.
-    - A file contains a context provider and its associated custom hook.
-    - A file contains a main export and its closely related small helper types or constants that are not used elsewhere.
-- **Index Files:** Use `index.ts/tsx` for re-exporting only if a component or function uses other internal functions or components that are specific to it. Single-purpose files should remain standalone without a dedicated folder.
-    - _Example:_ A `Header` folder is only justified if it contains `Header.tsx` and a `HeaderLink.tsx` used exclusively within `Header`. Otherwise, use `Header.tsx` directly in `src/components/`.
-    - Mandatory `export { default } from './MyComponent';` in the `index` file for such folders.
+- **One File - One Component:** This is a strict rule. Each file must contain only one React component.
+    - For any component that requires subcomponents (helper components used only within that main component), a dedicated folder must be created.
+    - The folder name must use `UpperCamelCase` and match the main component name (e.g., `src/components/MyComponent/`).
+    - The main component must be in a file with the same name (e.g., `src/components/MyComponent/MyComponent.tsx`).
+    - All subcomponents must be in their own files within the same folder.
+    - A mandatory `index.ts` file must be created in the folder to re-export the main component as a default export.
+    - _Example:_ `export { default } from './MyComponent';` in `index.ts`.
+    - Single-purpose components without subcomponents should remain standalone files in `src/components/` (e.g., `src/components/Header.tsx`).
+- **Index Files:** Use `index.ts/tsx` for re-exporting only if a component uses other internal subcomponents. Mandatory `export { default } from './MyComponent';` in the `index` file for such folders.
 
 ## 4. Styling & UI
 

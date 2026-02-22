@@ -7,12 +7,19 @@
 @custom-variant dark (&:is(.dark *));
 
 body {
-    @apply m-0;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 code {
     font-family:
         source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+
+html,
+body,
+#root {
+    height: 100%;
 }
 
 :root {
@@ -51,7 +58,7 @@ code {
 }
 
 .dark {
-    --background: oklch(0.145 0 0);
+    --background: oklch(0 0 0);
     --foreground: oklch(0.985 0 0);
     --card: oklch(0.205 0 0);
     --card-foreground: oklch(0.985 0 0);
@@ -130,13 +137,38 @@ code {
     * {
         @apply border-border outline-ring/50;
     }
+
     body {
         @apply bg-background text-foreground font-sans;
     }
+
     html {
         @apply font-sans;
+
+        scrollbar-width: thin;
+        scrollbar-color: var(--muted-foreground) transparent;
     }
+
     button {
         cursor: pointer;
+    }
+
+    ::-webkit-scrollbar {
+        width: 12px;
+    }
+
+    /* Track */
+    ::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+        -webkit-border-radius: 10px;
+        border-radius: 10px;
+    }
+
+    /* Handle */
+    ::-webkit-scrollbar-thumb {
+        -webkit-border-radius: 10px;
+        border-radius: 10px;
+        background: rgba(255,0,0,0.8);
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
     }
 }

@@ -9,12 +9,18 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as CreatePostRouteImport } from './routes/CreatePost'
+import { Route as PostRouteImport } from './routes/post'
+import { Route as CreatePostRouteImport } from './routes/create-post'
 import { Route as IndexRouteImport } from './routes/index'
 
+const PostRoute = PostRouteImport.update({
+  id: '/post',
+  path: '/post',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CreatePostRoute = CreatePostRouteImport.update({
-  id: '/CreatePost',
-  path: '/CreatePost',
+  id: '/create-post',
+  path: '/create-post',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -25,36 +31,47 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/CreatePost': typeof CreatePostRoute
+  '/create-post': typeof CreatePostRoute
+  '/post': typeof PostRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/CreatePost': typeof CreatePostRoute
+  '/create-post': typeof CreatePostRoute
+  '/post': typeof PostRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/CreatePost': typeof CreatePostRoute
+  '/create-post': typeof CreatePostRoute
+  '/post': typeof PostRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/CreatePost'
+  fullPaths: '/' | '/create-post' | '/post'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/CreatePost'
-  id: '__root__' | '/' | '/CreatePost'
+  to: '/' | '/create-post' | '/post'
+  id: '__root__' | '/' | '/create-post' | '/post'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CreatePostRoute: typeof CreatePostRoute
+  PostRoute: typeof PostRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/CreatePost': {
-      id: '/CreatePost'
-      path: '/CreatePost'
-      fullPath: '/CreatePost'
+    '/post': {
+      id: '/post'
+      path: '/post'
+      fullPath: '/post'
+      preLoaderRoute: typeof PostRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/create-post': {
+      id: '/create-post'
+      path: '/create-post'
+      fullPath: '/create-post'
       preLoaderRoute: typeof CreatePostRouteImport
       parentRoute: typeof rootRouteImport
     }
@@ -71,6 +88,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CreatePostRoute: CreatePostRoute,
+  PostRoute: PostRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

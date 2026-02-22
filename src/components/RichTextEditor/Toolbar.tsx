@@ -1,22 +1,5 @@
-import { type ReactElement, useState } from 'react';
-import Color from '@tiptap/extension-color';
-import FontFamily from '@tiptap/extension-font-family';
-import Highlight from '@tiptap/extension-highlight';
-import Image from '@tiptap/extension-image';
-import Link from '@tiptap/extension-link';
-import Placeholder from '@tiptap/extension-placeholder';
-import { Table } from '@tiptap/extension-table';
-import TableCell from '@tiptap/extension-table-cell';
-import TableHeader from '@tiptap/extension-table-header';
-import TableRow from '@tiptap/extension-table-row';
-import TaskItem from '@tiptap/extension-task-item';
-import TaskList from '@tiptap/extension-task-list';
-import TextAlign from '@tiptap/extension-text-align';
-import { TextStyle } from '@tiptap/extension-text-style';
-import Underline from '@tiptap/extension-underline';
-import Youtube from '@tiptap/extension-youtube';
-import { type Editor, EditorContent, useEditor } from '@tiptap/react';
-import StarterKit from '@tiptap/starter-kit';
+import { type ChangeEvent, type ReactElement, useState } from 'react';
+import { type Editor } from '@tiptap/react';
 import {
     AlignCenter,
     AlignJustify,
@@ -42,46 +25,19 @@ import {
     Table as TableIcon,
     Underline as UnderlineIcon,
     Undo,
-    Youtube as YoutubeIcon,
+    Video,
 } from 'lucide-react';
-import { Button } from 'ui/Button';
-import { Input } from 'ui/Input';
-import { Popover, PopoverContent, PopoverTrigger } from 'ui/Popover';
-import { Toggle } from 'ui/Toggle';
-import { Tooltip, TooltipContent, TooltipTrigger } from 'ui/Tooltip';
+import { Button } from 'ui/button';
+import { Input } from 'ui/input';
+import { Popover, PopoverContent, PopoverTrigger } from 'ui/popover';
+import { Tooltip, TooltipContent, TooltipTrigger } from 'ui/tooltip';
+import MenuButton from './MenuButton';
 
-const MenuButton = ({
-    onClick,
-    isActive = false,
-    disabled = false,
-    tooltip,
-    children,
-}: {
-    onClick: () => void;
-    isActive?: boolean;
-    disabled?: boolean;
-    tooltip: string;
-    children: React.ReactNode;
-}) => (
-    <Tooltip>
-        <TooltipTrigger
-            render={
-                <Toggle
-                    size="sm"
-                    pressed={isActive}
-                    onPressedChange={onClick}
-                    disabled={disabled}
-                    className="size-8 p-0"
-                />
-            }
-        >
-            {children}
-        </TooltipTrigger>
-        <TooltipContent>{tooltip}</TooltipContent>
-    </Tooltip>
-);
+export interface ToolbarProps {
+    editor: Editor | null;
+}
 
-const Toolbar = ({ editor }: { editor: Editor | null }) => {
+const Toolbar = ({ editor }: ToolbarProps): ReactElement | null => {
     const [linkUrl, setLinkUrl] = useState('');
     const [imageUrl, setImageUrl] = useState('');
     const [youtubeUrl, setYoutubeUrl] = useState('');
@@ -90,11 +46,12 @@ const Toolbar = ({ editor }: { editor: Editor | null }) => {
         return null;
     }
 
-    const setLink = () => {
+    const setLink = (): void => {
         if (linkUrl === '') {
             editor.chain().focus().extendMarkRange('link').unsetLink().run();
             return;
         }
+
         editor
             .chain()
             .focus()
@@ -104,30 +61,34 @@ const Toolbar = ({ editor }: { editor: Editor | null }) => {
         setLinkUrl('');
     };
 
-    const addImage = () => {
+    const addImage = (): void => {
         if (imageUrl) {
             editor.chain().focus().setImage({ src: imageUrl }).run();
             setImageUrl('');
         }
     };
 
-    const addYoutubeVideo = () => {
+    const addYoutubeVideo = (): void => {
         if (youtubeUrl) {
             editor.chain().focus().setYoutubeVideo({ src: youtubeUrl }).run();
             setYoutubeUrl('');
         }
     };
 
-    const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const onFileChange = (e: ChangeEvent<HTMLInputElement>): void => {
         const file = e.target.files?.[0];
+
         if (file) {
             if (file.size > 5 * 1024 * 1024) {
                 alert('File size too large. Max 5MB.');
                 return;
             }
+
             const reader = new FileReader();
+
             reader.onload = event => {
                 const src = event.target?.result as string;
+
                 if (file.type.startsWith('image/')) {
                     editor.chain().focus().setImage({ src }).run();
                 } else {
@@ -141,6 +102,7 @@ const Toolbar = ({ editor }: { editor: Editor | null }) => {
                         .run();
                 }
             };
+
             reader.readAsDataURL(file);
         }
     };
@@ -408,7 +370,7 @@ const Toolbar = ({ editor }: { editor: Editor | null }) => {
                                 />
                             }
                         >
-                            <YoutubeIcon className="size-4" />
+                            <Video className="size-4" />
                         </TooltipTrigger>
                         <TooltipContent>Insert YouTube Video</TooltipContent>
                     </Tooltip>
@@ -466,54 +428,4 @@ const Toolbar = ({ editor }: { editor: Editor | null }) => {
     );
 };
 
-const RichTextEditor = (): ReactElement => {
-    const editor = useEditor({
-        extensions: [
-            StarterKit,
-            Underline,
-            TextAlign.configure({
-                types: ['heading', 'paragraph'],
-            }),
-            Highlight,
-            TextStyle,
-            Color,
-            FontFamily,
-            Link.configure({
-                openOnClick: false,
-            }),
-            Image,
-            Youtube.configure({
-                width: 480,
-                height: 320,
-            }),
-            Placeholder.configure({
-                placeholder: 'Write something amazing...',
-            }),
-            TaskList,
-            TaskItem.configure({
-                nested: true,
-            }),
-            Table.configure({
-                resizable: true,
-            }),
-            TableRow,
-            TableHeader,
-            TableCell,
-        ],
-        content: '',
-        editorProps: {
-            attributes: {
-                class: 'prose prose-sm dark:prose-invert max-w-none focus:outline-none min-h-[400px] p-4',
-            },
-        },
-    });
-
-    return (
-        <div className="focus-within:ring-ring flex flex-col overflow-hidden rounded-md border shadow-sm focus-within:ring-1">
-            <Toolbar editor={editor} />
-            <EditorContent editor={editor} />
-        </div>
-    );
-};
-
-export default RichTextEditor;
+export default Toolbar;
