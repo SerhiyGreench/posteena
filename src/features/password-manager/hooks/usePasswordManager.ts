@@ -1,8 +1,12 @@
 import { useCallback, useEffect, useState } from 'react';
 import config from '@/config';
-import { GoogleDriveAdapter } from '../api/GoogleDriveAdapter';
-import type { GroupMetadata, PasswordGroup, StorageAdapter } from '../types';
-import { decrypt, encrypt } from '../utils/crypto';
+import { GoogleDriveAdapter } from '@/features/password-manager/api/GoogleDriveAdapter';
+import type {
+    GroupMetadata,
+    PasswordGroup,
+    StorageAdapter,
+} from '@/features/password-manager/types';
+import { decrypt, encrypt } from '@/features/password-manager/utils/crypto';
 
 export function usePasswordManager(): {
     isAuthenticated: boolean;

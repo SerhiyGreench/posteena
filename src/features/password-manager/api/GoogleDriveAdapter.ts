@@ -1,5 +1,9 @@
+import type {
+    GroupMetadata,
+    PasswordGroup,
+    StorageAdapter,
+} from '@/features/password-manager/types';
 import { Storage } from '@/lib/Storage';
-import type { GroupMetadata, PasswordGroup, StorageAdapter } from '../types';
 
 declare const gapi: {
     load: (name: string, callback: () => void) => void;

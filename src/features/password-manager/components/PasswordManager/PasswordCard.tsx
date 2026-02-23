@@ -5,7 +5,7 @@ import { Button } from 'ui/button';
 import { Card, CardContent } from 'ui/card';
 import { Tooltip, TooltipContent, TooltipTrigger } from 'ui/tooltip';
 import { FeedbackTooltip } from '@/components/FeedbackTooltip';
-import type { PasswordItem } from '../../types';
+import type { PasswordItem } from '@/features/password-manager/types';
 
 export interface PasswordCardProps {
     item: PasswordItem;

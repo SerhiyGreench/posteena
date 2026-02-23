@@ -7,8 +7,8 @@ import { Button } from 'ui/button';
 import { Card, CardContent } from 'ui/card';
 import { Field, FieldContent, FieldError, FieldLabel } from 'ui/field';
 import { Input } from 'ui/input';
-import type { PasswordItem } from '../../types';
-import { generatePassword } from '../../utils/crypto';
+import type { PasswordItem } from '@/features/password-manager/types';
+import { generatePassword } from '@/features/password-manager/utils/crypto';
 
 const itemSchema = (
     t: (key: string) => string,

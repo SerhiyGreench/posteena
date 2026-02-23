@@ -27,7 +27,7 @@ import {
 } from 'ui/table';
 import { Tooltip, TooltipContent, TooltipTrigger } from 'ui/tooltip';
 import { FeedbackTooltip } from '@/components/FeedbackTooltip';
-import type { PasswordItem } from '../../types';
+import type { PasswordItem } from '@/features/password-manager/types';
 
 export interface PasswordTableProps {
     items: PasswordItem[];

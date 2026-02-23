@@ -31,8 +31,12 @@ import {
 } from 'ui/select';
 import { Skeleton } from 'ui/skeleton';
 import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group';
-import { usePasswordManager } from '../../hooks/usePasswordManager';
-import type { PasswordGroup, PasswordItem } from '../../types';
+import { usePasswordManager } from '@/features/password-manager/hooks/usePasswordManager';
+import type {
+    PasswordGroup,
+    PasswordItem,
+} from '@/features/password-manager/types';
+import { Storage } from '@/lib/Storage';
 import ItemForm from './ItemForm';
 import PasswordCard from './PasswordCard';
 import PasswordTable from './PasswordTable';
@@ -67,13 +71,8 @@ export default function PasswordManager(): ReactElement {
         loadGroup,
     } = usePasswordManager();
 
-    const [selectedGroupId, setSelectedGroupId] = useState<string | null>(
-        () => {
-            if (typeof window !== 'undefined') {
-                return localStorage.getItem('posteena_last_password_group_id');
-            }
-            return null;
-        },
+    const [selectedGroupId, setSelectedGroupId] = useState<string | null>(() =>
+        Storage.get('posteena_last_password_group_id', null),
     );
     const [currentGroup, setCurrentGroup] = useState<PasswordGroup | null>(
         null,
@@ -85,16 +84,9 @@ export default function PasswordManager(): ReactElement {
         'name',
     );
     const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
-    const [viewMode, setViewMode] = useState<'table' | 'cards'>(() => {
-        if (typeof window !== 'undefined') {
-            return (
-                (localStorage.getItem('posteena_password_manager_view_mode') as
-                    | 'table'
-                    | 'cards') || 'cards'
-            );
-        }
-        return 'cards';
-    });
+    const [viewMode, setViewMode] = useState<'table' | 'cards'>(() =>
+        Storage.get('posteena_password_manager_view_mode', 'cards'),
+    );
 
     const groupForm = useForm({
         defaultValues: {
@@ -114,21 +106,19 @@ export default function PasswordManager(): ReactElement {
 
     useEffect(() => {
         if (selectedGroupId) {
-            localStorage.setItem(
-                'posteena_last_password_group_id',
-                selectedGroupId,
-            );
+            Storage.set('posteena_last_password_group_id', selectedGroupId);
         }
     }, [selectedGroupId]);
 
     useEffect(() => {
-        localStorage.setItem('posteena_password_manager_view_mode', viewMode);
+        Storage.set('posteena_password_manager_view_mode', viewMode);
     }, [viewMode]);
 
     useEffect(() => {
         if (!selectedGroupId && groups.length > 0) {
-            const savedGroupId = localStorage.getItem(
+            const savedGroupId = Storage.get(
                 'posteena_last_password_group_id',
+                null,
             );
             if (savedGroupId && groups.some(g => g.id === savedGroupId)) {
                 setSelectedGroupId(savedGroupId);

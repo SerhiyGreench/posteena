@@ -1,9 +1,4 @@
-import {
-    type ComponentType,
-    type ReactElement,
-    useEffect,
-    useState,
-} from 'react';
+import { type ReactElement, useEffect, useState } from 'react';
 import {
     Activity,
     Battery,
@@ -16,7 +11,6 @@ import {
     HardDrive,
     Info,
     Loader2,
-    type LucideProps,
     Monitor,
     Palette,
     ShieldCheck,
@@ -35,6 +29,7 @@ import {
 } from 'ui/card';
 import { Skeleton } from 'ui/skeleton';
 import { FeedbackTooltip } from '@/components/FeedbackTooltip';
+import InfoItem from './InfoItem';
 
 interface FootprintData {
     ip: string | null;
@@ -88,7 +83,7 @@ export default function DigitalFootprint(): ReactElement {
     }, []);
 
     const startLocationWatching = (): void => {
-        if (!('geolocation' in navigator)) {
+        if (typeof window === 'undefined' || !('geolocation' in navigator)) {
             return;
         }
 
@@ -141,7 +136,7 @@ export default function DigitalFootprint(): ReactElement {
     };
 
     const requestLocation = (): void => {
-        if (!('geolocation' in navigator)) {
+        if (typeof window === 'undefined' || !('geolocation' in navigator)) {
             toast.error(t('digitalFootprint.locationNotSupported'));
             return;
         }
@@ -247,6 +242,10 @@ export default function DigitalFootprint(): ReactElement {
         };
 
         const fetchData = async (): Promise<void> => {
+            if (typeof window === 'undefined') {
+                return;
+            }
+
             const initialData: FootprintData = {
                 ip: null,
                 isOnline: navigator.onLine,
@@ -428,7 +427,7 @@ export default function DigitalFootprint(): ReactElement {
                 );
             }
         };
-    }, []);
+    }, [t]);
 
     if (loading || !data) {
         return <></>;
@@ -482,50 +481,6 @@ ${t('digitalFootprint.longitude')}: ${data.location.longitude}
         setTimeout(() => setIsCopied(false), 2000);
         toast.success(t('digitalFootprint.reportCopied'));
     };
-
-    const InfoItem = ({
-        label,
-        value,
-        icon: Icon,
-        subValue,
-        isLoading = false,
-    }: {
-        label: string;
-        value: string | number | boolean | ReactElement;
-        icon: ComponentType<LucideProps>;
-        subValue?: string;
-        isLoading?: boolean;
-    }): ReactElement => (
-        <div className="group flex items-start gap-3 px-1.5 py-3 sm:gap-4 sm:px-2">
-            <div className="text-primary mt-1 flex size-9 shrink-0 items-center justify-center">
-                <Icon className="size-5" />
-            </div>
-            <div className="flex min-w-0 flex-1 flex-col">
-                <span className="text-muted-foreground text-[11px] font-bold tracking-widest uppercase">
-                    {label}
-                </span>
-                <div className="mt-1.5 min-w-0">
-                    {isLoading ? (
-                        <div className="space-y-2">
-                            <Skeleton className="h-5 w-3/4" />
-                            {subValue && <Skeleton className="h-3 w-1/2" />}
-                        </div>
-                    ) : (
-                        <>
-                            <span className="text-lg leading-tight font-bold break-words">
-                                {value}
-                            </span>
-                            {subValue && (
-                                <div className="text-muted-foreground mt-0.5 text-xs">
-                                    {subValue}
-                                </div>
-                            )}
-                        </>
-                    )}
-                </div>
-            </div>
-        </div>
-    );
 
     return (
         <div className="mx-auto max-w-6xl space-y-8 p-4 pb-20 md:p-8">

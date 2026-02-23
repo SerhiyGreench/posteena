@@ -19,7 +19,7 @@ interface FeatureCardProps {
     underConstructionLabel: string;
 }
 
-export function FeatureCard({
+export default function FeatureCard({
     name,
     description,
     icon,

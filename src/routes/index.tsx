@@ -2,7 +2,7 @@ import { type ReactElement } from 'react';
 import { createFileRoute } from '@tanstack/react-router';
 import { BookOpen, Fingerprint, Key, NotebookPen, Share2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { FeatureCard } from '@/components/Home/FeatureCard';
+import FeatureCard from '@/components/Home/FeatureCard';
 import { Messages } from '@/constants/Messages';
 import { Routes } from '@/constants/Routes';
 
