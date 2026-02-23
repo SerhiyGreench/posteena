@@ -105,8 +105,9 @@ export default function Header({ scrolled }: HeaderProps): ReactElement {
     return (
         <header
             className={cn(
-                'bg-background/95 supports-backdrop-filter:bg-background/60 sticky top-0 z-100 w-full backdrop-blur transition-all duration-200',
-                scrolled && 'border-b',
+                'supports-backdrop-filter:bg-background/60 sticky top-0 z-100 w-full backdrop-blur transition-all duration-200',
+                open ? 'bg-background/70 backdrop-blur-xl' : 'bg-background/95',
+                scrolled && !open && 'border-b',
             )}
         >
             <div className="flex h-18 items-center justify-between gap-5 px-4 py-5">
