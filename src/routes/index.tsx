@@ -1,6 +1,6 @@
 import { type ReactElement } from 'react';
 import { createFileRoute } from '@tanstack/react-router';
-import { BookOpen, Key, NotebookPen, Share2 } from 'lucide-react';
+import { BookOpen, Fingerprint, Key, NotebookPen, Share2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { FeatureCard } from '@/components/Home/FeatureCard';
 import { Messages } from '@/constants/Messages';
@@ -37,6 +37,13 @@ function App(): ReactElement {
             description: t('features.knowledgeCollections.description'),
             icon: <BookOpen className="size-6" />,
             isUnderConstruction: true,
+        },
+        {
+            name: t('features.digitalFootprint.name'),
+            description: t('features.digitalFootprint.description'),
+            icon: <Fingerprint className="size-6" />,
+            to: Routes.DigitalFootprint,
+            isUnderConstruction: false,
         },
     ];
 

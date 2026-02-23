@@ -1,6 +1,6 @@
 import { type PropsWithChildren, type ReactElement } from 'react';
 import { Toggle } from 'ui/toggle';
-import { Tooltip, TooltipContent, TooltipTrigger } from 'ui/tooltip';
+import { SimpleTooltip } from '@/components/SimpleTooltip';
 
 export interface MenuButtonProps {
     onClick: () => void;
@@ -16,22 +16,17 @@ const MenuButton = ({
     tooltip,
     children,
 }: PropsWithChildren<MenuButtonProps>): ReactElement => (
-    <Tooltip>
-        <TooltipTrigger
-            render={
-                <Toggle
-                    size="sm"
-                    pressed={isActive}
-                    onPressedChange={onClick}
-                    disabled={disabled}
-                    className="size-8 p-0"
-                />
-            }
+    <SimpleTooltip content={tooltip}>
+        <Toggle
+            size="sm"
+            pressed={isActive}
+            onPressedChange={onClick}
+            disabled={disabled}
+            className="size-8 p-0"
         >
             {children}
-        </TooltipTrigger>
-        <TooltipContent>{tooltip}</TooltipContent>
-    </Tooltip>
+        </Toggle>
+    </SimpleTooltip>
 );
 
 export default MenuButton;

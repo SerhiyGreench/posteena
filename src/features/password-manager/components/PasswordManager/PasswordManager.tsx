@@ -3,6 +3,7 @@ import { useForm } from '@tanstack/react-form';
 import {
     Calendar,
     Key,
+    LayoutGrid,
     Loader2,
     Lock,
     LogOut,
@@ -10,6 +11,7 @@ import {
     Search,
     ShieldCheck,
     SortAsc,
+    Table as TableIcon,
     Trash,
     User,
 } from 'lucide-react';
@@ -17,6 +19,7 @@ import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
 import { Button } from 'ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from 'ui/card';
+import { Field, FieldContent, FieldError, FieldLabel } from 'ui/field';
 import { Input } from 'ui/input';
 import { Item, ItemContent, ItemDescription, ItemTitle } from 'ui/item';
 import {
@@ -27,10 +30,12 @@ import {
     SelectValue,
 } from 'ui/select';
 import { Skeleton } from 'ui/skeleton';
+import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group';
 import { usePasswordManager } from '../../hooks/usePasswordManager';
 import type { PasswordGroup, PasswordItem } from '../../types';
 import ItemForm from './ItemForm';
 import PasswordCard from './PasswordCard';
+import PasswordTable from './PasswordTable';
 
 const groupSchema = (
     t: (key: string) => string,
@@ -62,7 +67,14 @@ export default function PasswordManager(): ReactElement {
         loadGroup,
     } = usePasswordManager();
 
-    const [selectedGroupId, setSelectedGroupId] = useState<string | null>(null);
+    const [selectedGroupId, setSelectedGroupId] = useState<string | null>(
+        () => {
+            if (typeof window !== 'undefined') {
+                return localStorage.getItem('posteena_last_password_group_id');
+            }
+            return null;
+        },
+    );
     const [currentGroup, setCurrentGroup] = useState<PasswordGroup | null>(
         null,
     );
@@ -72,6 +84,17 @@ export default function PasswordManager(): ReactElement {
     const [sortBy, setSortBy] = useState<'name' | 'email' | 'username' | null>(
         'name',
     );
+    const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+    const [viewMode, setViewMode] = useState<'table' | 'cards'>(() => {
+        if (typeof window !== 'undefined') {
+            return (
+                (localStorage.getItem('posteena_password_manager_view_mode') as
+                    | 'table'
+                    | 'cards') || 'cards'
+            );
+        }
+        return 'cards';
+    });
 
     const groupForm = useForm({
         defaultValues: {
@@ -90,11 +113,33 @@ export default function PasswordManager(): ReactElement {
     });
 
     useEffect(() => {
-        setIsAddingItem(false);
-        setEditingItem(null);
+        if (selectedGroupId) {
+            localStorage.setItem(
+                'posteena_last_password_group_id',
+                selectedGroupId,
+            );
+        }
     }, [selectedGroupId]);
 
     useEffect(() => {
+        localStorage.setItem('posteena_password_manager_view_mode', viewMode);
+    }, [viewMode]);
+
+    useEffect(() => {
+        if (!selectedGroupId && groups.length > 0) {
+            const savedGroupId = localStorage.getItem(
+                'posteena_last_password_group_id',
+            );
+            if (savedGroupId && groups.some(g => g.id === savedGroupId)) {
+                setSelectedGroupId(savedGroupId);
+            }
+        }
+    }, [groups, selectedGroupId]);
+
+    useEffect(() => {
+        setIsAddingItem(false);
+        setEditingItem(null);
+
         if (selectedGroupId && encryptionKey) {
             const meta = groups.find(g => g.id === selectedGroupId);
             if (meta) {
@@ -141,25 +186,27 @@ export default function PasswordManager(): ReactElement {
                                 disabled={loading}
                             >
                                 {loading ? (
-                                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                                    <Loader2 className="h-5 w-5 animate-spin" />
                                 ) : (
-                                    <svg
-                                        className="mr-2 h-5 w-5"
-                                        aria-hidden="true"
-                                        focusable="false"
-                                        data-prefix="fab"
-                                        data-icon="google"
-                                        role="img"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        viewBox="0 0 488 512"
-                                    >
-                                        <path
-                                            fill="currentColor"
-                                            d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z"
-                                        ></path>
-                                    </svg>
+                                    <>
+                                        <svg
+                                            className="mr-2 h-5 w-5"
+                                            aria-hidden="true"
+                                            focusable="false"
+                                            data-prefix="fab"
+                                            data-icon="google"
+                                            role="img"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            viewBox="0 0 488 512"
+                                        >
+                                            <path
+                                                fill="currentColor"
+                                                d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z"
+                                            ></path>
+                                        </svg>
+                                        {t('loginWithGoogle')}
+                                    </>
                                 )}
-                                {t('loginWithGoogle')}
                             </Button>
                         </div>
                     </CardContent>
@@ -170,41 +217,8 @@ export default function PasswordManager(): ReactElement {
 
     if (!encryptionKey && loading) {
         return (
-            <div className="w-full space-y-6 p-4">
-                <div className="flex items-center justify-between">
-                    <Skeleton className="h-8 w-48" />
-                    <Skeleton className="h-9 w-24" />
-                </div>
-                <div className="flex flex-col gap-6 md:flex-row">
-                    <Card className="w-full shrink-0 md:w-80">
-                        <CardHeader>
-                            <Skeleton className="h-6 w-24" />
-                        </CardHeader>
-                        <CardContent className="space-y-4">
-                            <div className="flex gap-2">
-                                <Skeleton className="h-9 flex-1" />
-                                <Skeleton className="h-9 w-9" />
-                            </div>
-                            <div className="space-y-2">
-                                <Skeleton className="h-10 w-full" />
-                                <Skeleton className="h-10 w-full" />
-                                <Skeleton className="h-10 w-full" />
-                            </div>
-                        </CardContent>
-                    </Card>
-                    <Card className="flex-1">
-                        <CardHeader className="flex flex-row items-center justify-between">
-                            <Skeleton className="h-6 w-32" />
-                            <Skeleton className="h-9 w-9" />
-                        </CardHeader>
-                        <CardContent className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
-                            <Skeleton className="h-50 w-full" />
-                            <Skeleton className="h-50 w-full" />
-                            <Skeleton className="h-50 w-full" />
-                            <Skeleton className="h-50 w-full" />
-                        </CardContent>
-                    </Card>
-                </div>
+            <div className="flex h-screen w-full items-center justify-center p-4">
+                <Loader2 className="text-primary h-12 w-12 animate-spin" />
             </div>
         );
     }
@@ -272,6 +286,15 @@ export default function PasswordManager(): ReactElement {
         }
     };
 
+    const handleSort = (field: 'name' | 'email' | 'username'): void => {
+        if (sortBy === field) {
+            setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+        } else {
+            setSortBy(field);
+            setSortOrder('asc');
+        }
+    };
+
     const filteredAndSortedItems =
         currentGroup?.items
             .filter(item => {
@@ -283,25 +306,23 @@ export default function PasswordManager(): ReactElement {
                 );
             })
             .sort((a, b) => {
-                if (sortBy === 'name') {
-                    return a.name.localeCompare(b.name);
+                if (!sortBy) {
+                    return 0;
                 }
 
-                if (sortBy === 'email') {
-                    return a.email.localeCompare(b.email);
-                }
-
-                if (sortBy === 'username') {
-                    return a.username.localeCompare(b.username);
-                }
-
-                return 0;
+                const comparison = a[sortBy].localeCompare(b[sortBy]);
+                return sortOrder === 'asc' ? comparison : -comparison;
             }) || [];
 
     return (
         <div className="w-full space-y-6 p-4">
             <div className="flex items-center justify-between">
-                <h1 className="text-2xl font-bold">{t('passwordManager')}</h1>
+                <div className="flex items-center gap-3 md:gap-4">
+                    <Key className="text-primary size-8 shrink-0" />
+                    <h1 className="text-2xl font-bold tracking-tight md:text-3xl lg:text-4xl">
+                        {t('passwordManager')}
+                    </h1>
+                </div>
                 <Button variant="ghost" onClick={logout}>
                     <LogOut className="mr-2 h-4 w-4" />
                     {t('logout')}
@@ -339,25 +360,41 @@ export default function PasswordManager(): ReactElement {
                                 }}
                             >
                                 {field => (
-                                    <div className="flex-1">
-                                        <Input
-                                            key={`group-name-${t('groupName')}`}
-                                            value={field.state.value}
-                                            onBlur={field.handleBlur}
-                                            onChange={e =>
-                                                field.handleChange(
-                                                    e.target.value,
-                                                )
-                                            }
-                                            placeholder={t('groupName')}
-                                            className={
-                                                field.state.meta.errors.length >
-                                                0
-                                                    ? 'border-destructive'
-                                                    : ''
-                                            }
-                                        />
-                                    </div>
+                                    <Field className="flex-1">
+                                        <FieldLabel
+                                            htmlFor={field.name}
+                                            className="sr-only"
+                                        >
+                                            {t('groupName')}
+                                        </FieldLabel>
+                                        <FieldContent>
+                                            <Input
+                                                id={field.name}
+                                                key={`group-name-${t('groupName')}`}
+                                                value={field.state.value}
+                                                onBlur={field.handleBlur}
+                                                onChange={e =>
+                                                    field.handleChange(
+                                                        e.target.value,
+                                                    )
+                                                }
+                                                placeholder={t('groupName')}
+                                                className={
+                                                    field.state.meta.errors
+                                                        .length > 0
+                                                        ? 'border-destructive'
+                                                        : ''
+                                                }
+                                            />
+                                            <FieldError
+                                                errors={field.state.meta.errors.map(
+                                                    e => ({
+                                                        message: String(e),
+                                                    }),
+                                                )}
+                                            />
+                                        </FieldContent>
+                                    </Field>
                                 )}
                             </groupForm.Field>
                             <Button
@@ -499,15 +536,16 @@ export default function PasswordManager(): ReactElement {
                             <Select
                                 key={`sort-${t('sortBy')}`}
                                 value={sortBy ?? ''}
-                                onValueChange={value =>
+                                onValueChange={value => {
                                     setSortBy(
                                         value as
                                             | 'name'
                                             | 'email'
                                             | 'username'
                                             | null,
-                                    )
-                                }
+                                    );
+                                    setSortOrder('asc');
+                                }}
                             >
                                 <SelectTrigger className="w-full md:w-40">
                                     <SelectValue placeholder={t('sortBy')}>
@@ -533,17 +571,39 @@ export default function PasswordManager(): ReactElement {
                                     </SelectItem>
                                 </SelectContent>
                             </Select>
+                            <ToggleGroup
+                                value={[viewMode]}
+                                onValueChange={values => {
+                                    const next =
+                                        (values?.[0] as
+                                            | 'table'
+                                            | 'cards'
+                                            | undefined) ?? 'cards';
+                                    setViewMode(next);
+                                }}
+                                className="bg-muted/50 rounded-lg p-1"
+                            >
+                                <ToggleGroupItem
+                                    value="table"
+                                    title={t('tableView')}
+                                >
+                                    <TableIcon className="h-4 w-4" />
+                                </ToggleGroupItem>
+                                <ToggleGroupItem
+                                    value="cards"
+                                    title={t('cardView')}
+                                >
+                                    <LayoutGrid className="h-4 w-4" />
+                                </ToggleGroupItem>
+                            </ToggleGroup>
                         </div>
                     )}
                     <CardContent className="relative flex min-h-50 flex-col">
                         {isLoadingGroupItems &&
                             !isAddingItem &&
                             !editingItem && (
-                                <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
-                                    <Skeleton className="h-50 w-full" />
-                                    <Skeleton className="h-50 w-full" />
-                                    <Skeleton className="hidden h-50 w-full lg:flex" />
-                                    <Skeleton className="hidden h-50 w-full lg:flex" />
+                                <div className="flex flex-1 items-center justify-center py-12">
+                                    <Loader2 className="text-primary h-10 w-10 animate-spin" />
                                 </div>
                             )}
                         {isAddingItem && (
@@ -555,111 +615,134 @@ export default function PasswordManager(): ReactElement {
                             </div>
                         )}
 
-                        <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
-                            {!isLoadingGroupItems &&
-                                filteredAndSortedItems.map(item => (
-                                    <div
-                                        key={item.id}
-                                        className={
-                                            editingItem?.id === item.id
-                                                ? 'col-span-1 lg:col-span-2'
-                                                : ''
-                                        }
-                                    >
-                                        {editingItem?.id === item.id ? (
-                                            <ItemForm
-                                                item={editingItem}
-                                                onSave={updatedFields =>
-                                                    void handleUpdateItem({
-                                                        ...updatedFields,
-                                                        id: item.id,
-                                                    })
-                                                }
-                                                onCancel={() =>
-                                                    setEditingItem(null)
-                                                }
-                                            />
-                                        ) : (
-                                            <PasswordCard
-                                                item={item}
-                                                onEdit={() =>
-                                                    setEditingItem(item)
-                                                }
-                                                onDelete={() =>
-                                                    void handleDeleteItem(
-                                                        item.id,
-                                                    )
-                                                }
-                                            />
-                                        )}
-                                    </div>
-                                ))}
+                        {editingItem && viewMode === 'table' && (
+                            <div className="mb-6">
+                                <ItemForm
+                                    item={editingItem}
+                                    onSave={updatedFields =>
+                                        handleUpdateItem({
+                                            ...updatedFields,
+                                            id: editingItem.id,
+                                        })
+                                    }
+                                    onCancel={() => setEditingItem(null)}
+                                />
+                            </div>
+                        )}
 
-                            {!isLoadingGroupItems &&
-                                currentGroup &&
-                                currentGroup.items.length > 0 &&
-                                filteredAndSortedItems.length === 0 && (
-                                    <div className="col-span-1 flex flex-col items-center justify-center py-12 text-center lg:col-span-2">
-                                        <Search className="text-muted-foreground mb-4 h-12 w-12 opacity-20" />
-                                        <h3 className="text-xl font-semibold">
-                                            {t('noResults')}
-                                        </h3>
-                                        <p className="text-muted-foreground mt-2 max-w-xs text-sm">
-                                            {t('tryDifferent').replace(
-                                                '{{searchTerm}}',
-                                                searchTerm,
-                                            )}
-                                        </p>
-                                        <Button
-                                            variant="ghost"
-                                            className="mt-4"
-                                            onClick={() => setSearchTerm('')}
-                                        >
-                                            {t('clearSearch')}
-                                        </Button>
-                                    </div>
-                                )}
+                        {!isLoadingGroupItems &&
+                            viewMode === 'table' &&
+                            filteredAndSortedItems.length > 0 && (
+                                <PasswordTable
+                                    items={filteredAndSortedItems}
+                                    sortBy={sortBy}
+                                    sortOrder={sortOrder}
+                                    onSort={handleSort}
+                                    onEdit={setEditingItem}
+                                    onDelete={itemId =>
+                                        void handleDeleteItem(itemId)
+                                    }
+                                />
+                            )}
 
-                            {!isLoadingGroupItems &&
-                                currentGroup &&
-                                currentGroup.items.length === 0 &&
-                                !isAddingItem && (
-                                    <div className="col-span-1 flex flex-col items-center justify-center py-12 text-center lg:col-span-2">
-                                        <div className="bg-muted mb-4 flex h-20 w-20 items-center justify-center rounded-full">
-                                            <ShieldCheck className="h-10 w-10" />
-                                        </div>
-                                        <h3 className="text-xl font-semibold">
-                                            {t('noPasswords')}
-                                        </h3>
-                                        <p className="text-muted-foreground mt-2 max-w-xs text-sm">
-                                            {t('addFirstPassword')}
-                                        </p>
-                                        <Button
-                                            variant="outline"
-                                            className="mt-6 border-dashed"
-                                            onClick={() =>
-                                                setIsAddingItem(true)
+                        {viewMode === 'cards' && (
+                            <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
+                                {!isLoadingGroupItems &&
+                                    filteredAndSortedItems.map(item => (
+                                        <div
+                                            key={item.id}
+                                            className={
+                                                editingItem?.id === item.id
+                                                    ? 'col-span-1 lg:col-span-2'
+                                                    : ''
                                             }
                                         >
-                                            <Plus className="mr-2 h-4 w-4" />
-                                            {t('addItem')}
-                                        </Button>
-                                    </div>
-                                )}
-
-                            {!currentGroup &&
-                                !loading &&
-                                !isLoadingGroupItems && (
-                                    <div className="text-muted-foreground col-span-1 py-12 pb-28 text-center md:col-span-2">
-                                        <div className="mb-4 flex justify-center">
-                                            <Lock className="h-12 w-12 opacity-10" />
+                                            {editingItem?.id === item.id ? (
+                                                <ItemForm
+                                                    item={editingItem}
+                                                    onSave={updatedFields =>
+                                                        handleUpdateItem({
+                                                            ...updatedFields,
+                                                            id: item.id,
+                                                        })
+                                                    }
+                                                    onCancel={() =>
+                                                        setEditingItem(null)
+                                                    }
+                                                />
+                                            ) : (
+                                                <PasswordCard
+                                                    item={item}
+                                                    onEdit={() =>
+                                                        setEditingItem(item)
+                                                    }
+                                                    onDelete={() =>
+                                                        void handleDeleteItem(
+                                                            item.id,
+                                                        )
+                                                    }
+                                                />
+                                            )}
                                         </div>
-                                        <p className="text-lg">
-                                            {t('selectGroup')}
-                                        </p>
+                                    ))}
+                            </div>
+                        )}
+
+                        {!isLoadingGroupItems &&
+                            currentGroup &&
+                            currentGroup.items.length > 0 &&
+                            filteredAndSortedItems.length === 0 && (
+                                <div className="col-span-1 flex flex-col items-center justify-center py-12 text-center lg:col-span-2">
+                                    <Search className="text-muted-foreground mb-4 h-12 w-12 opacity-20" />
+                                    <h3 className="text-xl font-semibold">
+                                        {t('noResults')}
+                                    </h3>
+                                    <p className="text-muted-foreground mt-2 max-w-xs text-sm">
+                                        {t('tryDifferent')}
+                                    </p>
+                                    <Button
+                                        variant="ghost"
+                                        className="mt-4"
+                                        onClick={() => setSearchTerm('')}
+                                    >
+                                        {t('clearSearch')}
+                                    </Button>
+                                </div>
+                            )}
+
+                        {!isLoadingGroupItems &&
+                            currentGroup &&
+                            currentGroup.items.length === 0 &&
+                            !isAddingItem && (
+                                <div className="col-span-1 flex flex-col items-center justify-center py-12 text-center lg:col-span-2">
+                                    <div className="bg-muted mb-4 flex h-20 w-20 items-center justify-center rounded-full">
+                                        <ShieldCheck className="h-10 w-10" />
                                     </div>
-                                )}
-                        </div>
+                                    <h3 className="text-xl font-semibold">
+                                        {t('noPasswords')}
+                                    </h3>
+                                    <p className="text-muted-foreground mt-2 max-w-xs text-sm">
+                                        {t('addFirstPassword')}
+                                    </p>
+                                    <Button
+                                        variant="outline"
+                                        className="mt-6 border-dashed"
+                                        onClick={() => setIsAddingItem(true)}
+                                    >
+                                        <Plus className="mr-2 h-4 w-4" />
+                                        {t('addItem')}
+                                    </Button>
+                                </div>
+                            )}
+
+                        {!currentGroup && !loading && !isLoadingGroupItems && (
+                            <div className="text-muted-foreground col-span-1 py-12 pb-28 text-center md:col-span-2">
+                                <div className="mb-4 flex justify-center">
+                                    <Lock className="h-12 w-12 opacity-10" />
+                                </div>
+                                <p className="text-lg">{t('selectGroup')}</p>
+                            </div>
+                        )}
                     </CardContent>
                 </Card>
             </div>

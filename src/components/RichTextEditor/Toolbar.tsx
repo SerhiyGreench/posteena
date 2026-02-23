@@ -31,7 +31,7 @@ import { useTranslation } from 'react-i18next';
 import { Button } from 'ui/button';
 import { Input } from 'ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from 'ui/popover';
-import { Tooltip, TooltipContent, TooltipTrigger } from 'ui/tooltip';
+import { SimpleTooltip } from '@/components/SimpleTooltip';
 import MenuButton from './MenuButton';
 
 export interface ToolbarProps {
@@ -295,23 +295,13 @@ const Toolbar = ({ editor }: ToolbarProps): ReactElement | null => {
 
             <div className="flex items-center gap-1">
                 <Popover>
-                    <Tooltip>
-                        <TooltipTrigger
-                            render={
-                                <PopoverTrigger
-                                    render={
-                                        <Button
-                                            variant="ghost"
-                                            size="icon-sm"
-                                        />
-                                    }
-                                />
-                            }
+                    <SimpleTooltip content={t('insertLink')}>
+                        <PopoverTrigger
+                            render={<Button variant="ghost" size="icon-sm" />}
                         >
                             <LinkIcon className="size-4" />
-                        </TooltipTrigger>
-                        <TooltipContent>{t('insertLink')}</TooltipContent>
-                    </Tooltip>
+                        </PopoverTrigger>
+                    </SimpleTooltip>
                     <PopoverContent className="w-80">
                         <div className="flex gap-2">
                             <Input
@@ -327,23 +317,13 @@ const Toolbar = ({ editor }: ToolbarProps): ReactElement | null => {
                 </Popover>
 
                 <Popover>
-                    <Tooltip>
-                        <TooltipTrigger
-                            render={
-                                <PopoverTrigger
-                                    render={
-                                        <Button
-                                            variant="ghost"
-                                            size="icon-sm"
-                                        />
-                                    }
-                                />
-                            }
+                    <SimpleTooltip content={t('insertImage')}>
+                        <PopoverTrigger
+                            render={<Button variant="ghost" size="icon-sm" />}
                         >
                             <ImageIcon className="size-4" />
-                        </TooltipTrigger>
-                        <TooltipContent>{t('insertImage')}</TooltipContent>
-                    </Tooltip>
+                        </PopoverTrigger>
+                    </SimpleTooltip>
                     <PopoverContent className="w-80">
                         <div className="flex gap-2">
                             <Input
@@ -359,23 +339,13 @@ const Toolbar = ({ editor }: ToolbarProps): ReactElement | null => {
                 </Popover>
 
                 <Popover>
-                    <Tooltip>
-                        <TooltipTrigger
-                            render={
-                                <PopoverTrigger
-                                    render={
-                                        <Button
-                                            variant="ghost"
-                                            size="icon-sm"
-                                        />
-                                    }
-                                />
-                            }
+                    <SimpleTooltip content={t('insertYoutube')}>
+                        <PopoverTrigger
+                            render={<Button variant="ghost" size="icon-sm" />}
                         >
                             <Video className="size-4" />
-                        </TooltipTrigger>
-                        <TooltipContent>{t('insertYoutube')}</TooltipContent>
-                    </Tooltip>
+                        </PopoverTrigger>
+                    </SimpleTooltip>
                     <PopoverContent className="w-80">
                         <div className="flex gap-2">
                             <Input
@@ -390,29 +360,20 @@ const Toolbar = ({ editor }: ToolbarProps): ReactElement | null => {
                     </PopoverContent>
                 </Popover>
 
-                <Tooltip>
-                    <TooltipTrigger
-                        render={
-                            <label className="hover:bg-muted flex size-7 cursor-pointer items-center justify-center rounded-lg">
-                                <FileUp className="size-4" />
-                                <input
-                                    type="file"
-                                    className="hidden"
-                                    onChange={onFileChange}
-                                    accept="image/*,video/*,.pdf,.doc,.docx"
-                                />
-                                <span className="sr-only">
-                                    {t('uploadFile')}
-                                </span>
-                            </label>
-                        }
-                    >
-                        {t('uploadFile')}
-                    </TooltipTrigger>
-                    <TooltipContent>
-                        {t('uploadFile')} ({t('maxFileSize')})
-                    </TooltipContent>
-                </Tooltip>
+                <SimpleTooltip
+                    content={`${t('uploadFile')} (${t('maxFileSize')})`}
+                >
+                    <label className="hover:bg-muted flex size-7 cursor-pointer items-center justify-center rounded-lg">
+                        <FileUp className="size-4" />
+                        <input
+                            type="file"
+                            className="hidden"
+                            onChange={onFileChange}
+                            accept="image/*,video/*,.pdf,.doc,.docx"
+                        />
+                        <span className="sr-only">{t('uploadFile')}</span>
+                    </label>
+                </SimpleTooltip>
 
                 <MenuButton
                     onClick={() =>

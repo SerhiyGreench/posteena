@@ -3,6 +3,8 @@ import { Copy, Edit, Eye, EyeOff, Trash } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Button } from 'ui/button';
 import { Card, CardContent } from 'ui/card';
+import { Tooltip, TooltipContent, TooltipTrigger } from 'ui/tooltip';
+import { FeedbackTooltip } from '@/components/FeedbackTooltip';
 import type { PasswordItem } from '../../types';
 
 export interface PasswordCardProps {
@@ -18,9 +20,12 @@ export default function PasswordCard({
 }: PasswordCardProps): ReactElement {
     const { t } = useTranslation();
     const [showPassword, setShowPassword] = useState(false);
+    const [isCopied, setIsCopied] = useState(false);
 
     const copyToClipboard = (text: string): void => {
         void navigator.clipboard.writeText(text);
+        setIsCopied(true);
+        setTimeout(() => setIsCopied(false), 2000);
     };
 
     return (
@@ -36,30 +41,42 @@ export default function PasswordCard({
                         </div>
                     </div>
                     <div className="z-10 flex shrink-0 gap-1">
-                        <Button
-                            variant="ghost"
-                            size="icon"
-                            className="text-muted-foreground hover:bg-accent hover:text-accent-foreground h-8 w-8"
-                            onClick={e => {
-                                e.stopPropagation();
-                                onEdit();
-                            }}
-                            title={t('editItem')}
-                        >
-                            <Edit className="h-4 w-4" />
-                        </Button>
-                        <Button
-                            variant="ghost"
-                            size="icon"
-                            className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 h-8 w-8"
-                            onClick={e => {
-                                e.stopPropagation();
-                                onDelete();
-                            }}
-                            title={t('deleteItem')}
-                        >
-                            <Trash className="h-4 w-4" />
-                        </Button>
+                        <Tooltip>
+                            <TooltipTrigger
+                                render={
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        className="text-muted-foreground hover:bg-accent hover:text-accent-foreground h-8 w-8"
+                                        onClick={e => {
+                                            e.stopPropagation();
+                                            onEdit();
+                                        }}
+                                    />
+                                }
+                            >
+                                <Edit className="h-4 w-4" />
+                            </TooltipTrigger>
+                            <TooltipContent>{t('editItem')}</TooltipContent>
+                        </Tooltip>
+                        <Tooltip>
+                            <TooltipTrigger
+                                render={
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 h-8 w-8"
+                                        onClick={e => {
+                                            e.stopPropagation();
+                                            onDelete();
+                                        }}
+                                    />
+                                }
+                            >
+                                <Trash className="h-4 w-4" />
+                            </TooltipTrigger>
+                            <TooltipContent>{t('deleteItem')}</TooltipContent>
+                        </Tooltip>
                     </div>
                 </div>
 
@@ -88,17 +105,22 @@ export default function PasswordCard({
                                     <Eye className="h-3.5 w-3.5" />
                                 )}
                             </Button>
-                            <Button
-                                variant="ghost"
-                                size="icon"
-                                className="text-muted-foreground hover:bg-accent hover:text-accent-foreground h-7 w-7"
-                                onClick={e => {
-                                    e.stopPropagation();
-                                    copyToClipboard(item.password);
-                                }}
+                            <FeedbackTooltip
+                                show={isCopied}
+                                message={t('copiedToClipboard')}
                             >
-                                <Copy className="h-3.5 w-3.5" />
-                            </Button>
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="text-muted-foreground hover:bg-accent hover:text-accent-foreground h-7 w-7"
+                                    onClick={e => {
+                                        e.stopPropagation();
+                                        copyToClipboard(item.password);
+                                    }}
+                                >
+                                    <Copy className="h-3.5 w-3.5" />
+                                </Button>
+                            </FeedbackTooltip>
                         </div>
                     </div>
                 </div>

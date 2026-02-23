@@ -187,16 +187,16 @@ export default function Header({ scrolled }: HeaderProps): ReactElement {
                                                 {t('home')}
                                             </MobileLink>
                                             <MobileLink
-                                                to={Routes.CreatePost}
-                                                onOpenChange={setOpen}
-                                            >
-                                                {t(Messages.CreatePost)}
-                                            </MobileLink>
-                                            <MobileLink
                                                 to={Routes.PasswordManager}
                                                 onOpenChange={setOpen}
                                             >
                                                 {t(Messages.PasswordManager)}
+                                            </MobileLink>
+                                            <MobileLink
+                                                to={Routes.DigitalFootprint}
+                                                onOpenChange={setOpen}
+                                            >
+                                                {t('digitalFootprint.title')}
                                             </MobileLink>
                                         </div>
                                     </div>
