@@ -154,6 +154,15 @@ body,
         cursor: pointer;
     }
 
+    .extend-touch-target {
+        @apply relative;
+    }
+
+    .extend-touch-target::after {
+        content: '';
+        @apply absolute -inset-2;
+    }
+
     ::-webkit-scrollbar {
         width: 12px;
     }
