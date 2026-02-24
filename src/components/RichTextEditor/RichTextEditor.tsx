@@ -1,4 +1,4 @@
-import { type ReactElement } from 'react';
+import { type ReactElement, useEffect, useRef } from 'react';
 import Color from '@tiptap/extension-color';
 import FontFamily from '@tiptap/extension-font-family';
 import Highlight from '@tiptap/extension-highlight';
@@ -17,19 +17,29 @@ import Underline from '@tiptap/extension-underline';
 import Youtube from '@tiptap/extension-youtube';
 import { EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
+import { cn } from 'ui/lib/utils';
 import Toolbar from './Toolbar';
 
 interface RichTextEditorProps {
     content?: string;
     onUpdate?: (content: string) => void;
+    editable?: boolean;
 }
 
 const RichTextEditor = ({
     content = '',
     onUpdate,
+    editable = true,
 }: RichTextEditorProps): ReactElement => {
+    const onUpdateRef = useRef(onUpdate);
+
+    useEffect(() => {
+        onUpdateRef.current = onUpdate;
+    }, [onUpdate]);
+
     const editor = useEditor(
         {
+            editable,
             extensions: [
                 StarterKit,
                 Underline,
@@ -64,7 +74,7 @@ const RichTextEditor = ({
             ],
             content,
             onUpdate: ({ editor }) => {
-                onUpdate?.(editor.getHTML());
+                onUpdateRef.current?.(editor.getHTML());
             },
             editorProps: {
                 attributes: {
@@ -73,12 +83,34 @@ const RichTextEditor = ({
             },
             immediatelyRender: false,
         },
-        [content],
+        [],
     );
 
+    useEffect(() => {
+        if (!editor) {
+            return;
+        }
+        editor.setEditable(editable);
+    }, [editable, editor]);
+
+    useEffect(() => {
+        if (!editor || content === editor.getHTML()) {
+            return;
+        }
+
+        editor.commands.setContent(content, { emitUpdate: false });
+    }, [content, editor]);
+
     return (
-        <div className="focus-within:ring-ring flex flex-col overflow-hidden rounded-md border shadow-sm focus-within:ring-1">
-            <Toolbar editor={editor} />
+        <div
+            className={cn(
+                'focus-within:ring-ring flex flex-col overflow-hidden transition-all duration-200',
+                editable
+                    ? 'rounded-md border shadow-sm focus-within:ring-1'
+                    : 'bg-transparent',
+            )}
+        >
+            {editable && <Toolbar editor={editor} />}
             <EditorContent editor={editor} />
         </div>
     );

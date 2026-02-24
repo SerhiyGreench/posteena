@@ -27,6 +27,11 @@ This file tracks common mistakes made during development to avoid repeating them
 - **Dynamic validation messages:** When using Zod or other validation libraries, do not use hardcoded error messages.
     - **Correction:** Pass the `t` function to your schema or use translation keys that can be resolved at runtime.
 
+## Reuse & Extension (Very Strict)
+
+- **Do not reinvent patterns**: Reuse existing architecture and APIs (e.g., Password Manager’s hook + adapter + component layering).
+    - **Correction:** Prefer extracting common parts and extending existing utilities over introducing parallel, incompatible solutions. Create adapters with the same surface where possible.
+
 ## Forms & Components
 
 - **Direct usage of `Label` and error messages in forms:** Avoid using `Label` and manual `<p>` or `<span>` for error messages when building forms.

@@ -76,3 +76,10 @@ To maintain high code quality and consistency, all contributors (including LLMs)
 
 - **Up-to-date Messages:** All localized messages must be kept up to date. English (`en.json`) is the primary source of truth. Whenever `en.json` is changed, all other translation files (e.g., `uk.json`) must be updated accordingly to maintain parity and avoid missing translations in other locales.
 - **Message IDs:** As noted in naming conventions, use `lowerCamelCase` for message IDs.
+
+## 7. Reuse & Extend (Very Strict)
+
+- Prefer reuse over reinvention. New features must follow existing, proven architectural patterns used in the project (e.g., hook + adapter + component layering as in Password Manager).
+- Extract and share common parts (types, utilities, hooks) when overlaps are found instead of building parallel solutions.
+- Adapters for different backends (e.g., Google Drive vs. App Data) should expose a similar API surface to simplify swapping and testing.
+- Do not modify vendor `ui/` components to achieve styling; use higher-level wrappers and `className` props.

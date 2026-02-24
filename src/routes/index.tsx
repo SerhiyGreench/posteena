@@ -30,7 +30,8 @@ function App(): ReactElement {
             name: t('features.notes.name'),
             description: t('features.notes.description'),
             icon: <NotebookPen className="size-6" />,
-            isUnderConstruction: true,
+            to: Routes.Notes,
+            isUnderConstruction: false,
         },
         {
             name: t('features.knowledgeCollections.name'),

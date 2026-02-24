@@ -6,7 +6,6 @@ import {
     LayoutGrid,
     Loader2,
     Lock,
-    LogOut,
     Plus,
     Search,
     ShieldCheck,
@@ -31,6 +30,7 @@ import {
 } from 'ui/select';
 import { Skeleton } from 'ui/skeleton';
 import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group';
+import LoginScreen from '@/components/LoginScreen';
 import { usePasswordManager } from '@/features/password-manager/hooks/usePasswordManager';
 import type {
     PasswordGroup,
@@ -64,7 +64,6 @@ export default function PasswordManager(): ReactElement {
         isLoadingGroupItems,
         encryptionKey,
         login,
-        logout,
         addGroup,
         deleteGroup,
         saveGroup,
@@ -144,64 +143,15 @@ export default function PasswordManager(): ReactElement {
 
     if (!isAuthenticated) {
         return (
-            <div className="flex min-h-[70vh] items-center justify-center p-4">
-                <Card className="w-full max-w-md border-none shadow-lg dark:bg-black/50">
-                    <CardHeader className="space-y-1 text-center">
-                        <div className="mb-4 flex justify-center">
-                            <div className="bg-primary/10 rounded-full p-4">
-                                <Key className="text-primary h-8 w-8" />
-                            </div>
-                        </div>
-                        <CardTitle className="text-3xl font-bold tracking-tight">
-                            {t('passwordManager')}
-                        </CardTitle>
-                    </CardHeader>
-                    <CardContent className="grid gap-6 pt-6">
-                        <div className="flex flex-col gap-4">
-                            <div className="bg-muted/50 flex items-start gap-3 rounded-lg p-3 text-sm">
-                                <ShieldCheck className="text-primary mt-0.5 h-4 w-4 shrink-0" />
-                                <div className="space-y-1">
-                                    <p className="font-medium">
-                                        {t('clientSideEncryption')}
-                                    </p>
-                                    <p className="text-muted-foreground leading-snug">
-                                        {t('clientSideEncryptionDesc')}
-                                    </p>
-                                </div>
-                            </div>
-
-                            <Button
-                                className="h-12 w-full text-lg font-medium transition-all hover:scale-[1.02]"
-                                onClick={login}
-                                disabled={loading}
-                            >
-                                {loading ? (
-                                    <Loader2 className="h-5 w-5 animate-spin" />
-                                ) : (
-                                    <>
-                                        <svg
-                                            className="mr-2 h-5 w-5"
-                                            aria-hidden="true"
-                                            focusable="false"
-                                            data-prefix="fab"
-                                            data-icon="google"
-                                            role="img"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            viewBox="0 0 488 512"
-                                        >
-                                            <path
-                                                fill="currentColor"
-                                                d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z"
-                                            ></path>
-                                        </svg>
-                                        {t('loginWithGoogle')}
-                                    </>
-                                )}
-                            </Button>
-                        </div>
-                    </CardContent>
-                </Card>
-            </div>
+            <LoginScreen
+                title={t('passwordManager')}
+                icon={<Key className="text-primary h-8 w-8" />}
+                onLogin={login}
+                loading={loading}
+                showShield
+                shieldTitle={t('clientSideEncryption')}
+                shieldDescription={t('clientSideEncryptionDesc')}
+            />
         );
     }
 
@@ -313,10 +263,6 @@ export default function PasswordManager(): ReactElement {
                         {t('passwordManager')}
                     </h1>
                 </div>
-                <Button variant="ghost" onClick={logout}>
-                    <LogOut className="mr-2 h-4 w-4" />
-                    {t('logout')}
-                </Button>
             </div>
 
             <div className="flex flex-col items-start gap-6 md:flex-row">
@@ -416,41 +362,55 @@ export default function PasswordManager(): ReactElement {
                                                 ? 'muted'
                                                 : 'default'
                                         }
-                                        className="relative cursor-pointer border-none px-2 py-2"
+                                        className="relative cursor-pointer border-none px-3 py-3"
                                         onClick={() =>
                                             setSelectedGroupId(group.id)
                                         }
                                     >
-                                        <ItemContent>
-                                            <ItemTitle className="text-sm font-medium">
+                                        <ItemContent className="min-w-0">
+                                            <ItemTitle className="block w-full truncate text-base leading-tight font-bold">
                                                 {group.name}
                                             </ItemTitle>
-                                            <ItemDescription className="flex flex-col gap-1 text-xs">
+                                            <ItemDescription className="mt-1 flex flex-col gap-1 text-[13px] leading-snug">
                                                 {group.modifiedTime && (
-                                                    <span className="flex items-center gap-1">
-                                                        <Calendar className="h-3 w-3" />
-                                                        {t('updated')}:{' '}
-                                                        {new Date(
-                                                            group.modifiedTime,
-                                                        ).toLocaleString()}
+                                                    <span className="flex items-center gap-1.5 truncate opacity-70">
+                                                        <Calendar className="h-3 w-3 shrink-0" />
+                                                        <span className="truncate text-[11px] font-medium tracking-wide">
+                                                            {t('updated')}:{' '}
+                                                            {new Date(
+                                                                group.modifiedTime,
+                                                            ).toLocaleString()}
+                                                        </span>
                                                     </span>
                                                 )}
                                                 {group.lastModifyingUser && (
-                                                    <span className="flex items-center gap-1">
-                                                        <User className="h-3 w-3" />
-                                                        {t('lastModifiedBy')}:{' '}
-                                                        {
-                                                            group.lastModifyingUser
-                                                        }
+                                                    <span className="flex items-center gap-1.5 truncate opacity-70">
+                                                        <User className="h-3 w-3 shrink-0" />
+                                                        <span className="truncate text-[11px] font-medium tracking-wide">
+                                                            {t(
+                                                                'lastModifiedBy',
+                                                            )}
+                                                            :{' '}
+                                                            {
+                                                                group.lastModifyingUser
+                                                            }
+                                                        </span>
                                                     </span>
                                                 )}
                                             </ItemDescription>
                                         </ItemContent>
-                                        <div className="absolute top-1 right-1">
+                                        <div className="absolute top-2 right-2 flex items-center gap-1">
+                                            {(isLoadingGroupItems ===
+                                                group.fileId ||
+                                                (loading &&
+                                                    selectedGroupId ===
+                                                        group.id)) && (
+                                                <Loader2 className="text-muted-foreground h-4 w-4 animate-spin" />
+                                            )}
                                             <Button
                                                 variant="ghost"
                                                 size="icon"
-                                                className="text-destructive h-8 w-8 shrink-0"
+                                                className="text-destructive hover:bg-destructive/10 h-8 w-8 shrink-0"
                                                 onClick={e => {
                                                     e.stopPropagation();
                                                     if (
@@ -477,15 +437,6 @@ export default function PasswordManager(): ReactElement {
                                                 <Trash className="h-4 w-4" />
                                             </Button>
                                         </div>
-                                        {(isLoadingGroupItems ===
-                                            group.fileId ||
-                                            (loading &&
-                                                selectedGroupId ===
-                                                    group.id)) && (
-                                            <div className="absolute right-3.25 bottom-2">
-                                                <Loader2 className="text-muted-foreground h-4 w-4 animate-spin" />
-                                            </div>
-                                        )}
                                     </Item>
                                 ))}
                             </div>

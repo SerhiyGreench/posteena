@@ -151,17 +151,27 @@ export class GoogleDriveAdapter implements StorageAdapter {
     }
 
     isAuthenticated(): boolean {
+        // Always check storage for reactivity to external logout
+        const stored = Storage.get<StoredSession | null>(
+            GDRIVE_TOKEN_KEY,
+            null,
+        );
+
+        if (!stored) {
+            this.accessToken = null;
+            this.expiresAt = null;
+            return false;
+        }
+
         // Return true if we have a token that's not expired
         if (this.accessToken && this.expiresAt && Date.now() < this.expiresAt) {
             return true;
         }
 
-        // Check if we have a token in storage
-        const stored = Storage.get<StoredSession | null>(
-            GDRIVE_TOKEN_KEY,
-            null,
-        );
-        return stored !== null;
+        // Sync local state if storage has it
+        this.accessToken = stored.accessToken;
+        this.expiresAt = stored.expiresAt;
+        return true;
     }
 
     private async checkAndRefreshToken(): Promise<void> {

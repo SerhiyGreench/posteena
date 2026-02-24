@@ -7,6 +7,7 @@ import type {
     StorageAdapter,
 } from '@/features/password-manager/types';
 import { decrypt, encrypt } from '@/features/password-manager/utils/crypto';
+import { Storage } from '@/lib/Storage';
 
 export function usePasswordManager(): {
     isAuthenticated: boolean;
@@ -45,6 +46,19 @@ export function usePasswordManager(): {
             setEncryptionKey(userId);
         }
     }, [adapter]);
+
+    // Subscribe to Storage changes to handle logout immediately
+    useEffect(() => {
+        const unsub = Storage.subscribe(() => {
+            const hasStoredSession = adapter.isAuthenticated();
+            if (!hasStoredSession && isAuthenticated) {
+                setIsAuthenticated(false);
+                setGroups([]);
+                setEncryptionKey(null);
+            }
+        });
+        return unsub;
+    }, [adapter, isAuthenticated]);
 
     useEffect(() => {
         const checkAuth = async (): Promise<void> => {

@@ -8,6 +8,7 @@ import {
     Bold,
     CheckSquare,
     Code,
+    CodeXml,
     FileUp,
     Heading1,
     Heading2,
@@ -110,7 +111,7 @@ const Toolbar = ({ editor }: ToolbarProps): ReactElement | null => {
     };
 
     return (
-        <div className="bg-muted/50 flex flex-wrap items-center gap-1 border-b p-1">
+        <div className="supports-backdrop-filter:bg-muted/40 bg-muted/50 sticky top-0 z-10 flex flex-wrap items-center gap-1 border-b p-1 backdrop-blur-sm">
             <div className="mr-1 flex items-center gap-1 border-r pr-1">
                 <MenuButton
                     onClick={() => editor.chain().focus().undo().run()}
@@ -195,6 +196,15 @@ const Toolbar = ({ editor }: ToolbarProps): ReactElement | null => {
                     tooltip={t('code')}
                 >
                     <Code className="size-4" />
+                </MenuButton>
+                <MenuButton
+                    onClick={() =>
+                        editor.chain().focus().toggleCodeBlock().run()
+                    }
+                    isActive={editor.isActive('codeBlock')}
+                    tooltip={t('codeBlock')}
+                >
+                    <CodeXml className="size-4" />
                 </MenuButton>
                 <MenuButton
                     onClick={() =>

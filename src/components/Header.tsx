@@ -1,29 +1,39 @@
 import { type ReactElement, useState } from 'react';
 import { Link } from '@tanstack/react-router';
-import { Languages, Moon, Sun } from 'lucide-react';
+import { Languages, LogOut, Moon, Sun, User as UserIcon } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { useTranslation } from 'react-i18next';
+import { Avatar, AvatarFallback, AvatarImage } from 'ui/avatar';
 import { Button } from 'ui/button';
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuRadioGroup,
-    DropdownMenuRadioItem,
-    DropdownMenuTrigger,
-} from 'ui/dropdown-menu';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuTrigger } from 'ui/dropdown-menu';
 import { cn } from 'ui/lib/utils';
-import {
-    Sheet,
-    SheetContent,
-    SheetDescription,
-    SheetHeader,
-    SheetTitle,
-} from 'ui/sheet';
+import { Popover, PopoverContent, PopoverTrigger } from 'ui/popover';
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from 'ui/sheet';
 import MobileLink from '@/components/MobileLink';
 import { Messages } from '@/constants/Messages';
 import { Routes } from '@/constants/Routes';
 import { Themes } from '@/constants/Themes';
 import { Translations } from '@/constants/Translations';
+import { useAuth } from '@/hooks/useAuth';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 type Language = keyof typeof Translations;
 
@@ -37,6 +47,25 @@ export default function Header({ scrolled }: HeaderProps): ReactElement {
     const { theme, setTheme } = useTheme();
     const { t, i18n } = useTranslation();
     const [open, setOpen] = useState(false);
+    const { isAuthenticated, user, logout } = useAuth();
+
+    const renderGoogleIcon = (className?: string): ReactElement => (
+        <svg
+            className={className}
+            aria-hidden="true"
+            focusable="false"
+            data-prefix="fab"
+            data-icon="google"
+            role="img"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 488 512"
+        >
+            <path
+                fill="currentColor"
+                d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z"
+            ></path>
+        </svg>
+    );
 
     const changeLanguage = (lang: Language): void => {
         void i18n.changeLanguage(lang);
@@ -105,7 +134,7 @@ export default function Header({ scrolled }: HeaderProps): ReactElement {
     return (
         <header
             className={cn(
-                'supports-backdrop-filter:bg-background/60 sticky top-0 z-100 w-full backdrop-blur transition-all duration-200',
+                'supports-backdrop-filter:bg-background/60 sticky top-0 z-51 w-full backdrop-blur transition-all duration-200',
                 open ? 'bg-background/70 backdrop-blur-xl' : 'bg-background/95',
                 scrolled && !open && 'border-b',
             )}
@@ -119,6 +148,77 @@ export default function Header({ scrolled }: HeaderProps): ReactElement {
                 </Link>
 
                 <div className="flex items-center gap-5">
+                    {isAuthenticated && user && !open && (
+                        <Popover>
+                            <PopoverTrigger
+                                render={
+                                    <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        className="bg-muted/50 hover:bg-muted h-9 gap-2 rounded-full px-2"
+                                    />
+                                }
+                            >
+                                <div className="flex items-center gap-1.5">
+                                    {user.provider.id === 'google' && (
+                                        <div className="flex items-center justify-center">
+                                            {renderGoogleIcon('size-3.5')}
+                                        </div>
+                                    )}
+                                    <Avatar size="sm">
+                                        {user.picture && (
+                                            <AvatarImage
+                                                src={user.picture}
+                                                alt={user.name}
+                                            />
+                                        )}
+                                        {!user.picture && <AvatarFallback>
+                                            <UserIcon className="size-4" />
+                                        </AvatarFallback> }
+                                    </Avatar>
+                                </div>
+                            </PopoverTrigger>
+                            <PopoverContent
+                                align="end"
+                                className="w-64"
+                                style={{ zIndex: 120 }}
+                            >
+                                <div className="flex flex-col gap-4">
+                                    <div className="flex flex-col gap-1">
+                                        <div className="flex items-center justify-between">
+                                            <div className="text-muted-foreground text-xs font-medium">
+                                                {t('loggedInAs')}
+                                            </div>
+                                            {user.provider.id === 'google' && (
+                                                <div className="bg-muted/50 flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold tracking-wider uppercase">
+                                                    {renderGoogleIcon(
+                                                        'size-2.5',
+                                                    )}
+                                                    {user.provider.name}
+                                                </div>
+                                            )}
+                                        </div>
+                                        <div className="truncate text-sm font-bold">
+                                            {user.name}
+                                        </div>
+                                        <div className="text-muted-foreground truncate text-xs">
+                                            {user.email}
+                                        </div>
+                                    </div>
+                                    <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        className="text-destructive w-fit justify-start gap-2 hover:bg-transparent"
+                                        onClick={() => void logout()}
+                                    >
+                                        <LogOut className="size-4" />
+                                        {t('logout')}
+                                    </Button>
+                                </div>
+                            </PopoverContent>
+                        </Popover>
+                    )}
+
                     <div className="hidden items-center gap-2.5 sm:flex">
                         {renderLanguageSwitcher('start')}
                         {renderThemeSwitcher('end')}
@@ -126,7 +226,7 @@ export default function Header({ scrolled }: HeaderProps): ReactElement {
 
                     <div className="flex items-center">
                         <Sheet open={open} onOpenChange={setOpen}>
-                            <div className="relative z-60">
+                            <div className="relative">
                                 <Button
                                     variant="ghost"
                                     onClick={() => {
@@ -165,7 +265,7 @@ export default function Header({ scrolled }: HeaderProps): ReactElement {
                             <SheetContent
                                 side="bottom"
                                 showCloseButton={false}
-                                className="bg-background/70 no-scrollbar fixed inset-0 z-50 h-dvh w-screen overflow-y-auto rounded-none border-none p-0 shadow-none backdrop-blur-xl duration-100 data-open:animate-none!"
+                                className="bg-background/70 no-scrollbar fixed inset-0 h-dvh w-screen overflow-y-auto rounded-none border-none p-0 shadow-none backdrop-blur-xl duration-100 data-open:animate-none!"
                             >
                                 <SheetHeader className="sr-only">
                                     <SheetTitle>
@@ -194,11 +294,62 @@ export default function Header({ scrolled }: HeaderProps): ReactElement {
                                                 {t(Messages.PasswordManager)}
                                             </MobileLink>
                                             <MobileLink
+                                                to={Routes.Notes}
+                                                onOpenChange={setOpen}
+                                            >
+                                                {t('features.notes.name')}
+                                            </MobileLink>
+                                            <MobileLink
                                                 to={Routes.DigitalFootprint}
                                                 onOpenChange={setOpen}
                                             >
                                                 {t('digitalFootprint.title')}
                                             </MobileLink>
+
+                                            {isAuthenticated && user && (
+                                                <div className="mt-4 flex flex-col gap-4">
+                                                    <div className="flex flex-col gap-3 px-3">
+                                                        {user.provider.id ===
+                                                            'google' && (
+                                                            <div className="bg-muted/50 flex w-fit items-center gap-2 rounded-full px-3 py-1 text-sm font-bold tracking-wider uppercase opacity-80">
+                                                                {renderGoogleIcon(
+                                                                    'size-4',
+                                                                )}
+                                                                {
+                                                                    user
+                                                                        .provider
+                                                                        .name
+                                                                }
+                                                            </div>
+                                                        )}
+                                                        <div className="flex flex-col gap-1">
+                                                            <div className="text-muted-foreground text-xs font-medium">
+                                                                {t(
+                                                                    'loggedInAs',
+                                                                )}
+                                                            </div>
+                                                            <div className="truncate text-lg font-bold">
+                                                                {user.name}
+                                                            </div>
+                                                            <div className="text-muted-foreground truncate text-sm">
+                                                                {user.email}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="lg"
+                                                        className="text-destructive hover:bg-destructive/10 h-auto justify-start px-3 text-2xl font-medium"
+                                                        onClick={() => {
+                                                            void logout();
+                                                            setOpen(false);
+                                                        }}
+                                                    >
+                                                        <LogOut className="mr-3 size-6" />
+                                                        {t('logout')}
+                                                    </Button>
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
                                     <div className="flex flex-col gap-4 sm:hidden">

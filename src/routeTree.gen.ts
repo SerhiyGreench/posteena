@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as PostRouteImport } from './routes/post'
 import { Route as PasswordManagerRouteImport } from './routes/password-manager'
+import { Route as NotesRouteImport } from './routes/notes'
 import { Route as DigitalFootprintRouteImport } from './routes/digital-footprint'
 import { Route as CreatePostRouteImport } from './routes/create-post'
 import { Route as IndexRouteImport } from './routes/index'
@@ -23,6 +24,11 @@ const PostRoute = PostRouteImport.update({
 const PasswordManagerRoute = PasswordManagerRouteImport.update({
   id: '/password-manager',
   path: '/password-manager',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NotesRoute = NotesRouteImport.update({
+  id: '/notes',
+  path: '/notes',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DigitalFootprintRoute = DigitalFootprintRouteImport.update({
@@ -45,6 +51,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/create-post': typeof CreatePostRoute
   '/digital-footprint': typeof DigitalFootprintRoute
+  '/notes': typeof NotesRoute
   '/password-manager': typeof PasswordManagerRoute
   '/post': typeof PostRoute
 }
@@ -52,6 +59,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/create-post': typeof CreatePostRoute
   '/digital-footprint': typeof DigitalFootprintRoute
+  '/notes': typeof NotesRoute
   '/password-manager': typeof PasswordManagerRoute
   '/post': typeof PostRoute
 }
@@ -60,6 +68,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/create-post': typeof CreatePostRoute
   '/digital-footprint': typeof DigitalFootprintRoute
+  '/notes': typeof NotesRoute
   '/password-manager': typeof PasswordManagerRoute
   '/post': typeof PostRoute
 }
@@ -69,6 +78,7 @@ export interface FileRouteTypes {
     | '/'
     | '/create-post'
     | '/digital-footprint'
+    | '/notes'
     | '/password-manager'
     | '/post'
   fileRoutesByTo: FileRoutesByTo
@@ -76,6 +86,7 @@ export interface FileRouteTypes {
     | '/'
     | '/create-post'
     | '/digital-footprint'
+    | '/notes'
     | '/password-manager'
     | '/post'
   id:
@@ -83,6 +94,7 @@ export interface FileRouteTypes {
     | '/'
     | '/create-post'
     | '/digital-footprint'
+    | '/notes'
     | '/password-manager'
     | '/post'
   fileRoutesById: FileRoutesById
@@ -91,6 +103,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CreatePostRoute: typeof CreatePostRoute
   DigitalFootprintRoute: typeof DigitalFootprintRoute
+  NotesRoute: typeof NotesRoute
   PasswordManagerRoute: typeof PasswordManagerRoute
   PostRoute: typeof PostRoute
 }
@@ -109,6 +122,13 @@ declare module '@tanstack/react-router' {
       path: '/password-manager'
       fullPath: '/password-manager'
       preLoaderRoute: typeof PasswordManagerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/notes': {
+      id: '/notes'
+      path: '/notes'
+      fullPath: '/notes'
+      preLoaderRoute: typeof NotesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/digital-footprint': {
@@ -139,6 +159,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CreatePostRoute: CreatePostRoute,
   DigitalFootprintRoute: DigitalFootprintRoute,
+  NotesRoute: NotesRoute,
   PasswordManagerRoute: PasswordManagerRoute,
   PostRoute: PostRoute,
 }
