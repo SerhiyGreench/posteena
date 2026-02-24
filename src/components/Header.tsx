@@ -5,28 +5,73 @@ import { useTheme } from 'next-themes';
 import { useTranslation } from 'react-i18next';
 import { Avatar, AvatarFallback, AvatarImage } from 'ui/avatar';
 import { Button } from 'ui/button';
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuRadioGroup,
-    DropdownMenuRadioItem,
-    DropdownMenuTrigger,
-} from 'ui/dropdown-menu';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuTrigger } from 'ui/dropdown-menu';
 import { cn } from 'ui/lib/utils';
 import { Popover, PopoverContent, PopoverTrigger } from 'ui/popover';
-import {
-    Sheet,
-    SheetContent,
-    SheetDescription,
-    SheetHeader,
-    SheetTitle,
-} from 'ui/sheet';
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from 'ui/sheet';
 import MobileLink from '@/components/MobileLink';
 import { Messages } from '@/constants/Messages';
 import { Routes } from '@/constants/Routes';
 import { Themes } from '@/constants/Themes';
 import { Translations } from '@/constants/Translations';
 import { useAuth } from '@/hooks/useAuth';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 type Language = keyof typeof Translations;
 
@@ -176,8 +221,7 @@ export default function Header({ scrolled }: HeaderProps): ReactElement {
                                 </PopoverTrigger>
                                 <PopoverContent
                                     align="end"
-                                    className="w-64"
-                                    style={{ zIndex: 120 }}
+                                    className="mt-4 w-64"
                                 >
                                     <div className="flex flex-col gap-4">
                                         <div className="flex flex-col gap-1">
@@ -202,6 +246,7 @@ export default function Header({ scrolled }: HeaderProps): ReactElement {
                                                 {user.email}
                                             </div>
                                         </div>
+
                                         <Button
                                             variant="ghost"
                                             size="sm"
@@ -339,7 +384,7 @@ export default function Header({ scrolled }: HeaderProps): ReactElement {
                                                     <Button
                                                         variant="ghost"
                                                         size="lg"
-                                                        className="text-destructive hover:bg-destructive/10 h-auto justify-start px-3 text-2xl font-medium"
+                                                        className="text-destructive hover:bg-destructive/10 h-auto w-fit justify-start px-3 py-1 text-2xl font-medium"
                                                         onClick={() => {
                                                             void logout();
                                                             setOpen(false);
@@ -357,19 +402,17 @@ export default function Header({ scrolled }: HeaderProps): ReactElement {
                                             {t('settings')}
                                         </div>
                                         <div className="flex flex-col gap-4">
-                                            <div className="flex items-center justify-between">
+                                            <div className="flex items-center gap-5">
+                                                {renderLanguageSwitcher('end')}
                                                 <span className="shrink-0 text-2xl font-medium">
                                                     {t('language')}
                                                 </span>
-                                                <div className="flex-1" />
-                                                {renderLanguageSwitcher('end')}
                                             </div>
-                                            <div className="flex items-center justify-between">
+                                            <div className="flex items-center gap-5">
+                                                {renderThemeSwitcher('end')}
                                                 <span className="shrink-0 text-2xl font-medium">
                                                     {t('themeTitle')}
                                                 </span>
-                                                <div className="flex-1" />
-                                                {renderThemeSwitcher('end')}
                                             </div>
                                         </div>
                                     </div>

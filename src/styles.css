@@ -355,15 +355,3 @@ body,
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
-
-[role='presentation'] {
-    z-index: 49;
-}
-
-[data-slot='sheet-overlay'] {
-    z-index: 49;
-}
-
-[data-side='bottom'] {
-    z-index: 51;
-}
