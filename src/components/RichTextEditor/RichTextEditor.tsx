@@ -1,4 +1,5 @@
 import { type ReactElement, useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import Color from '@tiptap/extension-color';
 import FontFamily from '@tiptap/extension-font-family';
 import Highlight from '@tiptap/extension-highlight';
@@ -31,6 +32,7 @@ const RichTextEditor = ({
     onUpdate,
     editable = true,
 }: RichTextEditorProps): ReactElement => {
+    const { t } = useTranslation();
     const onUpdateRef = useRef(onUpdate);
 
     useEffect(() => {
@@ -59,7 +61,7 @@ const RichTextEditor = ({
                     height: 320,
                 }),
                 Placeholder.configure({
-                    placeholder: 'Write something amazing...',
+                    placeholder: t('notes.placeholder'),
                 }),
                 TaskList,
                 TaskItem.configure({
@@ -98,19 +100,28 @@ const RichTextEditor = ({
             return;
         }
 
+        // Avoid content jumps while the user is typing
+        if (editor.isFocused && editable) {
+            return;
+        }
+
         editor.commands.setContent(content, { emitUpdate: false });
-    }, [content, editor]);
+    }, [content, editor, editable]);
 
     return (
         <div
             className={cn(
-                'focus-within:ring-ring flex flex-col overflow-hidden transition-all duration-200',
+                'focus-within:ring-ring flex flex-col overflow-hidden',
                 editable
-                    ? 'rounded-md border shadow-sm focus-within:ring-1'
+                    ? 'rounded-md border shadow-sm focus-within:ring-1 transition-all duration-200'
                     : 'bg-transparent',
             )}
         >
-            {editable && <Toolbar editor={editor} />}
+            {editable && (
+                <div className="w-full">
+                    <Toolbar editor={editor} />
+                </div>
+            )}
             <EditorContent editor={editor} />
         </div>
     );

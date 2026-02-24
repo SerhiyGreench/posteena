@@ -13,10 +13,24 @@ function App(): ReactElement {
 
     const features = [
         {
+            name: t('features.notes.name'),
+            description: t('features.notes.description'),
+            icon: <NotebookPen className="size-6" />,
+            to: Routes.Notes,
+            isUnderConstruction: false,
+        },
+        {
             name: t('features.passwordManager.name'),
             description: t('features.passwordManager.description'),
             icon: <Key className="size-6" />,
             to: Routes.PasswordManager,
+            isUnderConstruction: false,
+        },
+        {
+            name: t('features.digitalFootprint.name'),
+            description: t('features.digitalFootprint.description'),
+            icon: <Fingerprint className="size-6" />,
+            to: Routes.DigitalFootprint,
             isUnderConstruction: false,
         },
         {
@@ -27,24 +41,10 @@ function App(): ReactElement {
             isUnderConstruction: true,
         },
         {
-            name: t('features.notes.name'),
-            description: t('features.notes.description'),
-            icon: <NotebookPen className="size-6" />,
-            to: Routes.Notes,
-            isUnderConstruction: false,
-        },
-        {
             name: t('features.knowledgeCollections.name'),
             description: t('features.knowledgeCollections.description'),
             icon: <BookOpen className="size-6" />,
             isUnderConstruction: true,
-        },
-        {
-            name: t('features.digitalFootprint.name'),
-            description: t('features.digitalFootprint.description'),
-            icon: <Fingerprint className="size-6" />,
-            to: Routes.DigitalFootprint,
-            isUnderConstruction: false,
         },
     ];
 

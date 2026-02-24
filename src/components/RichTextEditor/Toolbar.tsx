@@ -111,7 +111,7 @@ const Toolbar = ({ editor }: ToolbarProps): ReactElement | null => {
     };
 
     return (
-        <div className="supports-backdrop-filter:bg-muted/40 bg-muted/50 sticky top-0 z-10 flex flex-wrap items-center gap-1 border-b p-1 backdrop-blur-sm">
+        <div className="supports-backdrop-filter:bg-muted/40 bg-muted/50 sticky top-0 z-10 flex w-full flex-wrap items-center gap-1 border-b p-1 backdrop-blur-sm">
             <div className="mr-1 flex items-center gap-1 border-r pr-1">
                 <MenuButton
                     onClick={() => editor.chain().focus().undo().run()}

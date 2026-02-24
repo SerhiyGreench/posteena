@@ -79,6 +79,7 @@ export default function NotesManager(): ReactElement {
     );
 
     const [isCopied, setIsCopied] = useState(false);
+    const [searchTerm, setSearchTerm] = useState('');
 
     const dateLocale = i18n.language === 'uk' ? uk : enUS;
 
@@ -166,6 +167,20 @@ export default function NotesManager(): ReactElement {
             .trim();
     };
 
+    const filteredNotes = useMemo(() => {
+        const term = searchTerm.toLowerCase();
+        if (!term) {
+            return notes;
+        }
+        return notes.filter(n => {
+            const titleMatch = n.title.toLowerCase().includes(term);
+            const contentMatch = previewText(n.contentHtml)
+                .toLowerCase()
+                .includes(term);
+            return titleMatch || contentMatch;
+        });
+    }, [notes, searchTerm]);
+
     if (!isAuthenticated) {
         return (
             <LoginScreen
@@ -179,7 +194,7 @@ export default function NotesManager(): ReactElement {
     }
 
     return (
-        <div className="w-full space-y-6 p-4">
+        <div className="w-full space-y-6 px-4 py-4 md:px-8">
             <div className="flex flex-wrap items-center justify-between gap-4">
                 <div className="flex items-center gap-3 md:gap-4">
                     <NotebookPen className="text-primary size-8 shrink-0" />
@@ -191,7 +206,7 @@ export default function NotesManager(): ReactElement {
 
             <div className="flex flex-col items-start gap-6 md:flex-row">
                 <Card className="w-full shrink-0 md:sticky md:top-4 md:w-80">
-                    <CardContent className="flex max-h-72 flex-col space-y-4 p-3 md:max-h-[calc(100vh-240px)] md:min-h-0">
+                    <CardContent className="flex max-h-96 flex-col space-y-4 p-3 md:max-h-[calc(100vh-240px)] md:min-h-0">
                         <div className="flex shrink-0 items-center justify-between gap-2">
                             <Button
                                 variant="ghost"
@@ -217,9 +232,25 @@ export default function NotesManager(): ReactElement {
                                 onClick={handleCreate}
                                 className="bg-primary text-primary-foreground h-9 w-fit rounded-lg px-3 text-xs font-bold"
                             >
-                                <Plus className="mr-1.5 h-3.5 w-3.5" />
-                                {t('notes.newNote')}
+                                <Plus className="sm:mr-1.5 h-3.5 w-3.5" />
+                                <span className="sm:inline-block hidden">{t('notes.newNote')}</span>
                             </Button>
+                        </div>
+                        <div className="relative shrink-0">
+                            <Input
+                                value={searchTerm}
+                                onChange={e => setSearchTerm(e.target.value)}
+                                placeholder={t('search')}
+                                className="h-9 pr-8"
+                            />
+                            {searchTerm && (
+                                <button
+                                    onClick={() => setSearchTerm('')}
+                                    className="text-muted-foreground hover:text-foreground absolute right-2 top-1/2 -translate-y-1/2"
+                                >
+                                    <Plus className="size-4 rotate-45" />
+                                </button>
+                            )}
                         </div>
                         <div className="flex-1 overflow-y-auto">
                             {loading && notes.length === 0 ? (
@@ -237,67 +268,62 @@ export default function NotesManager(): ReactElement {
                                 </div>
                             ) : (
                                 <div className="space-y-1">
-                                    {notes.map(n => (
-                                        <Item
-                                            key={n.id}
-                                            style={{
-                                                // Enables smooth reordering animations in supported browsers
-                                                viewTransitionName: `note-${n.id}`,
-                                            }}
-                                            className={cn(
-                                                'cursor-pointer border-none px-3 py-3 transition-all duration-200',
-                                                selectedId === n.id
-                                                    ? selectedBgClasses[n.color]
-                                                    : bgClasses[n.color],
-                                            )}
-                                            onClick={() => select(n.id)}
-                                        >
-                                            <div className="flex w-full items-start gap-4">
-                                                <div className="mt-1 shrink-0">
-                                                    <div
-                                                        className={cn(
-                                                            'h-10 w-1 rounded-full',
-                                                            colorClasses[
-                                                                n.color
-                                                            ],
-                                                        )}
-                                                    />
-                                                </div>
-                                                <ItemContent className="min-w-0">
-                                                    <ItemTitle className="block w-full truncate text-base leading-tight font-bold">
-                                                        {n.title ||
-                                                            t('notes.untitled')}
-                                                    </ItemTitle>
-                                                    <ItemDescription className="text-muted-foreground mt-1 line-clamp-2 text-[13px] leading-snug break-words">
-                                                        {previewText(
-                                                            n.contentHtml,
-                                                        ) ||
-                                                            t(
-                                                                'notes.noContentPreview',
-                                                            )}
-                                                    </ItemDescription>
-                                                    <div className="text-muted-foreground mt-2 flex items-center gap-1.5 truncate text-[11px] font-medium tracking-wide opacity-70">
-                                                        <CalendarClock className="size-3 shrink-0" />
-                                                        <span className="shrink-0">
-                                                            {t('updated')}
-                                                            {':'}
-                                                        </span>
-                                                        <span className="truncate">
-                                                            {formatDistanceToNow(
-                                                                new Date(
-                                                                    n.updatedAt,
-                                                                ),
-                                                                {
-                                                                    addSuffix: true,
-                                                                    locale: dateLocale,
-                                                                },
-                                                            )}
-                                                        </span>
-                                                    </div>
-                                                </ItemContent>
+                                    {filteredNotes.length === 0 ? (
+                                        <div className="flex flex-col items-center justify-center p-8 text-center">
+                                            <CloudOff className="text-muted-foreground mb-4 size-12 opacity-20" />
+                                            <div className="text-muted-foreground text-sm">
+                                                {t('notes.noSearchResults')}
                                             </div>
-                                        </Item>
-                                    ))}
+                                        </div>
+                                    ) : (
+                                        <>
+                                            {filteredNotes.map(n => (
+                                                <Item
+                                                    key={n.id}
+                                                    className={cn(
+                                                        'cursor-pointer border-none px-3 py-3 transition-all duration-200',
+                                                        selectedId === n.id
+                                                            ? selectedBgClasses[n.color]
+                                                            : bgClasses[n.color],
+                                                    )}
+                                                    onClick={() => select(n.id)}
+                                                >
+                                                    <div className="flex w-full items-start gap-4">
+                                                        <div className="mt-1 shrink-0">
+                                                            <div
+                                                                className={cn(
+                                                                    'h-10 w-1 rounded-full',
+                                                                    colorClasses[n.color],
+                                                                )}
+                                                            />
+                                                        </div>
+                                                        <ItemContent className="min-w-0">
+                                                            <ItemTitle className="block w-full truncate text-base leading-tight font-bold">
+                                                                {n.title || t('notes.untitled')}
+                                                            </ItemTitle>
+                                                            <ItemDescription className="text-muted-foreground mt-1 line-clamp-2 text-[13px] leading-snug break-words">
+                                                                {previewText(n.contentHtml) ||
+                                                                    t('notes.noContentPreview')}
+                                                            </ItemDescription>
+                                                            <div className="text-muted-foreground mt-2 flex items-center gap-1.5 truncate text-[11px] font-medium tracking-wide opacity-70">
+                                                                <CalendarClock className="size-3 shrink-0" />
+                                                                <span className="shrink-0">
+                                                                    {t('updated')}
+                                                                    {':'}
+                                                                </span>
+                                                                <span className="truncate">
+                                                                    {formatDistanceToNow(new Date(n.updatedAt), {
+                                                                        addSuffix: true,
+                                                                        locale: dateLocale,
+                                                                    })}
+                                                                </span>
+                                                            </div>
+                                                        </ItemContent>
+                                                    </div>
+                                                </Item>
+                                            ))}
+                                        </>
+                                    )}
                                 </div>
                             )}
                         </div>
@@ -308,76 +334,93 @@ export default function NotesManager(): ReactElement {
                     {current ? (
                         <div className="space-y-3">
                             <div className="flex flex-wrap items-center gap-2">
-                                <div className="flex items-center gap-1">
-                                    {(
-                                        [
-                                            'gray',
-                                            'red',
-                                            'orange',
-                                            'yellow',
-                                            'green',
-                                            'blue',
-                                            'purple',
-                                        ] as NoteColor[]
-                                    ).map(c => (
-                                        <button
-                                            key={c}
-                                            aria-label={c}
-                                            onClick={() => setColor(c)}
-                                            className={`ring-border size-6 rounded-full ring-1 ${colorClasses[c]} ${
-                                                c === current.color
-                                                    ? 'ring-primary ring-2'
-                                                    : ''
-                                            }`}
-                                        />
-                                    ))}
+                                <div className="flex w-full items-center gap-1">
+                                    <div className="flex w-full flex-wrap items-center gap-1 rounded-md border p-1 shadow-sm">
+                                        <div className="flex items-center gap-1 border-r pr-1">
+                                            {(
+                                                [
+                                                    'gray',
+                                                    'red',
+                                                    'orange',
+                                                    'yellow',
+                                                    'green',
+                                                    'blue',
+                                                    'purple',
+                                                ] as NoteColor[]
+                                            ).map(c => (
+                                                <button
+                                                    key={c}
+                                                    aria-label={c}
+                                                    onClick={() => setColor(c)}
+                                                    className={`ring-border size-6 rounded-full ring-1 ${colorClasses[c]} ${
+                                                        c === current.color
+                                                            ? 'ring-primary ring-2'
+                                                            : ''
+                                                    }`}
+                                                />
+                                            ))}
+                                        </div>
+
+                                        <div className="flex flex-1 justify-end items-center gap-1">
+                                            <Button
+                                                variant="ghost"
+                                                size="sm"
+                                                onClick={togglePreserved}
+                                                className={cn(
+                                                    'h-8 flex-1 gap-2 px-2 sm:flex-none',
+                                                    current.isPreserved
+                                                        ? 'text-primary'
+                                                        : 'text-muted-foreground',
+                                                )}
+                                            >
+                                                {current.isPreserved ? (
+                                                    <>
+                                                        <Edit3 className="size-4" />
+                                                        <span className="hidden sm:inline">
+                                                            {t('notes.editing')}
+                                                        </span>
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        <Eye className="size-4" />
+                                                        <span className="hidden sm:inline">
+                                                            {t('notes.preview')}
+                                                        </span>
+                                                    </>
+                                                )}
+                                            </Button>
+                                            <div className="bg-border h-4 w-px" />
+                                            <FeedbackTooltip
+                                                show={isCopied}
+                                                message={t('copiedToClipboard')}
+                                            >
+                                                <Button
+                                                    variant="ghost"
+                                                    size="sm"
+                                                    className="h-8 flex-1 px-2 sm:flex-none"
+                                                    onClick={handleCopyFormatted}
+                                                >
+                                                    <Copy className="size-4 sm:mr-2" />{' '}
+                                                    <span className="hidden sm:inline">
+                                                        {t('notes.copyFormatted')}
+                                                    </span>
+                                                </Button>
+                                            </FeedbackTooltip>
+                                            <div className="bg-border h-4 w-px" />
+                                            <Button
+                                                variant="ghost"
+                                                size="sm"
+                                                className="h-8 flex-1 text-destructive hover:bg-destructive/10 hover:text-destructive px-2 sm:flex-none"
+                                                onClick={() => void remove(current.id)}
+                                            >
+                                                <Trash className="size-4 sm:mr-2" />{' '}
+                                                <span className="hidden sm:inline">
+                                                    {t('delete')}
+                                                </span>
+                                            </Button>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div className="flex-1" />
-                                <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    onClick={togglePreserved}
-                                    className={cn(
-                                        'gap-2',
-                                        current.isPreserved
-                                            ? 'text-primary'
-                                            : 'text-muted-foreground',
-                                    )}
-                                >
-                                    {current.isPreserved ? (
-                                        <>
-                                            <Edit3 className="size-4" />
-                                            <span>{t('notes.editing')}</span>
-                                        </>
-                                    ) : (
-                                        <>
-                                            <Eye className="size-4" />
-                                            <span>{t('notes.preview')}</span>
-                                        </>
-                                    )}
-                                </Button>
-                                <FeedbackTooltip
-                                    show={isCopied}
-                                    message={t('copiedToClipboard')}
-                                >
-                                    <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        onClick={handleCopyFormatted}
-                                    >
-                                        <Copy className="mr-2 h-4 w-4" />{' '}
-                                        {t('notes.copyFormatted')}
-                                    </Button>
-                                </FeedbackTooltip>
-                                <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    className="text-destructive hover:bg-destructive/10 hover:text-destructive"
-                                    onClick={() => void remove(current.id)}
-                                >
-                                    <Trash className="mr-2 h-4 w-4" />{' '}
-                                    {t('delete')}
-                                </Button>
                             </div>
 
                             {current.isPreserved ? (

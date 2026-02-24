@@ -76,6 +76,8 @@ export const Translations = {
             syncing: 'Syncing...',
             synced: 'Synced',
             syncNow: 'Sync now',
+            placeholder: 'Write something amazing...',
+            noSearchResults: 'No search results found.',
         },
         digitalFootprint: {
             title: 'Digital Footprint',
@@ -300,6 +302,8 @@ export const Translations = {
             syncing: 'Синхронізація...',
             synced: 'Синхронізовано',
             syncNow: 'Синхронізувати зараз',
+            placeholder: 'Напишіть щось дивовижне...',
+            noSearchResults: 'Результатів пошуку не знайдено.',
         },
         digitalFootprint: {
             title: 'Цифровий слід',

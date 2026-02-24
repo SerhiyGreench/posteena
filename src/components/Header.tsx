@@ -5,73 +5,28 @@ import { useTheme } from 'next-themes';
 import { useTranslation } from 'react-i18next';
 import { Avatar, AvatarFallback, AvatarImage } from 'ui/avatar';
 import { Button } from 'ui/button';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuTrigger } from 'ui/dropdown-menu';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuRadioGroup,
+    DropdownMenuRadioItem,
+    DropdownMenuTrigger,
+} from 'ui/dropdown-menu';
 import { cn } from 'ui/lib/utils';
 import { Popover, PopoverContent, PopoverTrigger } from 'ui/popover';
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from 'ui/sheet';
+import {
+    Sheet,
+    SheetContent,
+    SheetDescription,
+    SheetHeader,
+    SheetTitle,
+} from 'ui/sheet';
 import MobileLink from '@/components/MobileLink';
 import { Messages } from '@/constants/Messages';
 import { Routes } from '@/constants/Routes';
 import { Themes } from '@/constants/Themes';
 import { Translations } from '@/constants/Translations';
 import { useAuth } from '@/hooks/useAuth';
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 type Language = keyof typeof Translations;
 
@@ -204,16 +159,20 @@ export default function Header({ scrolled }: HeaderProps): ReactElement {
                                                 {renderGoogleIcon('size-3.5')}
                                             </div>
                                         )}
-                                        <Avatar size="sm">
+                                        <Avatar
+                                            size="sm"
+                                            className="ring-border ring-1"
+                                        >
                                             {user.picture && (
                                                 <AvatarImage
                                                     src={user.picture}
                                                     alt={user.name}
+                                                    referrerPolicy="no-referrer"
                                                 />
                                             )}
                                             {!user.picture && (
-                                                <AvatarFallback>
-                                                    <UserIcon className="size-4" />
+                                                <AvatarFallback className="bg-primary/10 text-primary">
+                                                    <UserIcon className="size-3.5" />
                                                 </AvatarFallback>
                                             )}
                                         </Avatar>
@@ -224,26 +183,37 @@ export default function Header({ scrolled }: HeaderProps): ReactElement {
                                     className="mt-4 w-64"
                                 >
                                     <div className="flex flex-col gap-4">
-                                        <div className="flex flex-col gap-1">
-                                            <div className="flex items-center justify-between">
+                                        {user.provider.id === 'google' && (
+                                            <div className="bg-muted/50 flex w-fit items-center gap-2 rounded-full px-3 py-1 text-sm font-bold tracking-wider uppercase opacity-80">
+                                                {renderGoogleIcon('size-4')}
+                                                {user.provider.name}
+                                            </div>
+                                        )}
+                                        <div className="flex items-center gap-3">
+                                            <Avatar className="ring-border size-12 ring-1">
+                                                {user.picture && (
+                                                    <AvatarImage
+                                                        src={user.picture}
+                                                        alt={user.name}
+                                                        referrerPolicy="no-referrer"
+                                                    />
+                                                )}
+                                                {!user.picture && (
+                                                    <AvatarFallback className="bg-primary/10 text-primary">
+                                                        <UserIcon className="size-6" />
+                                                    </AvatarFallback>
+                                                )}
+                                            </Avatar>
+                                            <div className="flex flex-col gap-1 overflow-hidden">
                                                 <div className="text-muted-foreground text-xs font-medium">
                                                     {t('loggedInAs')}
                                                 </div>
-                                                {user.provider.id ===
-                                                    'google' && (
-                                                    <div className="bg-muted/50 flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold tracking-wider uppercase">
-                                                        {renderGoogleIcon(
-                                                            'size-2.5',
-                                                        )}
-                                                        {user.provider.name}
-                                                    </div>
-                                                )}
-                                            </div>
-                                            <div className="truncate text-sm font-bold">
-                                                {user.name}
-                                            </div>
-                                            <div className="text-muted-foreground truncate text-xs">
-                                                {user.email}
+                                                <div className="truncate text-sm font-bold">
+                                                    {user.name}
+                                                </div>
+                                                <div className="text-muted-foreground truncate text-xs">
+                                                    {user.email}
+                                                </div>
                                             </div>
                                         </div>
 
@@ -367,17 +337,37 @@ export default function Header({ scrolled }: HeaderProps): ReactElement {
                                                                 }
                                                             </div>
                                                         )}
-                                                        <div className="flex flex-col gap-1">
-                                                            <div className="text-muted-foreground text-xs font-medium">
-                                                                {t(
-                                                                    'loggedInAs',
+                                                        <div className="flex items-center gap-3">
+                                                            <Avatar className="ring-border size-12 ring-1">
+                                                                {user.picture && (
+                                                                    <AvatarImage
+                                                                        src={
+                                                                            user.picture
+                                                                        }
+                                                                        alt={
+                                                                            user.name
+                                                                        }
+                                                                        referrerPolicy="no-referrer"
+                                                                    />
                                                                 )}
-                                                            </div>
-                                                            <div className="truncate text-lg font-bold">
-                                                                {user.name}
-                                                            </div>
-                                                            <div className="text-muted-foreground truncate text-sm">
-                                                                {user.email}
+                                                                {!user.picture && (
+                                                                    <AvatarFallback className="bg-primary/10 text-primary">
+                                                                        <UserIcon className="size-6" />
+                                                                    </AvatarFallback>
+                                                                )}
+                                                            </Avatar>
+                                                            <div className="flex flex-col gap-1 overflow-hidden">
+                                                                <div className="text-muted-foreground text-xs font-medium">
+                                                                    {t(
+                                                                        'loggedInAs',
+                                                                    )}
+                                                                </div>
+                                                                <div className="truncate text-lg font-bold">
+                                                                    {user.name}
+                                                                </div>
+                                                                <div className="text-muted-foreground truncate text-sm">
+                                                                    {user.email}
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>

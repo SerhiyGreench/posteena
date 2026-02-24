@@ -184,11 +184,11 @@ export function useNotes(): {
 
         if (JSON.stringify(notes) !== JSON.stringify(currentStorage)) {
             Storage.set(CACHE_KEY, notes);
-            if (!isSyncing && isAuthenticated) {
+            if (isAuthenticated) {
                 Storage.set(SYNC_PENDING_KEY, true);
             }
         }
-    }, [notes, isSyncing, isAuthenticated]);
+    }, [notes, isAuthenticated]);
 
     const create = useCallback(
         async (

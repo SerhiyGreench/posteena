@@ -255,7 +255,7 @@ export default function PasswordManager(): ReactElement {
             }) || [];
 
     return (
-        <div className="w-full space-y-6 p-4">
+        <div className="w-full space-y-6 px-4 py-4 md:px-8">
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3 md:gap-4">
                     <Key className="text-primary size-8 shrink-0" />
