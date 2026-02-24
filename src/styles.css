@@ -131,6 +131,7 @@ body,
     --radius-2xl: calc(var(--radius) + 8px);
     --radius-3xl: calc(var(--radius) + 12px);
     --radius-4xl: calc(var(--radius) + 16px);
+    --screen-height: calc(var(--vh, 1vh) * 100);
 }
 
 @layer base {

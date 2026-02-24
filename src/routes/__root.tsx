@@ -27,7 +27,10 @@ function RootLayout(): ReactElement {
                 storageKey="theme"
                 disableTransitionOnChange
             >
-                <div className="relative flex h-screen flex-col overflow-hidden">
+                <div
+                    className="relative flex flex-col overflow-hidden"
+                    style={{ height: 'var(--screen-height, 100vh)' }}
+                >
                     <Header scrolled={scrolled} />
                     <div
                         id="app-container"
