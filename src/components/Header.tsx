@@ -5,35 +5,28 @@ import { useTheme } from 'next-themes';
 import { useTranslation } from 'react-i18next';
 import { Avatar, AvatarFallback, AvatarImage } from 'ui/avatar';
 import { Button } from 'ui/button';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuTrigger } from 'ui/dropdown-menu';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuRadioGroup,
+    DropdownMenuRadioItem,
+    DropdownMenuTrigger,
+} from 'ui/dropdown-menu';
 import { cn } from 'ui/lib/utils';
 import { Popover, PopoverContent, PopoverTrigger } from 'ui/popover';
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from 'ui/sheet';
+import {
+    Sheet,
+    SheetContent,
+    SheetDescription,
+    SheetHeader,
+    SheetTitle,
+} from 'ui/sheet';
 import MobileLink from '@/components/MobileLink';
 import { Messages } from '@/constants/Messages';
 import { Routes } from '@/constants/Routes';
 import { Themes } from '@/constants/Themes';
 import { Translations } from '@/constants/Translations';
 import { useAuth } from '@/hooks/useAuth';
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 type Language = keyof typeof Translations;
 
@@ -134,7 +127,7 @@ export default function Header({ scrolled }: HeaderProps): ReactElement {
     return (
         <header
             className={cn(
-                'supports-backdrop-filter:bg-background/60 sticky top-0 z-51 w-full backdrop-blur transition-all duration-200',
+                'supports-backdrop-filter:bg-background/60 sticky top-0 z-52 w-full backdrop-blur transition-all duration-200',
                 open ? 'bg-background/70 backdrop-blur-xl' : 'bg-background/95',
                 scrolled && !open && 'border-b',
             )}
@@ -149,80 +142,87 @@ export default function Header({ scrolled }: HeaderProps): ReactElement {
 
                 <div className="flex items-center gap-5">
                     {isAuthenticated && user && !open && (
-                        <Popover>
-                            <PopoverTrigger
-                                render={
-                                    <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        className="bg-muted/50 hover:bg-muted h-9 gap-2 rounded-full px-2"
-                                    />
-                                }
-                            >
-                                <div className="flex items-center gap-1.5">
-                                    {user.provider.id === 'google' && (
-                                        <div className="flex items-center justify-center">
-                                            {renderGoogleIcon('size-3.5')}
-                                        </div>
-                                    )}
-                                    <Avatar size="sm">
-                                        {user.picture && (
-                                            <AvatarImage
-                                                src={user.picture}
-                                                alt={user.name}
-                                            />
-                                        )}
-                                        {!user.picture && <AvatarFallback>
-                                            <UserIcon className="size-4" />
-                                        </AvatarFallback> }
-                                    </Avatar>
-                                </div>
-                            </PopoverTrigger>
-                            <PopoverContent
-                                align="end"
-                                className="w-64"
-                                style={{ zIndex: 120 }}
-                            >
-                                <div className="flex flex-col gap-4">
-                                    <div className="flex flex-col gap-1">
-                                        <div className="flex items-center justify-between">
-                                            <div className="text-muted-foreground text-xs font-medium">
-                                                {t('loggedInAs')}
+                        <div className="flex items-center gap-5">
+                            <Popover>
+                                <PopoverTrigger
+                                    render={
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            className="bg-muted/50 hover:bg-muted h-9 gap-2 rounded-full px-2"
+                                        />
+                                    }
+                                >
+                                    <div className="flex items-center gap-1.5">
+                                        {user.provider.id === 'google' && (
+                                            <div className="flex items-center justify-center">
+                                                {renderGoogleIcon('size-3.5')}
                                             </div>
-                                            {user.provider.id === 'google' && (
-                                                <div className="bg-muted/50 flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold tracking-wider uppercase">
-                                                    {renderGoogleIcon(
-                                                        'size-2.5',
-                                                    )}
-                                                    {user.provider.name}
-                                                </div>
+                                        )}
+                                        <Avatar size="sm">
+                                            {user.picture && (
+                                                <AvatarImage
+                                                    src={user.picture}
+                                                    alt={user.name}
+                                                />
                                             )}
-                                        </div>
-                                        <div className="truncate text-sm font-bold">
-                                            {user.name}
-                                        </div>
-                                        <div className="text-muted-foreground truncate text-xs">
-                                            {user.email}
-                                        </div>
+                                            {!user.picture && (
+                                                <AvatarFallback>
+                                                    <UserIcon className="size-4" />
+                                                </AvatarFallback>
+                                            )}
+                                        </Avatar>
                                     </div>
-                                    <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        className="text-destructive w-fit justify-start gap-2 hover:bg-transparent"
-                                        onClick={() => void logout()}
-                                    >
-                                        <LogOut className="size-4" />
-                                        {t('logout')}
-                                    </Button>
-                                </div>
-                            </PopoverContent>
-                        </Popover>
+                                </PopoverTrigger>
+                                <PopoverContent
+                                    align="end"
+                                    className="w-64"
+                                    style={{ zIndex: 120 }}
+                                >
+                                    <div className="flex flex-col gap-4">
+                                        <div className="flex flex-col gap-1">
+                                            <div className="flex items-center justify-between">
+                                                <div className="text-muted-foreground text-xs font-medium">
+                                                    {t('loggedInAs')}
+                                                </div>
+                                                {user.provider.id ===
+                                                    'google' && (
+                                                    <div className="bg-muted/50 flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold tracking-wider uppercase">
+                                                        {renderGoogleIcon(
+                                                            'size-2.5',
+                                                        )}
+                                                        {user.provider.name}
+                                                    </div>
+                                                )}
+                                            </div>
+                                            <div className="truncate text-sm font-bold">
+                                                {user.name}
+                                            </div>
+                                            <div className="text-muted-foreground truncate text-xs">
+                                                {user.email}
+                                            </div>
+                                        </div>
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            className="text-destructive w-fit justify-start gap-2 hover:bg-transparent"
+                                            onClick={() => void logout()}
+                                        >
+                                            <LogOut className="size-4" />
+                                            {t('logout')}
+                                        </Button>
+                                    </div>
+                                </PopoverContent>
+                            </Popover>
+                        </div>
                     )}
 
-                    <div className="hidden items-center gap-2.5 sm:flex">
-                        {renderLanguageSwitcher('start')}
-                        {renderThemeSwitcher('end')}
-                    </div>
+                    {!open && (
+                        <div className="hidden items-center gap-2.5 sm:flex">
+                            {renderLanguageSwitcher('start')}
+                            {renderThemeSwitcher('end')}
+                        </div>
+                    )}
 
                     <div className="flex items-center">
                         <Sheet open={open} onOpenChange={setOpen}>
@@ -352,7 +352,7 @@ export default function Header({ scrolled }: HeaderProps): ReactElement {
                                             )}
                                         </div>
                                     </div>
-                                    <div className="flex flex-col gap-4 sm:hidden">
+                                    <div className="flex flex-col gap-4">
                                         <div className="text-muted-foreground text-sm font-medium">
                                             {t('settings')}
                                         </div>

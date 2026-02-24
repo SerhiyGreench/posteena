@@ -356,12 +356,14 @@ body,
     overflow: hidden;
 }
 
-[role="presentation"] {
-    z-index: 51;
-}
-
-[data-slot="sheet-overlay"] {
+[role='presentation'] {
     z-index: 49;
 }
 
+[data-slot='sheet-overlay'] {
+    z-index: 49;
+}
 
+[data-side='bottom'] {
+    z-index: 51;
+}
