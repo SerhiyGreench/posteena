@@ -7,7 +7,7 @@ import { defineConfig } from 'vite';
 import tsconfigPaths from 'vite-tsconfig-paths';
 
 const config = defineConfig({
-    base: '/',
+    base: './',
     resolve: {
         alias: {
             ui: path.resolve(__dirname, './ui'),
