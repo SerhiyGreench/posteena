@@ -20,10 +20,10 @@ function App(): ReactElement {
             isUnderConstruction: false,
         },
         {
-            name: t('features.passwordManager.name'),
-            description: t('features.passwordManager.description'),
+            name: t('features.passwords.name'),
+            description: t('features.passwords.description'),
             icon: <Key className="size-6" />,
-            to: Routes.PasswordManager,
+            to: Routes.Passwords,
             isUnderConstruction: false,
         },
         {

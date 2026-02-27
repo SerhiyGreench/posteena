@@ -27,7 +27,6 @@ import {
     CardHeader,
     CardTitle,
 } from 'ui/card';
-import { Skeleton } from 'ui/skeleton';
 import { FeedbackTooltip } from '@/components/FeedbackTooltip';
 import InfoItem from './InfoItem';
 
@@ -55,8 +54,8 @@ interface FootprintData {
         reducedMotion: boolean;
     };
     capabilities: {
-        canvas: boolean;
-        webgl: boolean;
+        canvas: boolean | null;
+        webgl: boolean | null;
     };
     location?: {
         latitude: number;
@@ -278,8 +277,8 @@ export default function DigitalFootprint(): ReactElement {
                     ).matches,
                 },
                 capabilities: {
-                    canvas: false,
-                    webgl: false,
+                    canvas: null,
+                    webgl: null,
                 },
                 location: {
                     latitude: 0,
@@ -326,10 +325,21 @@ export default function DigitalFootprint(): ReactElement {
             }
 
             const canvas = document.createElement('canvas');
-            const webgl =
-                !!window.WebGLRenderingContext &&
-                (!!canvas.getContext('webgl') ||
-                    !!canvas.getContext('experimental-webgl'));
+            // Check if canvas element is supported and context can be created
+            const canvasSupported = !!(
+                canvas.getContext && canvas.getContext('2d')
+            );
+            // Some browsers (like Brave or Firefox with privacy protections) might return null for getContext('2d')
+            // but still support the element itself.
+            const isCanvasElementSupported = !!(window.HTMLCanvasElement && canvas instanceof HTMLCanvasElement);
+
+            const webglSupported = !!(
+                canvas.getContext &&
+                (canvas.getContext('webgl') ||
+                    canvas.getContext('experimental-webgl'))
+            );
+            // Similar to canvas, some browsers block WebGL context but the technology itself is supported.
+            const isWebGLSupported = !!window.WebGLRenderingContext && isCanvasElementSupported;
 
             setData(prev =>
                 prev
@@ -338,8 +348,8 @@ export default function DigitalFootprint(): ReactElement {
                           ip,
                           battery: batteryData,
                           capabilities: {
-                              canvas: !!canvas.getContext('2d'),
-                              webgl,
+                              canvas: canvasSupported || isCanvasElementSupported,
+                              webgl: webglSupported || isWebGLSupported,
                           },
                       }
                     : null,
@@ -602,10 +612,14 @@ ${t('digitalFootprint.longitude')}: ${data.location.longitude}
                                         </Button>
                                     </div>
                                 ) : (
-                                    <Skeleton className="h-5 w-32" />
+                                    ''
                                 )
                             }
                             icon={Globe}
+                            isLoading={
+                                !data.location ||
+                                data.location.permission === 'loading'
+                            }
                         />
                     </CardContent>
                 </Card>
@@ -708,7 +722,7 @@ ${t('digitalFootprint.longitude')}: ${data.location.longitude}
                                     data.battery ? (
                                         `${data.battery.level}%`
                                     ) : (
-                                        <Skeleton className="h-5 w-16" />
+                                        ''
                                     )
                                 }
                                 icon={
@@ -721,6 +735,7 @@ ${t('digitalFootprint.longitude')}: ${data.location.longitude}
                                         ? t('digitalFootprint.charging')
                                         : undefined
                                 }
+                                isLoading={data.battery === undefined}
                             />
                         )}
                     </CardContent>
@@ -779,6 +794,7 @@ ${t('digitalFootprint.longitude')}: ${data.location.longitude}
                                     : t('digitalFootprint.notSupported')
                             }
                             icon={Palette}
+                            isLoading={data.capabilities.canvas === null}
                         />
                         <InfoItem
                             label={t('digitalFootprint.webglSupport')}
@@ -788,6 +804,7 @@ ${t('digitalFootprint.longitude')}: ${data.location.longitude}
                                     : t('digitalFootprint.notSupported')
                             }
                             icon={Zap}
+                            isLoading={data.capabilities.webgl === null}
                         />
                     </CardContent>
                 </Card>

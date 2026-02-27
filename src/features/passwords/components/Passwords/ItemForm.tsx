@@ -1,14 +1,14 @@
 import { type ReactElement, useEffect } from 'react';
 import { useForm } from '@tanstack/react-form';
-import { Dices, Loader2 } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
 import { Button } from 'ui/button';
 import { Card, CardContent } from 'ui/card';
 import { Field, FieldContent, FieldError, FieldLabel } from 'ui/field';
 import { Input } from 'ui/input';
-import type { PasswordItem } from '@/features/password-manager/types';
-import { generatePassword } from '@/features/password-manager/utils/crypto';
+import PasswordGenerator from '@/features/passwords/components/Passwords/PasswordGenerator';
+import type { PasswordItem } from '@/features/passwords/types';
 
 const itemSchema = (
     t: (key: string) => string,
@@ -96,7 +96,7 @@ export default function ItemForm({
                                         );
                                     return res.success
                                         ? undefined
-                                        : res.error.errors[0].message;
+                                        : res.error.issues[0].message;
                                 },
                             }}
                         >
@@ -107,7 +107,6 @@ export default function ItemForm({
                                     </FieldLabel>
                                     <FieldContent>
                                         <Input
-                                            key={`item-name-${t('name')}`}
                                             id={field.name}
                                             value={field.state.value}
                                             onBlur={field.handleBlur}
@@ -146,7 +145,7 @@ export default function ItemForm({
                                         );
                                     return res.success
                                         ? undefined
-                                        : res.error.errors[0].message;
+                                        : res.error.issues[0].message;
                                 },
                             }}
                         >
@@ -157,7 +156,6 @@ export default function ItemForm({
                                     </FieldLabel>
                                     <FieldContent>
                                         <Input
-                                            key={`item-email-${t('email')}`}
                                             id={field.name}
                                             type="email"
                                             value={field.state.value}
@@ -197,7 +195,7 @@ export default function ItemForm({
                                         );
                                     return res.success
                                         ? undefined
-                                        : res.error.errors[0].message;
+                                        : res.error.issues[0].message;
                                 },
                             }}
                         >
@@ -208,7 +206,6 @@ export default function ItemForm({
                                     </FieldLabel>
                                     <FieldContent>
                                         <Input
-                                            key={`item-username-${t('username')}`}
                                             id={field.name}
                                             value={field.state.value}
                                             onBlur={field.handleBlur}
@@ -247,51 +244,24 @@ export default function ItemForm({
                                         );
                                     return res.success
                                         ? undefined
-                                        : res.error.errors[0].message;
+                                        : res.error.issues[0].message;
                                 },
                             }}
                         >
                             {field => (
-                                <Field>
+                                <Field className="md:col-span-2">
                                     <FieldLabel htmlFor={field.name}>
                                         {t('password')}
                                     </FieldLabel>
                                     <FieldContent>
-                                        <div className="group/password relative">
-                                            <Input
-                                                key={`item-password-${t('password')}`}
-                                                id={field.name}
-                                                type="text"
-                                                value={field.state.value}
-                                                onBlur={field.handleBlur}
-                                                onChange={e =>
-                                                    field.handleChange(
-                                                        e.target.value,
-                                                    )
-                                                }
-                                                placeholder={t('password')}
-                                                className={
-                                                    field.state.meta.errors
-                                                        .length > 0
-                                                        ? 'border-destructive pr-10 font-mono'
-                                                        : 'pr-10 font-mono'
-                                                }
-                                            />
-                                            <Button
-                                                type="button"
-                                                variant="ghost"
-                                                size="icon"
-                                                className="absolute top-0 right-0 h-full w-10 hover:bg-transparent"
-                                                onClick={() =>
-                                                    field.handleChange(
-                                                        generatePassword(),
-                                                    )
-                                                }
-                                                title={t('generate')}
-                                            >
-                                                <Dices className="text-muted-foreground hover:text-foreground h-4 w-4 transition-colors" />
-                                            </Button>
-                                        </div>
+                                        <PasswordGenerator
+                                            inline
+                                            defaultValue={field.state.value}
+                                            onPasswordGenerate={
+                                                field.handleChange
+                                            }
+                                            className="w-full"
+                                        />
                                         <FieldError
                                             errors={field.state.meta.errors.map(
                                                 e => ({

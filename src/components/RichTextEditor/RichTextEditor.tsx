@@ -1,5 +1,4 @@
 import { type ReactElement, useEffect, useRef } from 'react';
-import { useTranslation } from 'react-i18next';
 import Color from '@tiptap/extension-color';
 import FontFamily from '@tiptap/extension-font-family';
 import Highlight from '@tiptap/extension-highlight';
@@ -18,6 +17,7 @@ import Underline from '@tiptap/extension-underline';
 import Youtube from '@tiptap/extension-youtube';
 import { EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
+import { useTranslation } from 'react-i18next';
 import { cn } from 'ui/lib/utils';
 import Toolbar from './Toolbar';
 
@@ -113,7 +113,7 @@ const RichTextEditor = ({
             className={cn(
                 'focus-within:ring-ring flex flex-col overflow-hidden',
                 editable
-                    ? 'rounded-md border shadow-sm focus-within:ring-1 transition-all duration-200'
+                    ? 'rounded-md border shadow-sm transition-all duration-200 focus-within:ring-1'
                     : 'bg-transparent',
             )}
         >

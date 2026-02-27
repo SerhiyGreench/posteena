@@ -259,7 +259,7 @@ export default function Header({ scrolled }: HeaderProps): ReactElement {
                                     onClick={() => {
                                         setOpen(!open);
                                     }}
-                                    className="extend-touch-target h-8 touch-manipulation items-center justify-start gap-2.5 p-0! pt-3! hover:bg-transparent focus-visible:bg-transparent focus-visible:ring-0 active:bg-transparent sm:pt-1! dark:hover:bg-transparent"
+                                    className="extend-touch-target h-8 touch-manipulation items-center justify-start gap-2.5 p-0! hover:bg-transparent focus-visible:bg-transparent focus-visible:ring-0 active:bg-transparent sm:pt-1! dark:hover:bg-transparent"
                                 >
                                     <div className="relative flex h-8 w-5 items-center justify-center">
                                         <div className="relative size-5">
@@ -315,10 +315,10 @@ export default function Header({ scrolled }: HeaderProps): ReactElement {
                                                 {t('home')}
                                             </MobileLink>
                                             <MobileLink
-                                                to={Routes.PasswordManager}
+                                                to={Routes.Passwords}
                                                 onOpenChange={setOpen}
                                             >
-                                                {t(Messages.PasswordManager)}
+                                                {t('features.passwords.name')}
                                             </MobileLink>
                                             <MobileLink
                                                 to={Routes.Notes}
@@ -405,7 +405,9 @@ export default function Header({ scrolled }: HeaderProps): ReactElement {
                                         </div>
                                         <div className="flex flex-col gap-4">
                                             <div className="flex items-center gap-5">
-                                                {renderLanguageSwitcher('start')}
+                                                {renderLanguageSwitcher(
+                                                    'start',
+                                                )}
                                                 <span className="shrink-0 text-2xl font-medium">
                                                     {t('language')}
                                                 </span>

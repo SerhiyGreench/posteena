@@ -32,7 +32,6 @@ export const Translations = {
             system: 'System',
         },
         notFound: 'Page Not Found',
-        passwordManager: 'Password Manager',
         login: 'Login',
         loginWithGoogle: 'Login with Google',
         logout: 'Logout',
@@ -45,6 +44,15 @@ export const Translations = {
         username: 'Username',
         password: 'Password',
         generate: 'Generate',
+        passwordGenerator: {
+            title: 'Password Generator',
+            placeholder: 'Generated password',
+            length: 'Length',
+            letters: 'Letters',
+            digits: 'Digits',
+            symbols: 'Symbols',
+            customAlphabet: 'Custom Alphabet',
+        },
         save: 'Save',
         cancel: 'Cancel',
         delete: 'Delete',
@@ -102,6 +110,7 @@ export const Translations = {
             battery: 'Battery',
             level: 'Level',
             charging: 'Charging',
+            discharging: 'Discharging',
             yes: 'Yes',
             no: 'No',
             enabled: 'Enabled',
@@ -196,8 +205,8 @@ export const Translations = {
             invalidEmail: 'Invalid email address',
         },
         features: {
-            passwordManager: {
-                name: 'Password Manager',
+            passwords: {
+                name: 'Passwords',
                 description:
                     'Securely store and manage your passwords with client-side encryption.',
             },
@@ -257,7 +266,6 @@ export const Translations = {
             system: 'Системна',
         },
         notFound: 'Сторінку не знайдено',
-        passwordManager: 'Менеджер паролів',
         login: 'Увійти',
         loginWithGoogle: 'Увійти через Google',
         logout: 'Вийти',
@@ -270,6 +278,15 @@ export const Translations = {
         username: 'Ім’я користувача',
         password: 'Пароль',
         generate: 'Згенерувати',
+        passwordGenerator: {
+            title: 'Генератор паролів',
+            placeholder: 'Згенерований пароль',
+            length: 'Довжина',
+            letters: 'Літери',
+            digits: 'Цифри',
+            symbols: 'Символи',
+            customAlphabet: 'Власний алфавіт',
+        },
         save: 'Зберегти',
         cancel: 'Скасувати',
         delete: 'Видалити',
@@ -353,6 +370,7 @@ export const Translations = {
             screenDpi: 'DPI',
             points: 'точок',
             supported: 'Підтримується',
+            notSupported: 'Не підтримується',
             publicIp: 'Публічний IPv4/IPv6',
             location: 'Місцезнаходження',
             latitude: 'Широта',
@@ -402,7 +420,7 @@ export const Translations = {
         insertLink: 'Вставити посилання',
         insertImage: 'Вставити URL зображення',
         insertYoutube: 'Вставити YouTube відео',
-        alignLeft: 'Вирівняти ліворуд',
+        alignLeft: 'Вирівняти ліворуч',
         alignCenter: 'Вирівняти по центру',
         alignRight: 'Вирівняти праворуч',
         alignJustify: 'Вирівняти по ширині',
@@ -422,8 +440,8 @@ export const Translations = {
             invalidEmail: 'Некоректний email',
         },
         features: {
-            passwordManager: {
-                name: 'Менеджер паролів',
+            passwords: {
+                name: 'Паролі',
                 description:
                     'Надійно зберігайте та керуйте своїми паролями за допомогою клієнтського шифрування.',
             },

@@ -2,7 +2,7 @@ export const Routes = {
     Home: '/',
     CreatePost: '/create-post',
     PostPreview: '/post',
-    PasswordManager: '/password-manager',
+    Passwords: '/password-manager',
     DigitalFootprint: '/digital-footprint',
     Notes: '/notes',
 } as const;

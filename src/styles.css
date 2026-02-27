@@ -150,7 +150,8 @@ body,
         scrollbar-color: var(--muted-foreground) transparent;
     }
 
-    button {
+    button,
+    [role='checkbox'] {
         cursor: pointer;
     }
 
@@ -183,22 +184,22 @@ body,
     }
     /* Typography Overrides for Code Blocks (Shadcn-like) */
     .prose pre {
-        @apply bg-muted/50 border border-border rounded-lg p-4 my-4 overflow-x-auto;
+        @apply bg-muted/50 border-border my-4 overflow-x-auto rounded-lg border p-4;
     }
 
     .prose pre code {
-        @apply bg-transparent border-0 p-0 rounded-none font-mono text-sm leading-relaxed;
+        @apply rounded-none border-0 bg-transparent p-0 font-mono text-sm leading-relaxed;
         color: inherit;
     }
 
     .prose :not(pre) > code {
-        @apply bg-muted/80 border border-border/50 rounded px-1.5 py-0.5 font-mono text-[0.9em] font-medium;
+        @apply bg-muted/80 border-border/50 rounded border px-1.5 py-0.5 font-mono text-[0.9em] font-medium;
         color: var(--foreground);
     }
 
     .prose :not(pre) > code::before,
     .prose :not(pre) > code::after {
-        content: "" !important;
+        content: '' !important;
     }
 }
 
@@ -217,5 +218,18 @@ body,
     }
     .scrollbar-hide::-webkit-scrollbar {
         display: none; /* Chrome, Safari and Opera */
+    }
+
+    [data-slot='collapsible-content'] {
+        overflow: hidden;
+        transition: height 0.3s ease-out;
+    }
+
+    [data-slot='collapsible-content'][data-state='open'] {
+        height: var(--base-collapsible-panel-height);
+    }
+
+    [data-slot='collapsible-content'][data-state='closed'] {
+        height: 0;
     }
 }

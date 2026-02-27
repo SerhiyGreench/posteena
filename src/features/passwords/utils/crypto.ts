@@ -88,11 +88,52 @@ export async function decrypt(
     return new TextDecoder().decode(decrypted);
 }
 
-export function generatePassword(length = 16): string {
-    const charset =
-        'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+~`|}{[]:;?><,./-=';
+export interface PasswordGeneratorSettings {
+    length: number;
+    includeLetters: boolean;
+    includeDigits: boolean;
+    includeSymbols: boolean;
+    customAlphabet?: string;
+}
+
+export const DEFAULT_PASSWORD_SETTINGS: PasswordGeneratorSettings = {
+    length: 16,
+    includeLetters: true,
+    includeDigits: true,
+    includeSymbols: false,
+};
+
+export const ALPHABETS = {
+    letters: 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',
+    digits: '0123456789',
+    symbols: '!@#$%^&*()_+~`|}{[]:;?><,./-=',
+};
+
+export function generatePassword(
+    settings: PasswordGeneratorSettings = DEFAULT_PASSWORD_SETTINGS,
+): string {
+    let charset = '';
+
+    if (settings.customAlphabet && settings.customAlphabet.length > 0) {
+        charset = settings.customAlphabet;
+    } else {
+        if (settings.includeLetters) {
+            charset += ALPHABETS.letters;
+        }
+        if (settings.includeDigits) {
+            charset += ALPHABETS.digits;
+        }
+        if (settings.includeSymbols) {
+            charset += ALPHABETS.symbols;
+        }
+    }
+
+    if (charset.length === 0) {
+        charset = ALPHABETS.letters + ALPHABETS.digits;
+    }
+
     let retVal = '';
-    for (let i = 0, n = charset.length; i < length; ++i) {
+    for (let i = 0, n = charset.length; i < settings.length; ++i) {
         retVal += charset.charAt(
             Math.floor(crypto.getRandomValues(new Uint32Array(1))[0] % n),
         );

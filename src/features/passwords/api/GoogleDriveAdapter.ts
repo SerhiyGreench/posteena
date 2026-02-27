@@ -2,7 +2,7 @@ import type {
     GroupMetadata,
     PasswordGroup,
     StorageAdapter,
-} from '@/features/password-manager/types';
+} from '@/features/passwords/types';
 import { Storage } from '@/lib/Storage';
 
 declare const gapi: {

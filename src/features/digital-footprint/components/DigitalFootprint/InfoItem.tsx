@@ -28,9 +28,11 @@ export default function InfoItem({
                 </span>
                 <div className="mt-1.5 min-w-0">
                     {isLoading ? (
-                        <div className="space-y-2">
-                            <Skeleton className="h-5 w-3/4" />
-                            {subValue && <Skeleton className="h-3 w-1/2" />}
+                        <div className="flex flex-col gap-0.5 py-0.5">
+                            <Skeleton className="h-5.25 w-3/4" />
+                            {subValue !== undefined && (
+                                <Skeleton className="h-2.5 w-1/2 mt-0.5" />
+                            )}
                         </div>
                     ) : (
                         <>

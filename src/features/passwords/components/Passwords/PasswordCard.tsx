@@ -5,7 +5,7 @@ import { Button } from 'ui/button';
 import { Card, CardContent } from 'ui/card';
 import { Tooltip, TooltipContent, TooltipTrigger } from 'ui/tooltip';
 import { FeedbackTooltip } from '@/components/FeedbackTooltip';
-import type { PasswordItem } from '@/features/password-manager/types';
+import type { PasswordItem } from '@/features/passwords/types';
 
 export interface PasswordCardProps {
     item: PasswordItem;
@@ -29,7 +29,7 @@ export default function PasswordCard({
     };
 
     return (
-        <Card className="group relative h-50 overflow-hidden border-none transition-colors dark:bg-black">
+        <Card className="group relative h-48 overflow-hidden border-none transition-colors dark:bg-black">
             <CardContent className="space-y-3 px-6.5 pt-3">
                 <div className="flex items-start justify-between gap-2">
                     <div className="min-w-0 flex-1">
@@ -86,7 +86,7 @@ export default function PasswordCard({
                     </div>
 
                     <div className="group/password-box flex items-center justify-between gap-2 py-1">
-                        <code className="truncate font-mono text-sm">
+                        <code className="min-w-0 flex-1 truncate font-mono text-sm">
                             {showPassword ? item.password : '••••••••••••'}
                         </code>
                         <div className="flex shrink-0 items-center gap-1">

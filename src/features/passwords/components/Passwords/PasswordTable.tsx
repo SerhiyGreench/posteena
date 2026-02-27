@@ -27,7 +27,7 @@ import {
 } from 'ui/table';
 import { Tooltip, TooltipContent, TooltipTrigger } from 'ui/tooltip';
 import { FeedbackTooltip } from '@/components/FeedbackTooltip';
-import type { PasswordItem } from '@/features/password-manager/types';
+import type { PasswordItem } from '@/features/passwords/types';
 
 export interface PasswordTableProps {
     items: PasswordItem[];
@@ -112,7 +112,7 @@ export default function PasswordTable({
                                 {renderSortIcon('username')}
                             </div>
                         </TableHead>
-                        <TableHead>{t('password')}</TableHead>
+                        <TableHead className="w-60">{t('password')}</TableHead>
                         <TableHead className="text-right">
                             {t('actions') || 'Actions'}
                         </TableHead>
@@ -127,8 +127,8 @@ export default function PasswordTable({
                             <TableCell>{item.email}</TableCell>
                             <TableCell>{item.username}</TableCell>
                             <TableCell>
-                                <div className="flex items-center gap-2">
-                                    <code className="min-w-[120px] font-mono text-sm">
+                                <div className="flex w-60 items-center gap-2">
+                                    <code className="flex-1 truncate font-mono text-sm">
                                         {visiblePasswords[item.id]
                                             ? item.password
                                             : '••••••••••••'}

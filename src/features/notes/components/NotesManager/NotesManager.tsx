@@ -232,8 +232,10 @@ export default function NotesManager(): ReactElement {
                                 onClick={handleCreate}
                                 className="bg-primary text-primary-foreground h-9 w-fit rounded-lg px-3 text-xs font-bold"
                             >
-                                <Plus className="sm:mr-1.5 h-3.5 w-3.5" />
-                                <span className="sm:inline-block hidden">{t('notes.newNote')}</span>
+                                <Plus className="h-3.5 w-3.5 sm:mr-1.5" />
+                                <span className="hidden sm:inline-block">
+                                    {t('notes.newNote')}
+                                </span>
                             </Button>
                         </div>
                         <div className="relative shrink-0">
@@ -246,7 +248,7 @@ export default function NotesManager(): ReactElement {
                             {searchTerm && (
                                 <button
                                     onClick={() => setSearchTerm('')}
-                                    className="text-muted-foreground hover:text-foreground absolute right-2 top-1/2 -translate-y-1/2"
+                                    className="text-muted-foreground hover:text-foreground absolute top-1/2 right-2 -translate-y-1/2"
                                 >
                                     <Plus className="size-4 rotate-45" />
                                 </button>
@@ -283,8 +285,12 @@ export default function NotesManager(): ReactElement {
                                                     className={cn(
                                                         'cursor-pointer border-none px-3 py-3 transition-all duration-200',
                                                         selectedId === n.id
-                                                            ? selectedBgClasses[n.color]
-                                                            : bgClasses[n.color],
+                                                            ? selectedBgClasses[
+                                                                  n.color
+                                                              ]
+                                                            : bgClasses[
+                                                                  n.color
+                                                              ],
                                                     )}
                                                     onClick={() => select(n.id)}
                                                 >
@@ -293,29 +299,45 @@ export default function NotesManager(): ReactElement {
                                                             <div
                                                                 className={cn(
                                                                     'h-10 w-1 rounded-full',
-                                                                    colorClasses[n.color],
+                                                                    colorClasses[
+                                                                        n.color
+                                                                    ],
                                                                 )}
                                                             />
                                                         </div>
                                                         <ItemContent className="min-w-0">
                                                             <ItemTitle className="block w-full truncate text-base leading-tight font-bold">
-                                                                {n.title || t('notes.untitled')}
+                                                                {n.title ||
+                                                                    t(
+                                                                        'notes.untitled',
+                                                                    )}
                                                             </ItemTitle>
                                                             <ItemDescription className="text-muted-foreground mt-1 line-clamp-2 text-[13px] leading-snug break-words">
-                                                                {previewText(n.contentHtml) ||
-                                                                    t('notes.noContentPreview')}
+                                                                {previewText(
+                                                                    n.contentHtml,
+                                                                ) ||
+                                                                    t(
+                                                                        'notes.noContentPreview',
+                                                                    )}
                                                             </ItemDescription>
                                                             <div className="text-muted-foreground mt-2 flex items-center gap-1.5 truncate text-[11px] font-medium tracking-wide opacity-70">
                                                                 <CalendarClock className="size-3 shrink-0" />
                                                                 <span className="shrink-0">
-                                                                    {t('updated')}
+                                                                    {t(
+                                                                        'updated',
+                                                                    )}
                                                                     {':'}
                                                                 </span>
                                                                 <span className="truncate">
-                                                                    {formatDistanceToNow(new Date(n.updatedAt), {
-                                                                        addSuffix: true,
-                                                                        locale: dateLocale,
-                                                                    })}
+                                                                    {formatDistanceToNow(
+                                                                        new Date(
+                                                                            n.updatedAt,
+                                                                        ),
+                                                                        {
+                                                                            addSuffix: true,
+                                                                            locale: dateLocale,
+                                                                        },
+                                                                    )}
                                                                 </span>
                                                             </div>
                                                         </ItemContent>
@@ -361,7 +383,7 @@ export default function NotesManager(): ReactElement {
                                             ))}
                                         </div>
 
-                                        <div className="flex flex-1 justify-end items-center gap-1">
+                                        <div className="flex flex-1 items-center justify-end gap-1">
                                             <Button
                                                 variant="ghost"
                                                 size="sm"
@@ -398,11 +420,15 @@ export default function NotesManager(): ReactElement {
                                                     variant="ghost"
                                                     size="sm"
                                                     className="h-8 flex-1 px-2 sm:flex-none"
-                                                    onClick={handleCopyFormatted}
+                                                    onClick={
+                                                        handleCopyFormatted
+                                                    }
                                                 >
                                                     <Copy className="size-4 sm:mr-2" />{' '}
                                                     <span className="hidden sm:inline">
-                                                        {t('notes.copyFormatted')}
+                                                        {t(
+                                                            'notes.copyFormatted',
+                                                        )}
                                                     </span>
                                                 </Button>
                                             </FeedbackTooltip>
@@ -410,8 +436,10 @@ export default function NotesManager(): ReactElement {
                                             <Button
                                                 variant="ghost"
                                                 size="sm"
-                                                className="h-8 flex-1 text-destructive hover:bg-destructive/10 hover:text-destructive px-2 sm:flex-none"
-                                                onClick={() => void remove(current.id)}
+                                                className="text-destructive hover:bg-destructive/10 hover:text-destructive h-8 flex-1 px-2 sm:flex-none"
+                                                onClick={() =>
+                                                    void remove(current.id)
+                                                }
                                             >
                                                 <Trash className="size-4 sm:mr-2" />{' '}
                                                 <span className="hidden sm:inline">

@@ -1,15 +1,15 @@
 import { useCallback, useEffect, useState } from 'react';
 import config from '@/config';
-import { GoogleDriveAdapter } from '@/features/password-manager/api/GoogleDriveAdapter';
+import { GoogleDriveAdapter } from '@/features/passwords/api/GoogleDriveAdapter';
 import type {
     GroupMetadata,
     PasswordGroup,
     StorageAdapter,
-} from '@/features/password-manager/types';
-import { decrypt, encrypt } from '@/features/password-manager/utils/crypto';
+} from '@/features/passwords/types';
+import { decrypt, encrypt } from '@/features/passwords/utils/crypto';
 import { Storage } from '@/lib/Storage';
 
-export function usePasswordManager(): {
+export function usePasswords(): {
     isAuthenticated: boolean;
     groups: GroupMetadata[];
     loading: boolean;
