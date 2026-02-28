@@ -1,8 +1,8 @@
-import { type ReactElement, type UIEvent, useState } from 'react';
+import { type ReactElement, type UIEvent, useEffect, useState } from 'react';
 import { TanStackDevtools } from '@tanstack/react-devtools';
 import { Outlet, createRootRoute } from '@tanstack/react-router';
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools';
-import { ThemeProvider } from 'next-themes';
+import { ThemeProvider, useTheme } from 'next-themes';
 import { TooltipProvider } from 'ui/tooltip';
 import Header from '@/components/Header';
 import '@/i18n';
@@ -10,6 +10,25 @@ import '@/i18n';
 export const Route = createRootRoute({
     component: RootLayout,
 });
+
+function ThemeColor(): null {
+    const { theme, resolvedTheme } = useTheme();
+
+    useEffect(() => {
+        const currentTheme = resolvedTheme || theme;
+        const color = currentTheme === 'dark' ? '#000000' : '#ffffff';
+
+        let meta = document.querySelector('meta[name="theme-color"]');
+        if (!meta) {
+            meta = document.createElement('meta');
+            meta.setAttribute('name', 'theme-color');
+            document.head.appendChild(meta);
+        }
+        meta.setAttribute('content', color);
+    }, [theme, resolvedTheme]);
+
+    return null;
+}
 
 function RootLayout(): ReactElement {
     const [scrolled, setScrolled] = useState(false);
@@ -27,6 +46,7 @@ function RootLayout(): ReactElement {
                 storageKey="theme"
                 disableTransitionOnChange
             >
+                <ThemeColor />
                 <div
                     className="relative flex flex-col overflow-hidden"
                     style={{ height: 'var(--screen-height, 100vh)' }}
@@ -34,7 +54,7 @@ function RootLayout(): ReactElement {
                     <Header scrolled={scrolled} />
                     <div
                         id="app-container"
-                        className="flex-1 overflow-y-auto"
+                        className="flex-1 overflow-y-auto pb-10 md:pb-0"
                         onScroll={onScroll}
                     >
                         <Outlet />

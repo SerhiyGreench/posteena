@@ -1,18 +1,7 @@
 import { type ChangeEvent, type ReactElement, useMemo, useState } from 'react';
 import { formatDistanceToNow } from 'date-fns';
 import { enUS, uk } from 'date-fns/locale';
-import {
-    CalendarClock,
-    CloudOff,
-    CloudUpload,
-    Copy,
-    Edit3,
-    Eye,
-    NotebookPen,
-    Plus,
-    RefreshCw,
-    Trash,
-} from 'lucide-react';
+import { CalendarClock, CloudOff, CloudUpload, Copy, Edit3, Eye, NotebookPen, Plus, RefreshCw, Trash } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Button } from 'ui/button';
 import { Card, CardContent } from 'ui/card';
@@ -27,6 +16,26 @@ import RichTextEditor from '@/components/RichTextEditor/RichTextEditor';
 import { ScrollArea } from '@/components/enhanced/scroll-area-enhanced';
 import { useNotes } from '@/features/notes/hooks/useNotes';
 import type { Note, NoteColor } from '@/features/notes/types';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 const colorClasses: Record<NoteColor, string> = {
     green: 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.4)]',
@@ -205,7 +214,7 @@ export default function NotesManager(): ReactElement {
                 </div>
             </div>
 
-            <div className="flex flex-col items-start gap-6 md:h-[calc(100vh-11rem)] md:flex-row">
+            <div className="flex max-h-96 flex-col items-start gap-6 md:h-[calc(100vh-11rem)] md:flex-row">
                 <Card className="flex h-full min-h-0 w-full shrink-0 flex-col overflow-hidden md:sticky md:top-4 md:w-80">
                     <CardContent className="flex min-h-0 flex-1 flex-col space-y-4 overflow-hidden px-0 pb-0">
                         <div className="flex shrink-0 items-center justify-between gap-2 px-3 pt-3">

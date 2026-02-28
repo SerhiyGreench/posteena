@@ -1,30 +1,27 @@
 import { type DragEvent, type ReactElement, useState } from 'react';
-import {
-    ChevronDown,
-    ChevronRight,
-    CloudUpload,
-    Edit,
-    FileText,
-    Folder,
-    GripVertical,
-    MoreVertical,
-    RefreshCw,
-    Trash,
-} from 'lucide-react';
+import { ChevronDown, ChevronRight, CloudUpload, Edit, FileText, Folder, GripVertical, MoreVertical, RefreshCw, Trash } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Button } from 'ui/button';
 import { Card, CardContent } from 'ui/card';
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-} from 'ui/dropdown-menu';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from 'ui/dropdown-menu';
 import { Input } from 'ui/input';
 import { cn } from 'ui/lib/utils';
 import { Skeleton } from 'ui/skeleton';
 import { ScrollArea } from '@/components/enhanced/scroll-area-enhanced';
 import type { Knowledge, KnowledgeChapter } from '@/features/knowledge/types';
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 interface KnowledgeSidebarProps {
     knowledge: Knowledge;
@@ -457,7 +454,7 @@ export default function KnowledgeSidebar({
         .sort((a, b) => a.order - b.order);
 
     return (
-        <div className="flex w-full shrink-0 flex-col gap-6 md:sticky md:h-[calc(100vh-11rem)] md:w-80">
+        <div className="flex max-h-96 w-full shrink-0 flex-col gap-6 md:sticky md:h-[calc(100vh-11rem)] md:w-80">
             <Card className="flex min-h-0 flex-1 flex-col overflow-hidden">
                 <CardContent className="flex min-h-0 flex-1 flex-col space-y-4 overflow-hidden px-0 pb-0">
                     <div className="flex shrink-0 flex-col gap-2 px-3 pt-3">
