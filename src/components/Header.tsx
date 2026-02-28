@@ -315,16 +315,16 @@ export default function Header({ scrolled }: HeaderProps): ReactElement {
                                                 {t('home')}
                                             </MobileLink>
                                             <MobileLink
-                                                to={Routes.Passwords}
-                                                onOpenChange={setOpen}
-                                            >
-                                                {t('features.passwords.name')}
-                                            </MobileLink>
-                                            <MobileLink
                                                 to={Routes.Notes}
                                                 onOpenChange={setOpen}
                                             >
                                                 {t('features.notes.name')}
+                                            </MobileLink>
+                                            <MobileLink
+                                                to={Routes.Passwords}
+                                                onOpenChange={setOpen}
+                                            >
+                                                {t('features.passwords.name')}
                                             </MobileLink>
                                             <MobileLink
                                                 to={Routes.Knowledge}
