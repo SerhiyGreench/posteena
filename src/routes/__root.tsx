@@ -5,6 +5,7 @@ import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools';
 import { ThemeProvider, useTheme } from 'next-themes';
 import { TooltipProvider } from 'ui/tooltip';
 import Header from '@/components/Header';
+import { LayoutProvider } from '@/hooks/useLayout';
 import '@/i18n';
 
 export const Route = createRootRoute({
@@ -39,42 +40,44 @@ function RootLayout(): ReactElement {
 
     return (
         <TooltipProvider>
-            <ThemeProvider
-                attribute="class"
-                defaultTheme="dark"
-                enableSystem
-                storageKey="theme"
-                disableTransitionOnChange
-            >
-                <ThemeColor />
-                <div
-                    className="relative flex flex-col overflow-hidden"
-                    style={{ height: 'var(--screen-height, 100vh)' }}
+            <LayoutProvider>
+                <ThemeProvider
+                    attribute="class"
+                    defaultTheme="dark"
+                    enableSystem
+                    storageKey="theme"
+                    disableTransitionOnChange
                 >
-                    <Header scrolled={scrolled} />
+                    <ThemeColor />
                     <div
-                        id="app-container"
-                        className="flex-1 overflow-y-auto"
-                        onScroll={onScroll}
+                        className="relative flex flex-col overflow-hidden"
+                        style={{ height: 'var(--screen-height, 100vh)' }}
                     >
-                        <Outlet />
-                        <div className="h-20 shrink-0 md:hidden" />
+                        <Header scrolled={scrolled} />
+                        <div
+                            id="app-container"
+                            className="flex-1 overflow-y-auto"
+                            onScroll={onScroll}
+                        >
+                            <Outlet />
+                            <div className="h-20 shrink-0 md:hidden" />
+                        </div>
                     </div>
-                </div>
-                <TanStackDevtools
-                    config={{
-                        inspectHotkey: ['Control', 'Meta'],
-                        theme: 'dark',
-                        hideUntilHover: true,
-                    }}
-                    plugins={[
-                        {
-                            name: 'Tanstack Router',
-                            render: <TanStackRouterDevtoolsPanel />,
-                        },
-                    ]}
-                />
-            </ThemeProvider>
+                    <TanStackDevtools
+                        config={{
+                            inspectHotkey: ['Control', 'Meta'],
+                            theme: 'dark',
+                            hideUntilHover: true,
+                        }}
+                        plugins={[
+                            {
+                                name: 'Tanstack Router',
+                                render: <TanStackRouterDevtoolsPanel />,
+                            },
+                        ]}
+                    />
+                </ThemeProvider>
+            </LayoutProvider>
         </TooltipProvider>
     );
 }

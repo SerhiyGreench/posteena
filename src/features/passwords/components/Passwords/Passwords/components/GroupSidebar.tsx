@@ -67,7 +67,7 @@ export function GroupSidebar({
     });
 
     return (
-        <div className="flex w-full shrink-0 flex-col gap-6 md:sticky md:h-[calc(100vh-11rem)] md:w-80">
+        <div className="flex w-full shrink-0 flex-col gap-6 md:sticky md:max-h-[calc(100vh-11rem)] md:w-80">
             <PasswordGenerator className="w-full shrink-0" />
             <Card className="flex max-h-96 min-h-0 flex-1 flex-col overflow-hidden md:max-h-[unset]">
                 <CardHeader>

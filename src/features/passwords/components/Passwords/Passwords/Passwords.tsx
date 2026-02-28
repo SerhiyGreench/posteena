@@ -3,6 +3,7 @@ import { Key, Loader2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Card } from 'ui/card';
 import LoginScreen from '@/components/LoginScreen';
+import { PageContainer } from '@/components/PageContainer';
 import { GroupSidebar } from '@/features/passwords/components/Passwords/Passwords/components/GroupSidebar';
 import { MainContent } from '@/features/passwords/components/Passwords/Passwords/components/MainContent';
 import { MainHeader } from '@/features/passwords/components/Passwords/Passwords/components/MainHeader';
@@ -65,7 +66,7 @@ export default function Passwords(): ReactElement {
     }
 
     return (
-        <div className="flex h-full w-full flex-col space-y-6 px-4 py-4 md:px-8">
+        <PageContainer className="flex h-full flex-col space-y-6 px-4 py-4 md:px-8">
             <div className="flex shrink-0 items-center justify-between">
                 <div className="flex items-center gap-3 md:gap-4">
                     <Key className="text-primary size-8 shrink-0" />
@@ -136,6 +137,6 @@ export default function Passwords(): ReactElement {
                     />
                 </Card>
             </div>
-        </div>
+        </PageContainer>
     );
 }

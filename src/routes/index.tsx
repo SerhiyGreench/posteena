@@ -3,6 +3,7 @@ import { createFileRoute } from '@tanstack/react-router';
 import { BookOpen, Fingerprint, Key, NotebookPen } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import FeatureCard from '@/components/Home/FeatureCard';
+import { PageContainer } from '@/components/PageContainer';
 import { Messages } from '@/constants/Messages';
 import { Routes } from '@/constants/Routes';
 
@@ -50,7 +51,7 @@ function App(): ReactElement {
     ];
 
     return (
-        <main className="mx-auto flex w-full max-w-7xl flex-col items-center justify-center p-6 md:p-12">
+        <PageContainer className="flex flex-col items-center justify-center p-6 md:p-12">
             <div className="mb-16 max-w-2xl text-center">
                 <p className="text-muted-foreground text-lg leading-relaxed">
                     {t(Messages.Description)}
@@ -70,6 +71,6 @@ function App(): ReactElement {
                     />
                 ))}
             </div>
-        </main>
+        </PageContainer>
     );
 }

@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Card } from 'ui/card';
 import { Skeleton } from 'ui/skeleton';
 import LoginScreen from '@/components/LoginScreen';
+import { PageContainer } from '@/components/PageContainer';
 import { useKnowledge } from '@/features/knowledge/hooks/useKnowledge';
 import KnowledgeEditor from './KnowledgeEditor';
 import KnowledgeSidebar from './KnowledgeSidebar/KnowledgeSidebar';
@@ -76,7 +77,7 @@ export default function KnowledgeManager(): ReactElement {
     }
 
     return (
-        <div className="flex h-full w-full flex-col space-y-6 px-4 py-4 md:px-8">
+        <PageContainer className="flex h-full flex-col space-y-6 px-4 py-4 md:px-8">
             <div className="flex shrink-0 items-center justify-between">
                 <div className="flex items-center gap-3 md:gap-4">
                     <BookOpen className="text-primary size-8 shrink-0" />
@@ -131,6 +132,6 @@ export default function KnowledgeManager(): ReactElement {
                     )}
                 </main>
             </div>
-        </div>
+        </PageContainer>
     );
 }

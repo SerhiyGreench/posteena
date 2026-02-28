@@ -12,10 +12,32 @@ import { cn } from 'ui/lib/utils';
 import { Skeleton } from 'ui/skeleton';
 import { FeedbackTooltip } from '@/components/FeedbackTooltip';
 import LoginScreen from '@/components/LoginScreen';
+import { PageContainer } from '@/components/PageContainer';
 import RichTextEditor from '@/components/RichTextEditor/RichTextEditor';
 import { ScrollArea } from '@/components/enhanced/scroll-area-enhanced';
 import { useNotes } from '@/features/notes/hooks/useNotes';
 import type { Note, NoteColor } from '@/features/notes/types';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -204,7 +226,7 @@ export default function NotesManager(): ReactElement {
     }
 
     return (
-        <div className="flex h-full w-full flex-col space-y-6 px-4 py-4 md:px-8">
+        <PageContainer className="flex h-full flex-col space-y-6 px-4 py-4 md:px-8">
             <div className="flex shrink-0 flex-wrap items-center justify-between gap-4">
                 <div className="flex items-center gap-3 md:gap-4">
                     <NotebookPen className="text-primary size-8 shrink-0" />
@@ -214,7 +236,7 @@ export default function NotesManager(): ReactElement {
                 </div>
             </div>
 
-            <div className="flex max-h-96 flex-col items-start gap-6 md:h-[calc(100vh-11rem)] md:flex-row">
+            <div className="flex max-h-96 flex-col items-start gap-6 md:max-h-[calc(100vh-11rem)] md:flex-row">
                 <Card className="flex h-full min-h-0 w-full shrink-0 flex-col overflow-hidden md:sticky md:top-4 md:w-80">
                     <CardContent className="flex min-h-0 flex-1 flex-col space-y-4 overflow-hidden px-0 pb-0">
                         <div className="flex shrink-0 items-center justify-between gap-2 px-3 pt-3">
@@ -532,6 +554,6 @@ export default function NotesManager(): ReactElement {
                     )}
                 </div>
             </div>
-        </div>
+        </PageContainer>
     );
 }

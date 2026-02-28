@@ -28,6 +28,7 @@ import {
     CardTitle,
 } from 'ui/card';
 import { FeedbackTooltip } from '@/components/FeedbackTooltip';
+import { PageContainer } from '@/components/PageContainer';
 import InfoItem from './InfoItem';
 
 interface FootprintData {
@@ -497,7 +498,7 @@ ${t('digitalFootprint.longitude')}: ${data.location.longitude}
     };
 
     return (
-        <div className="mx-auto max-w-6xl space-y-8 p-4 pb-20 md:p-8">
+        <PageContainer className="space-y-8 p-4 pb-20 md:p-8">
             <div className="flex flex-col items-center justify-between gap-6 md:flex-row md:items-end">
                 <div className="flex-1 space-y-2 text-center md:text-left">
                     <div className="flex flex-col items-center gap-3 md:flex-row md:gap-4">
@@ -809,6 +810,6 @@ ${t('digitalFootprint.longitude')}: ${data.location.longitude}
                     </CardContent>
                 </Card>
             </div>
-        </div>
+        </PageContainer>
     );
 }

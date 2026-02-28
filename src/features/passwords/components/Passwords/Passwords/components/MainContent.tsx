@@ -90,7 +90,7 @@ export function MainContent({
                 )}
 
             {viewMode === 'cards' && (
-                <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-3">
+                <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
                     {!isLoadingGroupItems &&
                         filteredAndSortedItems.map(item => (
                             <div

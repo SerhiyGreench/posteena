@@ -1,6 +1,14 @@
 import { type ReactElement, useState } from 'react';
 import { Link } from '@tanstack/react-router';
-import { Languages, LogOut, Moon, Sun, User as UserIcon } from 'lucide-react';
+import {
+    Languages,
+    LogOut,
+    Maximize,
+    Minimize,
+    Moon,
+    Sun,
+    User as UserIcon,
+} from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { useTranslation } from 'react-i18next';
 import { Avatar, AvatarFallback, AvatarImage } from 'ui/avatar';
@@ -27,6 +35,7 @@ import { Routes } from '@/constants/Routes';
 import { Themes } from '@/constants/Themes';
 import { Translations } from '@/constants/Translations';
 import { useAuth } from '@/hooks/useAuth';
+import { useLayout } from '@/hooks/useLayout';
 
 type Language = keyof typeof Translations;
 
@@ -38,6 +47,7 @@ interface HeaderProps {
 
 export default function Header({ scrolled }: HeaderProps): ReactElement {
     const { theme, setTheme } = useTheme();
+    const { isFullWidth, setIsFullWidth } = useLayout();
     const { t, i18n } = useTranslation();
     const [open, setOpen] = useState(false);
     const { isAuthenticated, user, logout } = useAuth();
@@ -136,6 +146,24 @@ export default function Header({ scrolled }: HeaderProps): ReactElement {
         </DropdownMenu>
     );
 
+    const renderLayoutSwitcher = (): ReactElement => (
+        <Button
+            variant="ghost"
+            size="icon"
+            className="extend-touch-target"
+            onClick={() => {
+                setIsFullWidth(!isFullWidth);
+            }}
+        >
+            {isFullWidth ? (
+                <Minimize className="size-5" />
+            ) : (
+                <Maximize className="size-5" />
+            )}
+            <span className="sr-only">{t('theme.fullWidth')}</span>
+        </Button>
+    );
+
     return (
         <header
             className={cn(
@@ -147,6 +175,9 @@ export default function Header({ scrolled }: HeaderProps): ReactElement {
             <div className="flex h-18 items-center justify-between gap-5 px-4 py-5">
                 <Link
                     to={Routes.Home}
+                    onClick={() => {
+                        setOpen(false);
+                    }}
                     className="min-w-0 flex-1 truncate text-4xl font-bold lowercase sm:flex-none"
                 >
                     {t(Messages.ProjectName)}
@@ -247,6 +278,7 @@ export default function Header({ scrolled }: HeaderProps): ReactElement {
                     {!open && (
                         <div className="hidden items-center gap-2.5 sm:flex">
                             {renderLanguageSwitcher('start')}
+                            {renderLayoutSwitcher()}
                             {renderThemeSwitcher('end')}
                         </div>
                     )}
@@ -422,6 +454,12 @@ export default function Header({ scrolled }: HeaderProps): ReactElement {
                                                 {renderThemeSwitcher('start')}
                                                 <span className="shrink-0 text-2xl font-medium">
                                                     {t('themeTitle')}
+                                                </span>
+                                            </div>
+                                            <div className="flex items-center gap-5">
+                                                {renderLayoutSwitcher()}
+                                                <span className="shrink-0 text-2xl font-medium">
+                                                    {t('theme.fullWidth')}
                                                 </span>
                                             </div>
                                         </div>
