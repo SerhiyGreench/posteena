@@ -54,10 +54,11 @@ function RootLayout(): ReactElement {
                     <Header scrolled={scrolled} />
                     <div
                         id="app-container"
-                        className="flex-1 overflow-y-auto pb-10 md:pb-0"
+                        className="flex-1 overflow-y-auto"
                         onScroll={onScroll}
                     >
                         <Outlet />
+                        <div className="h-20 shrink-0 md:hidden" />
                     </div>
                 </div>
                 <TanStackDevtools
