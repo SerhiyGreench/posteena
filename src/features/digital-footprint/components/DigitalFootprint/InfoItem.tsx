@@ -31,7 +31,7 @@ export default function InfoItem({
                         <div className="flex flex-col gap-0.5 py-0.5">
                             <Skeleton className="h-5.25 w-3/4" />
                             {subValue !== undefined && (
-                                <Skeleton className="h-2.5 w-1/2 mt-0.5" />
+                                <Skeleton className="mt-0.5 h-2.5 w-1/2" />
                             )}
                         </div>
                     ) : (

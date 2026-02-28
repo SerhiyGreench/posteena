@@ -1,4 +1,4 @@
-import { type ReactElement, useMemo, useState } from 'react';
+import { type ChangeEvent, type ReactElement, useMemo, useState } from 'react';
 import { formatDistanceToNow } from 'date-fns';
 import { enUS, uk } from 'date-fns/locale';
 import {
@@ -24,6 +24,7 @@ import { Skeleton } from 'ui/skeleton';
 import { FeedbackTooltip } from '@/components/FeedbackTooltip';
 import LoginScreen from '@/components/LoginScreen';
 import RichTextEditor from '@/components/RichTextEditor/RichTextEditor';
+import { ScrollArea } from '@/components/enhanced/scroll-area-enhanced';
 import { useNotes } from '@/features/notes/hooks/useNotes';
 import type { Note, NoteColor } from '@/features/notes/types';
 
@@ -194,8 +195,8 @@ export default function NotesManager(): ReactElement {
     }
 
     return (
-        <div className="w-full space-y-6 px-4 py-4 md:px-8">
-            <div className="flex flex-wrap items-center justify-between gap-4">
+        <div className="flex h-full w-full flex-col space-y-6 px-4 py-4 md:px-8">
+            <div className="flex shrink-0 flex-wrap items-center justify-between gap-4">
                 <div className="flex items-center gap-3 md:gap-4">
                     <NotebookPen className="text-primary size-8 shrink-0" />
                     <h1 className="text-2xl font-bold tracking-tight md:text-3xl lg:text-4xl">
@@ -204,10 +205,10 @@ export default function NotesManager(): ReactElement {
                 </div>
             </div>
 
-            <div className="flex flex-col items-start gap-6 md:flex-row">
-                <Card className="w-full shrink-0 md:sticky md:top-4 md:w-80">
-                    <CardContent className="flex max-h-96 flex-col space-y-4 p-3 md:max-h-[calc(100vh-240px)] md:min-h-0">
-                        <div className="flex shrink-0 items-center justify-between gap-2">
+            <div className="flex flex-col items-start gap-6 md:h-[calc(100vh-11rem)] md:flex-row">
+                <Card className="flex h-full min-h-0 w-full shrink-0 flex-col overflow-hidden md:sticky md:top-4 md:w-80">
+                    <CardContent className="flex min-h-0 flex-1 flex-col space-y-4 overflow-hidden px-0 pb-0">
+                        <div className="flex shrink-0 items-center justify-between gap-2 px-3 pt-3">
                             <Button
                                 variant="ghost"
                                 size="sm"
@@ -238,7 +239,7 @@ export default function NotesManager(): ReactElement {
                                 </span>
                             </Button>
                         </div>
-                        <div className="relative shrink-0">
+                        <div className="relative shrink-0 px-3">
                             <Input
                                 value={searchTerm}
                                 onChange={e => setSearchTerm(e.target.value)}
@@ -254,12 +255,24 @@ export default function NotesManager(): ReactElement {
                                 </button>
                             )}
                         </div>
-                        <div className="flex-1 overflow-y-auto">
+                        <ScrollArea className="min-h-0 flex-1 px-0">
                             {loading && notes.length === 0 ? (
-                                <div className="space-y-2">
-                                    <Skeleton className="h-14 w-full" />
-                                    <Skeleton className="h-14 w-full" />
-                                    <Skeleton className="h-14 w-full" />
+                                <div className="space-y-3 px-4 py-3">
+                                    {[1, 2, 3, 4, 5].map(i => (
+                                        <div
+                                            key={i}
+                                            className="bg-muted/20 flex w-full items-start gap-4 rounded-lg border-none px-3 py-4"
+                                        >
+                                            <div className="mt-1 shrink-0">
+                                                <Skeleton className="h-10 w-1 rounded-full" />
+                                            </div>
+                                            <div className="min-w-0 flex-1 space-y-2">
+                                                <Skeleton className="h-5 w-3/4" />
+                                                <Skeleton className="h-4 w-full" />
+                                                <Skeleton className="h-3 w-1/4 pt-1" />
+                                            </div>
+                                        </div>
+                                    ))}
                                 </div>
                             ) : notes.length === 0 ? (
                                 <div className="flex flex-col items-center justify-center p-8 text-center">
@@ -269,7 +282,7 @@ export default function NotesManager(): ReactElement {
                                     </div>
                                 </div>
                             ) : (
-                                <div className="space-y-1">
+                                <div className="space-y-1 px-4 py-1">
                                     {filteredNotes.length === 0 ? (
                                         <div className="flex flex-col items-center justify-center p-8 text-center">
                                             <CloudOff className="text-muted-foreground mb-4 size-12 opacity-20" />
@@ -348,12 +361,28 @@ export default function NotesManager(): ReactElement {
                                     )}
                                 </div>
                             )}
-                        </div>
+                        </ScrollArea>
                     </CardContent>
                 </Card>
 
-                <div className="w-full flex-1">
-                    {current ? (
+                <div className="w-full flex-1 overflow-visible">
+                    {loading && !current ? (
+                        <div className="space-y-4">
+                            <div className="flex items-center gap-2">
+                                <Skeleton className="h-10 w-48" />
+                                <div className="flex flex-1 justify-end gap-2">
+                                    <Skeleton className="h-8 w-24" />
+                                    <Skeleton className="h-8 w-24" />
+                                </div>
+                            </div>
+                            <Skeleton className="h-12 w-3/4" />
+                            <div className="space-y-2 pt-4">
+                                <Skeleton className="h-4 w-full" />
+                                <Skeleton className="h-4 w-full" />
+                                <Skeleton className="h-4 w-5/6" />
+                            </div>
+                        </div>
+                    ) : current ? (
                         <div className="space-y-3">
                             <div className="flex flex-wrap items-center gap-2">
                                 <div className="flex w-full items-center gap-1">
@@ -469,7 +498,7 @@ export default function NotesManager(): ReactElement {
                                             value={current.title}
                                             disabled={current.isPreserved}
                                             onChange={(
-                                                e: React.ChangeEvent<HTMLInputElement>,
+                                                e: ChangeEvent<HTMLInputElement>,
                                             ) => setTitle(e.target.value)}
                                             placeholder={t(
                                                 'notes.titlePlaceholder',

@@ -9,6 +9,7 @@ import { Field, FieldContent, FieldError, FieldLabel } from 'ui/field';
 import { Input } from 'ui/input';
 import { Item, ItemContent, ItemDescription, ItemTitle } from 'ui/item';
 import { Skeleton } from 'ui/skeleton';
+import { ScrollArea } from '@/components/enhanced/scroll-area-enhanced';
 import PasswordGenerator from '@/features/passwords/components/Passwords/PasswordGenerator';
 import type { GroupMetadata } from '@/features/passwords/types';
 
@@ -66,7 +67,7 @@ export function GroupSidebar({
     });
 
     return (
-        <div className="flex w-full flex-col gap-6 md:sticky md:h-[calc(100vh-11rem)] md:w-80">
+        <div className="flex w-full shrink-0 flex-col gap-6 md:sticky md:h-[calc(100vh-11rem)] md:w-80">
             <PasswordGenerator className="w-full shrink-0" />
             <Card className="flex max-h-96 min-h-0 flex-1 flex-col overflow-hidden md:max-h-[unset]">
                 <CardHeader>
@@ -74,80 +75,82 @@ export function GroupSidebar({
                         {t('passwordGroups')}
                     </CardTitle>
                 </CardHeader>
-                <CardContent className="flex min-h-0 flex-1 flex-col space-y-4">
-                    <form
-                        onSubmit={e => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            void groupForm.handleSubmit();
-                        }}
-                        className="flex shrink-0 gap-2"
-                    >
-                        <groupForm.Field
-                            name="name"
-                            validators={{
-                                onChange: ({ value }) => {
-                                    const res =
-                                        groupSchema(t).shape.name.safeParse(
-                                            value,
-                                        );
-                                    return res.success
-                                        ? undefined
-                                        : res.error.issues[0].message;
-                                },
+                <CardContent className="flex min-h-0 flex-1 flex-col space-y-4 overflow-hidden px-0 pb-0">
+                    <div className="shrink-0 px-4">
+                        <form
+                            onSubmit={e => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                void groupForm.handleSubmit();
                             }}
+                            className="flex gap-2"
                         >
-                            {field => (
-                                <Field className="flex-1">
-                                    <FieldLabel
-                                        htmlFor={field.name}
-                                        className="sr-only"
-                                    >
-                                        {t('groupName')}
-                                    </FieldLabel>
-                                    <FieldContent>
-                                        <Input
-                                            id={field.name}
-                                            value={field.state.value}
-                                            onBlur={field.handleBlur}
-                                            onChange={e =>
-                                                field.handleChange(
-                                                    e.target.value,
-                                                )
-                                            }
-                                            placeholder={t('groupName')}
-                                            className={
-                                                field.state.meta.errors.length >
-                                                0
-                                                    ? 'border-destructive'
-                                                    : ''
-                                            }
-                                        />
-                                        <FieldError
-                                            errors={field.state.meta.errors.map(
-                                                e => ({
-                                                    message: String(e),
-                                                }),
-                                            )}
-                                        />
-                                    </FieldContent>
-                                </Field>
-                            )}
-                        </groupForm.Field>
-                        <Button
-                            size="icon"
-                            type="submit"
-                            disabled={isAddingGroup}
-                        >
-                            {isAddingGroup ? (
-                                <Loader2 className="h-4 w-4 animate-spin" />
-                            ) : (
-                                <Plus className="h-4 w-4" />
-                            )}
-                        </Button>
-                    </form>
-                    <div className="flex-1 overflow-y-auto">
-                        <div className="space-y-1">
+                            <groupForm.Field
+                                name="name"
+                                validators={{
+                                    onChange: ({ value }) => {
+                                        const res =
+                                            groupSchema(t).shape.name.safeParse(
+                                                value,
+                                            );
+                                        return res.success
+                                            ? undefined
+                                            : res.error.issues[0].message;
+                                    },
+                                }}
+                            >
+                                {field => (
+                                    <Field className="flex-1">
+                                        <FieldLabel
+                                            htmlFor={field.name}
+                                            className="sr-only"
+                                        >
+                                            {t('groupName')}
+                                        </FieldLabel>
+                                        <FieldContent>
+                                            <Input
+                                                id={field.name}
+                                                value={field.state.value}
+                                                onBlur={field.handleBlur}
+                                                onChange={e =>
+                                                    field.handleChange(
+                                                        e.target.value,
+                                                    )
+                                                }
+                                                placeholder={t('groupName')}
+                                                className={
+                                                    field.state.meta.errors
+                                                        .length > 0
+                                                        ? 'border-destructive'
+                                                        : ''
+                                                }
+                                            />
+                                            <FieldError
+                                                errors={field.state.meta.errors.map(
+                                                    e => ({
+                                                        message: String(e),
+                                                    }),
+                                                )}
+                                            />
+                                        </FieldContent>
+                                    </Field>
+                                )}
+                            </groupForm.Field>
+                            <Button
+                                size="icon"
+                                type="submit"
+                                disabled={isAddingGroup}
+                            >
+                                {isAddingGroup ? (
+                                    <Loader2 className="h-4 w-4 animate-spin" />
+                                ) : (
+                                    <Plus className="h-4 w-4" />
+                                )}
+                            </Button>
+                        </form>
+                    </div>
+                    <ScrollArea className="min-h-0 flex-1 px-0">
+                        <div className="space-y-1 px-4 py-1">
                             {isGroupsLoading && groups.length === 0 && (
                                 <div className="space-y-2">
                                     <Skeleton className="h-14 w-full" />
@@ -226,7 +229,7 @@ export function GroupSidebar({
                                 </Item>
                             ))}
                         </div>
-                    </div>
+                    </ScrollArea>
                 </CardContent>
             </Card>
         </div>

@@ -18,6 +18,7 @@ import Youtube from '@tiptap/extension-youtube';
 import { EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { useTranslation } from 'react-i18next';
+import { Markdown } from 'tiptap-markdown';
 import { cn } from 'ui/lib/utils';
 import Toolbar from './Toolbar';
 
@@ -25,12 +26,14 @@ interface RichTextEditorProps {
     content?: string;
     onUpdate?: (content: string) => void;
     editable?: boolean;
+    output?: 'html' | 'markdown';
 }
 
 const RichTextEditor = ({
     content = '',
     onUpdate,
     editable = true,
+    output = 'html',
 }: RichTextEditorProps): ReactElement => {
     const { t } = useTranslation();
     const onUpdateRef = useRef(onUpdate);
@@ -73,10 +76,19 @@ const RichTextEditor = ({
                 TableRow,
                 TableHeader,
                 TableCell,
+                Markdown,
             ],
             content,
             onUpdate: ({ editor }) => {
-                onUpdateRef.current?.(editor.getHTML());
+                const value =
+                    output === 'markdown'
+                        ? (
+                              editor.storage as unknown as {
+                                  markdown: { getMarkdown: () => string };
+                              }
+                          ).markdown.getMarkdown()
+                        : editor.getHTML();
+                onUpdateRef.current?.(value);
             },
             editorProps: {
                 attributes: {
@@ -85,7 +97,7 @@ const RichTextEditor = ({
             },
             immediatelyRender: false,
         },
-        [],
+        [output],
     );
 
     useEffect(() => {
@@ -96,7 +108,20 @@ const RichTextEditor = ({
     }, [editable, editor]);
 
     useEffect(() => {
-        if (!editor || content === editor.getHTML()) {
+        if (!editor) {
+            return;
+        }
+
+        const currentContent =
+            output === 'markdown'
+                ? (
+                      editor.storage as unknown as {
+                          markdown: { getMarkdown: () => string };
+                      }
+                  ).markdown.getMarkdown()
+                : editor.getHTML();
+
+        if (content === currentContent) {
             return;
         }
 
@@ -106,14 +131,14 @@ const RichTextEditor = ({
         }
 
         editor.commands.setContent(content, { emitUpdate: false });
-    }, [content, editor, editable]);
+    }, [content, editor, editable, output]);
 
     return (
         <div
             className={cn(
-                'focus-within:ring-ring flex flex-col overflow-hidden',
+                'focus-within:border-ring focus-within:ring-ring/50 flex flex-col transition-[color,box-shadow] outline-none',
                 editable
-                    ? 'rounded-md border shadow-sm transition-all duration-200 focus-within:ring-1'
+                    ? 'rounded-md border shadow-sm focus-within:ring-[3px]'
                     : 'bg-transparent',
             )}
         >
@@ -122,7 +147,7 @@ const RichTextEditor = ({
                     <Toolbar editor={editor} />
                 </div>
             )}
-            <EditorContent editor={editor} />
+            <EditorContent className="rounded-b-md" editor={editor} />
         </div>
     );
 };

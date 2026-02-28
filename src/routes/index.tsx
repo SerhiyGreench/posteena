@@ -1,6 +1,6 @@
 import { type ReactElement } from 'react';
 import { createFileRoute } from '@tanstack/react-router';
-import { BookOpen, Fingerprint, Key, NotebookPen, Share2 } from 'lucide-react';
+import { BookOpen, Fingerprint, Key, NotebookPen } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import FeatureCard from '@/components/Home/FeatureCard';
 import { Messages } from '@/constants/Messages';
@@ -27,25 +27,26 @@ function App(): ReactElement {
             isUnderConstruction: false,
         },
         {
+            name: t('features.knowledge.name'),
+            description: t('features.knowledge.description'),
+            icon: <BookOpen className="size-6" />,
+            to: Routes.Knowledge,
+            isUnderConstruction: false,
+        },
+        {
             name: t('features.digitalFootprint.name'),
             description: t('features.digitalFootprint.description'),
             icon: <Fingerprint className="size-6" />,
             to: Routes.DigitalFootprint,
             isUnderConstruction: false,
         },
-        {
-            name: t('features.postSharing.name'),
-            description: t('features.postSharing.description'),
-            icon: <Share2 className="size-6" />,
-            to: Routes.CreatePost,
-            isUnderConstruction: true,
-        },
-        {
-            name: t('features.knowledgeCollections.name'),
-            description: t('features.knowledgeCollections.description'),
-            icon: <BookOpen className="size-6" />,
-            isUnderConstruction: true,
-        },
+        // {
+        //     name: t('features.postSharing.name'),
+        //     description: t('features.postSharing.description'),
+        //     icon: <Share2 className="size-6" />,
+        //     to: Routes.CreatePost,
+        //     isUnderConstruction: true,
+        // },
     ];
 
     return (

@@ -38,34 +38,40 @@ export function useNotes(): {
     const [isSyncing, setIsSyncing] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    const sync = useCallback(async (): Promise<void> => {
-        if (!isAuthenticated) {
-            return;
-        }
-        setIsSyncing(true);
-        try {
-            const remoteNotes = await adapter.list();
-
-            // Basic conflict resolution: check if we have pending local changes
-            const hasPending = Storage.get<boolean>(SYNC_PENDING_KEY, false);
-            if (hasPending) {
-                // If we have pending changes, we push our local state to remote
-                const localNotes = Storage.get<Note[]>(CACHE_KEY, []);
-                await adapter.save(localNotes);
-                Storage.set(SYNC_PENDING_KEY, false);
-            } else {
-                // Otherwise we update local state from remote
-                setNotes(remoteNotes);
-                Storage.set(CACHE_KEY, remoteNotes);
+    const sync = useCallback(
+        async (force = false): Promise<void> => {
+            if (!isAuthenticated && !force) {
+                return;
             }
-        } catch (err) {
-            console.error('Sync failed:', err);
-            setError(err instanceof Error ? err.message : String(err));
-        } finally {
-            setIsSyncing(false);
-            setLoading(false);
-        }
-    }, [adapter, isAuthenticated]);
+            setIsSyncing(true);
+            try {
+                const remoteNotes = await adapter.list();
+
+                // Basic conflict resolution: check if we have pending local changes
+                const hasPending = Storage.get<boolean>(
+                    SYNC_PENDING_KEY,
+                    false,
+                );
+                if (hasPending) {
+                    // If we have pending changes, we push our local state to remote
+                    const localNotes = Storage.get<Note[]>(CACHE_KEY, []);
+                    await adapter.save(localNotes);
+                    Storage.set(SYNC_PENDING_KEY, false);
+                } else {
+                    // Otherwise we update local state from remote
+                    setNotes(remoteNotes);
+                    Storage.set(CACHE_KEY, remoteNotes);
+                }
+            } catch (err) {
+                console.error('Sync failed:', err);
+                setError(err instanceof Error ? err.message : String(err));
+            } finally {
+                setIsSyncing(false);
+                setLoading(false);
+            }
+        },
+        [adapter, isAuthenticated],
+    );
 
     // Subscribe to Storage changes to handle logout immediately
     useEffect(() => {
@@ -80,31 +86,41 @@ export function useNotes(): {
         return unsub;
     }, [adapter, isAuthenticated]);
 
-    // Initial auth check and sync
+    // Initial load from storage to sync state
     useEffect(() => {
-        const checkAuth = async (): Promise<void> => {
-            setLoading(true);
-            const hasStoredSession = adapter.isAuthenticated();
-            if (hasStoredSession) {
-                try {
-                    // Try a lightweight call to verify session
-                    await adapter.getUserIdentifier();
-                    setIsAuthenticated(true);
+        const localNotes = Storage.get<Note[]>(CACHE_KEY, []);
+        if (localNotes.length > 0) {
+            setNotes(localNotes);
+        }
+    }, []);
 
-                    // Trigger initial sync and wait for it to finish loading
-                    await sync();
-                } catch (err) {
-                    console.error('Initial auth check failed:', err);
-                    setIsAuthenticated(false);
-                } finally {
-                    setLoading(false);
-                }
-            } else {
+    const checkAuth = useCallback(async (): Promise<void> => {
+        setLoading(true);
+        const hasStoredSession = adapter.isAuthenticated();
+        if (hasStoredSession) {
+            try {
+                // Try a lightweight call to verify session
+                await adapter.getUserIdentifier();
+                setIsAuthenticated(true);
+
+                // Trigger initial sync and wait for it to finish loading
+                // Pass force=true because isAuthenticated state update might not be visible in this closure yet
+                await sync(true);
+            } catch (err) {
+                console.error('Initial auth check failed:', err);
+                setIsAuthenticated(false);
+            } finally {
                 setLoading(false);
             }
-        };
-        void checkAuth();
+        } else {
+            setLoading(false);
+        }
     }, [adapter, sync]);
+
+    // Initial auth check and sync
+    useEffect(() => {
+        void checkAuth();
+    }, [checkAuth]);
 
     useEffect(() => {
         if (isAuthenticated && !loading && notes.length === 0) {

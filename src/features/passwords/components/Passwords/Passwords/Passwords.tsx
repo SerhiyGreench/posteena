@@ -65,8 +65,8 @@ export default function Passwords(): ReactElement {
     }
 
     return (
-        <div className="w-full space-y-6 px-4 py-4 md:px-8">
-            <div className="flex items-center justify-between">
+        <div className="flex h-full w-full flex-col space-y-6 px-4 py-4 md:px-8">
+            <div className="flex shrink-0 items-center justify-between">
                 <div className="flex items-center gap-3 md:gap-4">
                     <Key className="text-primary size-8 shrink-0" />
                     <h1 className="text-2xl font-bold tracking-tight md:text-3xl lg:text-4xl">

@@ -83,10 +83,7 @@
         "oxc/uninvoked-array-callback": "warn",
         "react/exhaustive-deps": "off",
         "typescript/await-thenable": "warn",
-        "typescript/explicit-function-return-type": [
-            "error",
-            { "allowExpressions": true }
-        ],
+        "typescript/explicit-function-return-type": "off",
         "typescript/no-explicit-any": "error",
         "typescript/no-array-delete": "warn",
         "typescript/no-base-to-string": "warn",

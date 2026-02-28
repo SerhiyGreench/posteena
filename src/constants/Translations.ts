@@ -87,6 +87,28 @@ export const Translations = {
             placeholder: 'Write something amazing...',
             noSearchResults: 'No search results found.',
         },
+        knowledge: {
+            title: 'Knowledge',
+            newChapter: 'New Chapter',
+            newArticle: 'New Article',
+            addChapter: 'Add Chapter',
+            addArticle: 'Add Article',
+            chapterTitlePrompt: 'Enter chapter title',
+            articleTitlePrompt: 'Enter article title',
+            articleTitlePlaceholder: 'Article Title',
+            selectArticleToStart:
+                'Select an article from the tree to start editing',
+            createdAt: 'Created at',
+            createdBy: 'Created by',
+            updatedAt: 'Updated at',
+            updatedBy: 'Updated by',
+            editTitle: 'Edit Title',
+            rename: 'Rename',
+            confirmDeleteChapter:
+                'Are you sure you want to delete chapter "{{title}}" and all its sub-chapters and articles?',
+            confirmDeleteArticle:
+                'Are you sure you want to delete article "{{title}}"?',
+        },
         digitalFootprint: {
             title: 'Digital Footprint',
             ipAddress: 'IP Address',
@@ -220,8 +242,8 @@ export const Translations = {
                 description:
                     'Keep track of your ideas and tasks with private, encrypted notes.',
             },
-            knowledgeCollections: {
-                name: 'Knowledge Collections',
+            knowledge: {
+                name: 'Knowledge',
                 description:
                     'Organize your knowledge into collections for easy access and sharing.',
             },
@@ -321,6 +343,28 @@ export const Translations = {
             syncNow: 'Синхронізувати зараз',
             placeholder: 'Напишіть щось дивовижне...',
             noSearchResults: 'Результатів пошуку не знайдено.',
+        },
+        knowledge: {
+            title: 'База знань',
+            newChapter: 'Новий розділ',
+            newArticle: 'Нова стаття',
+            addChapter: 'Додати розділ',
+            addArticle: 'Додати статтю',
+            chapterTitlePrompt: 'Введіть назву розділу',
+            articleTitlePrompt: 'Введіть назву статті',
+            articleTitlePlaceholder: 'Назва статті',
+            selectArticleToStart:
+                'Виберіть статтю в дереві, щоб почати редагування',
+            createdAt: 'Створено',
+            createdBy: 'Автор',
+            updatedAt: 'Оновлено',
+            updatedBy: 'Ким оновлено',
+            editTitle: 'Редагувати назву',
+            rename: 'Перейменувати',
+            confirmDeleteChapter:
+                'Ви впевнені, що хочете видалити розділ "{{title}}" та всі його підрозділи та статті?',
+            confirmDeleteArticle:
+                'Ви впевнені, що хочете видалити статтю "{{title}}"?',
         },
         digitalFootprint: {
             title: 'Цифровий слід',
@@ -455,8 +499,8 @@ export const Translations = {
                 description:
                     'Відстежуйте свої ідеї та завдання за допомогою приватних зашифрованих нотаток.',
             },
-            knowledgeCollections: {
-                name: 'Колекції знань',
+            knowledge: {
+                name: 'База знань',
                 description:
                     'Організовуйте свої знання в колекції для легкого доступу та обміну.',
             },

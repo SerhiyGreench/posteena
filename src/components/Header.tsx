@@ -327,6 +327,12 @@ export default function Header({ scrolled }: HeaderProps): ReactElement {
                                                 {t('features.notes.name')}
                                             </MobileLink>
                                             <MobileLink
+                                                to={Routes.Knowledge}
+                                                onOpenChange={setOpen}
+                                            >
+                                                {t('knowledge.title')}
+                                            </MobileLink>
+                                            <MobileLink
                                                 to={Routes.DigitalFootprint}
                                                 onOpenChange={setOpen}
                                             >

@@ -331,7 +331,9 @@ export default function DigitalFootprint(): ReactElement {
             );
             // Some browsers (like Brave or Firefox with privacy protections) might return null for getContext('2d')
             // but still support the element itself.
-            const isCanvasElementSupported = !!(window.HTMLCanvasElement && canvas instanceof HTMLCanvasElement);
+            const isCanvasElementSupported = !!(
+                window.HTMLCanvasElement && canvas instanceof HTMLCanvasElement
+            );
 
             const webglSupported = !!(
                 canvas.getContext &&
@@ -339,7 +341,8 @@ export default function DigitalFootprint(): ReactElement {
                     canvas.getContext('experimental-webgl'))
             );
             // Similar to canvas, some browsers block WebGL context but the technology itself is supported.
-            const isWebGLSupported = !!window.WebGLRenderingContext && isCanvasElementSupported;
+            const isWebGLSupported =
+                !!window.WebGLRenderingContext && isCanvasElementSupported;
 
             setData(prev =>
                 prev
@@ -348,7 +351,8 @@ export default function DigitalFootprint(): ReactElement {
                           ip,
                           battery: batteryData,
                           capabilities: {
-                              canvas: canvasSupported || isCanvasElementSupported,
+                              canvas:
+                                  canvasSupported || isCanvasElementSupported,
                               webgl: webglSupported || isWebGLSupported,
                           },
                       }
@@ -719,11 +723,7 @@ ${t('digitalFootprint.longitude')}: ${data.location.longitude}
                             <InfoItem
                                 label={t('digitalFootprint.battery')}
                                 value={
-                                    data.battery ? (
-                                        `${data.battery.level}%`
-                                    ) : (
-                                        ''
-                                    )
+                                    data.battery ? `${data.battery.level}%` : ''
                                 }
                                 icon={
                                     data.battery?.charging
