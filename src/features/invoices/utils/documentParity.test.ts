@@ -107,13 +107,12 @@ describe('PDF and DOCX parity', () => {
         expect(widths).toEqual(['60%', '40%']);
     });
 
-    it('gives the totals value column room for the whole amount', () => {
+    it('sizes the totals value column to the amount, not to the page', () => {
         const serialised = JSON.stringify(definition.content);
 
-        // Both renderers split the totals block by the same shared ratio.
-        expect(serialised).toContain(
-            `["${SummaryColumns.label * 100}%","${SummaryColumns.value * 100}%"]`,
-        );
+        // Any fixed width is eventually too narrow for the amount, and a
+        // token that does not fit gets broken mid-word.
+        expect(serialised).toContain('["*","auto"]');
         expect(SummaryColumns.value).toBeGreaterThan(SummaryColumns.label);
     });
 

@@ -7,12 +7,13 @@
  */
 
 /**
- * Column split inside the totals block.
+ * Column split inside the totals block, for the DOCX only.
  *
- * The value column gets the larger share: an amount and its currency are held
- * together by a no-break space, so "1 260,00 EUR" is a single token that has
- * to fit — a column too narrow for it is broken mid-word into "EU" and "R".
- * The labels beside it stack one line per language and wrap without harm.
+ * OOXML writes a table's grid as fixed twips, so the DOCX needs a starting
+ * ratio where the PDF can simply say "as wide as the content" — Word grows a
+ * column that overflows and never hyphenates, so the amount stays intact
+ * either way. The value column gets the larger share because it holds an
+ * amount and its currency as one unbreakable token.
  */
 export const SummaryColumns = {
     label: 0.45,

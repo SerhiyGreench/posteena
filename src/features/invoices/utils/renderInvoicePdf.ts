@@ -7,10 +7,7 @@ import type {
     PdfTableLayout,
 } from 'pdfmake/build/pdfmake';
 
-import {
-    SummaryColumns,
-    TotalsRow,
-} from '@/features/invoices/constants/DocumentLayout';
+import { TotalsRow } from '@/features/invoices/constants/DocumentLayout';
 import type {
     InvoiceDocumentField,
     InvoiceDocumentModel,
@@ -243,12 +240,13 @@ function renderSummary(model: InvoiceDocumentModel): PdfContent {
 
     return {
         table: {
-            // The value column carries "1 260,00 EUR" as a single token, so
-            // it gets the larger share; the stacked labels wrap happily.
-            widths: [
-                `${SummaryColumns.label * 100}%`,
-                `${SummaryColumns.value * 100}%`,
-            ],
+            // Sized to content, not to a share of the page. The value column
+            // holds an amount and its currency as one unbreakable token, and
+            // any fixed width is eventually too narrow for one — at which
+            // point the renderer breaks the token itself, which is how "EUR"
+            // ended up as "EU" and "R". `auto` asks for exactly the width the
+            // longest amount needs; the labels take whatever is left.
+            widths: ['*', 'auto'],
             body: [...summaryRows, dueRow],
         },
         layout: PlainLayout,
