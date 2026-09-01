@@ -211,7 +211,9 @@ function renderItems(model: InvoiceDocumentModel): PdfTableContent {
 function renderSummary(model: InvoiceDocumentModel): PdfContent {
     const summaryRows = model.summary.map((field): PdfTableCell[] => [
         { text: field.label, style: 'label', alignment: 'right' },
-        { text: field.value, style: 'value', alignment: 'right' },
+        // Same reason as the amount due: an amount and its currency are one
+        // token, and a token that does not fit is broken mid-word.
+        { text: field.value, style: 'value', alignment: 'right', noWrap: true },
     ]);
 
     const dueRow: PdfTableCell[] = [
