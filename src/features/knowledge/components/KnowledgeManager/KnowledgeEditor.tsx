@@ -1,17 +1,18 @@
+import { formatDistanceToNow } from 'date-fns';
+import { enUS, uk } from 'date-fns/locale';
+import { CalendarClock, Copy, Edit3, Eye, Trash, User } from 'lucide-react';
 import {
     type ChangeEvent,
     type ReactElement,
     useEffect,
     useState,
 } from 'react';
-import { formatDistanceToNow } from 'date-fns';
-import { enUS, uk } from 'date-fns/locale';
-import { CalendarClock, Copy, Edit3, Eye, Trash, User } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Button } from 'ui/button';
 import { Field, FieldContent, FieldLabel } from 'ui/field';
 import { Input } from 'ui/input';
 import { cn } from 'ui/lib/utils';
+
 import { FeedbackTooltip } from '@/components/FeedbackTooltip';
 import RichTextEditor from '@/components/RichTextEditor/RichTextEditor';
 import type {

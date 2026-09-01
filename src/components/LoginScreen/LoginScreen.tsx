@@ -1,5 +1,5 @@
-import { type ReactElement, type ReactNode } from 'react';
 import { Loader2, ShieldCheck } from 'lucide-react';
+import { type ReactElement, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from 'ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from 'ui/card';

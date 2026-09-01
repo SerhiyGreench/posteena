@@ -1,13 +1,23 @@
-import { type ReactElement } from 'react';
 import { createFileRoute } from '@tanstack/react-router';
-import { BookOpen, Fingerprint, Key, NotebookPen } from 'lucide-react';
+import {
+    BookOpen,
+    Fingerprint,
+    Key,
+    NotebookPen,
+    ReceiptText,
+} from 'lucide-react';
+import { type ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
+
 import FeatureCard from '@/components/Home/FeatureCard';
 import { PageContainer } from '@/components/PageContainer';
 import { Messages } from '@/constants/Messages';
 import { Routes } from '@/constants/Routes';
 
-export const Route = createFileRoute(Routes.Home)({ component: App });
+// The route id must be a string literal: the TanStack router plugin parses
+// this file statically and cannot resolve a constant. Use `Routes` for
+// navigation (`Link to=`), which stays type-checked against this tree.
+export const Route = createFileRoute('/')({ component: App });
 
 function App(): ReactElement {
     const { t } = useTranslation();
@@ -32,6 +42,13 @@ function App(): ReactElement {
             description: t('features.knowledge.description'),
             icon: <BookOpen className="size-6" />,
             to: Routes.Knowledge,
+            isUnderConstruction: false,
+        },
+        {
+            name: t('features.invoices.name'),
+            description: t('features.invoices.description'),
+            icon: <ReceiptText className="size-6" />,
+            to: Routes.Invoices,
             isUnderConstruction: false,
         },
         {

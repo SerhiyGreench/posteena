@@ -1,11 +1,12 @@
-import { type ChangeEvent, type ReactElement } from 'react';
 import { Minus, Plus } from 'lucide-react';
+import { type ChangeEvent, type ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from 'ui/button';
 import { Checkbox } from 'ui/checkbox';
 import { CollapsibleContent } from 'ui/collapsible';
 import { Field, FieldContent, FieldLabel } from 'ui/field';
 import { Input } from 'ui/input';
+
 import { type PasswordGeneratorSettings } from '@/features/passwords/utils/crypto';
 
 interface PasswordSettingsProps {

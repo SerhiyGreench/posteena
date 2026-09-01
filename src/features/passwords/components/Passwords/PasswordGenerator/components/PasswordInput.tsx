@@ -1,5 +1,5 @@
-import { type ChangeEvent, type ReactElement } from 'react';
 import { Check, Copy, Dices, Settings2 } from 'lucide-react';
+import { type ChangeEvent, type ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from 'ui/button';
 import { CollapsibleTrigger } from 'ui/collapsible';

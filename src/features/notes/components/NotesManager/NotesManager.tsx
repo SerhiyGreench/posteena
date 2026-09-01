@@ -1,7 +1,18 @@
-import { type ChangeEvent, type ReactElement, useMemo, useState } from 'react';
 import { formatDistanceToNow } from 'date-fns';
 import { enUS, uk } from 'date-fns/locale';
-import { CalendarClock, CloudOff, CloudUpload, Copy, Edit3, Eye, NotebookPen, Plus, RefreshCw, Trash } from 'lucide-react';
+import {
+    CalendarClock,
+    CloudOff,
+    CloudUpload,
+    Copy,
+    Edit3,
+    Eye,
+    NotebookPen,
+    Plus,
+    RefreshCw,
+    Trash,
+} from 'lucide-react';
+import { type ChangeEvent, type ReactElement, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from 'ui/button';
 import { Card, CardContent } from 'ui/card';
@@ -10,54 +21,14 @@ import { Input } from 'ui/input';
 import { Item, ItemContent, ItemDescription, ItemTitle } from 'ui/item';
 import { cn } from 'ui/lib/utils';
 import { Skeleton } from 'ui/skeleton';
+
+import { ScrollArea } from '@/components/enhanced/scroll-area-enhanced';
 import { FeedbackTooltip } from '@/components/FeedbackTooltip';
 import LoginScreen from '@/components/LoginScreen';
 import { PageContainer } from '@/components/PageContainer';
 import RichTextEditor from '@/components/RichTextEditor/RichTextEditor';
-import { ScrollArea } from '@/components/enhanced/scroll-area-enhanced';
 import { useNotes } from '@/features/notes/hooks/useNotes';
 import type { Note, NoteColor } from '@/features/notes/types';
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 const colorClasses: Record<NoteColor, string> = {
     green: 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.4)]',

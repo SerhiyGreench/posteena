@@ -1,6 +1,5 @@
 {
     "$schema": "./node_modules/oxlint/configuration_schema.json",
-    "extends": ["prettier"],
     "plugins": ["unicorn", "typescript", "oxc", "react"],
     "jsPlugins": null,
     "categories": {},
@@ -12,7 +11,12 @@
         "no-class-assign": "warn",
         "no-compare-neg-zero": "warn",
         "no-cond-assign": "error",
-        "no-console": ["error", { "allow": ["warn", "error", "info"] }],
+        "no-console": [
+            "error",
+            {
+                "allow": ["warn", "error", "info"]
+            }
+        ],
         "no-const-assign": "error",
         "no-constant-binary-expression": "warn",
         "no-constant-condition": "warn",
@@ -61,13 +65,6 @@
         "require-yield": "warn",
         "use-isnan": "warn",
         "valid-typeof": "warn",
-        "react/jsx-curly-spacing": [
-            "error",
-            {
-                "when": "always",
-                "children": true
-            }
-        ],
         "oxc/bad-array-method-on-arguments": "warn",
         "oxc/bad-char-at-comparison": "warn",
         "oxc/bad-comparison-sequence": "warn",

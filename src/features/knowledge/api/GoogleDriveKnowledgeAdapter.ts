@@ -1,3 +1,4 @@
+import { StorageKeys } from '@/constants/StorageKeys';
 import type {
     Knowledge,
     KnowledgeArticle,
@@ -10,7 +11,7 @@ const DISCOVERY_DOC =
 const SCOPES = 'https://www.googleapis.com/auth/drive.file';
 const KNOWLEDGE_FOLDER_NAME = 'Posteena Knowledge';
 const COLLECTION_INDEX_FILENAME = 'knowledge.json';
-const GDRIVE_TOKEN_KEY = 'posteena-gdrive-token';
+const GDRIVE_TOKEN_KEY = StorageKeys.DriveFileToken;
 
 interface TokenResponse {
     access_token: string;

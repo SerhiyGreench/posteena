@@ -1,9 +1,11 @@
-import { type ReactElement, StrictMode, useEffect } from 'react';
 import { RouterProvider } from '@tanstack/react-router';
+import { type ReactElement, StrictMode, useEffect } from 'react';
 import ReactDOM from 'react-dom/client';
 import { useTranslation } from 'react-i18next';
+
 import './i18n';
 import { router } from './router';
+
 import './styles.css';
 
 function App(): ReactElement {

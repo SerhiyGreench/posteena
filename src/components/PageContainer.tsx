@@ -1,6 +1,7 @@
 import React from 'react';
-import { useLayout } from '@/hooks/useLayout';
 import { cn } from 'ui/lib/utils';
+
+import { useLayout } from '@/hooks/useLayout';
 
 interface PageContainerProps {
     children: React.ReactNode;
@@ -15,7 +16,7 @@ export function PageContainer({ children, className }: PageContainerProps) {
             className={cn(
                 'w-full',
                 !isFullWidth && 'mx-auto max-w-7xl',
-                className
+                className,
             )}
         >
             {children}

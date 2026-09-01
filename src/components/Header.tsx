@@ -1,4 +1,3 @@
-import { type ReactElement, useState } from 'react';
 import { Link } from '@tanstack/react-router';
 import {
     Languages,
@@ -10,6 +9,7 @@ import {
     User as UserIcon,
 } from 'lucide-react';
 import { useTheme } from 'next-themes';
+import { type ReactElement, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Avatar, AvatarFallback, AvatarImage } from 'ui/avatar';
 import { Button } from 'ui/button';
@@ -29,6 +29,7 @@ import {
     SheetHeader,
     SheetTitle,
 } from 'ui/sheet';
+
 import MobileLink from '@/components/MobileLink';
 import { Messages } from '@/constants/Messages';
 import { Routes } from '@/constants/Routes';
@@ -363,6 +364,12 @@ export default function Header({ scrolled }: HeaderProps): ReactElement {
                                                 onOpenChange={setOpen}
                                             >
                                                 {t('knowledge.title')}
+                                            </MobileLink>
+                                            <MobileLink
+                                                to={Routes.Invoices}
+                                                onOpenChange={setOpen}
+                                            >
+                                                {t('invoices.title')}
                                             </MobileLink>
                                             <MobileLink
                                                 to={Routes.DigitalFootprint}

@@ -1,4 +1,3 @@
-import { type ReactElement, useEffect, useRef } from 'react';
 import Color from '@tiptap/extension-color';
 import FontFamily from '@tiptap/extension-font-family';
 import Highlight from '@tiptap/extension-highlight';
@@ -17,9 +16,11 @@ import Underline from '@tiptap/extension-underline';
 import Youtube from '@tiptap/extension-youtube';
 import { EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
+import { type ReactElement, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Markdown } from 'tiptap-markdown';
 import { cn } from 'ui/lib/utils';
+
 import Toolbar from './Toolbar';
 
 interface RichTextEditorProps {

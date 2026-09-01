@@ -1,25 +1,22 @@
+import path from 'path';
+
+import tailwindcss from '@tailwindcss/vite';
 import { devtools } from '@tanstack/devtools-vite';
 import { tanstackRouter } from '@tanstack/router-plugin/vite';
-import tailwindcss from '@tailwindcss/vite';
 import viteReact from '@vitejs/plugin-react';
-import path from 'path';
 import { defineConfig } from 'vite';
-import tsconfigPaths from 'vite-tsconfig-paths';
 
 const config = defineConfig({
     base: './',
     resolve: {
+        // Vite resolves the `@/*` and `#/*` aliases from tsconfig natively,
+        // which replaces the former vite-tsconfig-paths plugin.
+        tsconfigPaths: true,
         alias: {
-            ui: path.resolve(__dirname, './ui'),
+            ui: path.resolve(import.meta.dirname, './ui'),
         },
     },
-    plugins: [
-        devtools(),
-        tsconfigPaths({ projects: ['./tsconfig.json'] }),
-        tailwindcss(),
-        tanstackRouter(),
-        viteReact(),
-    ],
+    plugins: [devtools(), tailwindcss(), tanstackRouter(), viteReact()],
 });
 
 export default config;

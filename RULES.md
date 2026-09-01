@@ -44,7 +44,8 @@ To maintain high code quality and consistency, all contributors (including LLMs)
     - _Example:_ `import { Header } from '@/components/Header.tsx';` (Incorrect)
 - **i18next messages:** All translation resources must be defined with `as const` in `src/constants/Translations.ts`. The `Messages` constant in `src/constants/Messages.ts` is automatically generated from the English translations (`Translations.en`) using the utility in `src/utils/generateMessages.ts`. This includes support for nested objects (which are flattened to `UpperCamelCase` keys), ensuring translation keys stay in sync while providing full type safety throughout the application.
     - _Example:_ If `Translations.en` has `theme: { light: "..." }`, use `t(Messages.ThemeLight)`.
-- **Routes:** All route paths must be hyphen-cased (dash-cased) and defined in `src/constants/Routes.ts` using `as const`. Components and route definitions must use these constants instead of hardcoded strings.
+- **Routes:** All route paths must be hyphen-cased (dash-cased) and defined in `src/constants/Routes.ts` using `as const`. All navigation (`Link to=`, `navigate`) must use these constants instead of hardcoded strings.
+    - _Exception:_ the route id passed to `createFileRoute()` in `src/routes/*.tsx` must be a string literal. `@tanstack/router-plugin` (1.168+) parses these files statically to generate `routeTree.gen.ts` and cannot resolve a constant. Keep the literal in sync with the matching `Routes` entry; the generated tree then type-checks every `Link to=` against it.
 - **Exports:** All components must have a `default export` of the component. Export props separately if they are necessary for external use.
 - **One File - One Component:** This is a strict rule. Each file must contain only one React component.
     - For any component that requires subcomponents (helper components used only within that main component), a dedicated folder must be created.
@@ -67,7 +68,7 @@ To maintain high code quality and consistency, all contributors (including LLMs)
 
 - **Variables:** Prefer `const` over `let`. Avoid `var` entirely.
 - **Duplicates:** Heavily avoid any code duplication. Extract shared logic into utilities or hooks.
-- **Formatting:** Ensure all code is formatted with Prettier and passes Oxlint checks before submission. Import sorting is mandatory and managed by Prettier.
+- **Formatting:** Ensure all code is formatted with `oxfmt` and passes Oxlint checks before submission (`npm run check`). Import sorting is mandatory and managed by `oxfmt` via `sortImports`, which orders alphabetically within its built-in groups (external → aliased `ui/`, `@/`, `#/` → relative). Tailwind class sorting is handled by `sortTailwindcss`. Configuration lives in `.oxfmtrc.json`. Note that `oxfmt` formats JS/TS only — JSON, Markdown and CSS are no longer auto-formatted.
 - **Readability:** Maintain clean code by adding an empty line before and after blocks (e.g., `if`, `for`, `switch`) and before `return` statements.
 - **Minimalism:** Avoid unnecessary code, such as redundant `return` statements in functions (use early returns or simplify logic where possible).
 - **Client-Side Rendering (SSR/Hydration Safety):** For components or hooks that must only execute or render on the client-side (e.g., to prevent hydration mismatches or server-side execution of client-only libraries), use the `ClientOnly` component (`src/components/ClientOnly.tsx`) as a wrapper.

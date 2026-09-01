@@ -1,7 +1,8 @@
-import { type ReactElement } from 'react';
 import { Key, Loader2 } from 'lucide-react';
+import { type ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Card } from 'ui/card';
+
 import LoginScreen from '@/components/LoginScreen';
 import { PageContainer } from '@/components/PageContainer';
 import { GroupSidebar } from '@/features/passwords/components/Passwords/Passwords/components/GroupSidebar';

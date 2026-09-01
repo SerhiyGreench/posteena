@@ -1,4 +1,3 @@
-import { type ReactElement } from 'react';
 import {
     LayoutGrid,
     Plus,
@@ -6,6 +5,7 @@ import {
     SortAsc,
     Table as TableIcon,
 } from 'lucide-react';
+import { type ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from 'ui/button';
 import { CardHeader, CardTitle } from 'ui/card';
@@ -18,6 +18,7 @@ import {
     SelectValue,
 } from 'ui/select';
 import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group';
+
 import type { PasswordGroup } from '@/features/passwords/types';
 
 interface MainHeaderProps {

@@ -1,12 +1,13 @@
-import { type ReactElement, useEffect } from 'react';
 import { useForm } from '@tanstack/react-form';
 import { Loader2 } from 'lucide-react';
+import { type ReactElement, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { z } from 'zod';
 import { Button } from 'ui/button';
 import { Card, CardContent } from 'ui/card';
 import { Field, FieldContent, FieldError, FieldLabel } from 'ui/field';
 import { Input } from 'ui/input';
+import { z } from 'zod';
+
 import PasswordGenerator from '@/features/passwords/components/Passwords/PasswordGenerator';
 import type { PasswordItem } from '@/features/passwords/types';
 

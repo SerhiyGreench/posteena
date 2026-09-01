@@ -1,5 +1,5 @@
-import { type ReactElement } from 'react';
 import { Link } from '@tanstack/react-router';
+import { type ReactElement } from 'react';
 import { Badge } from 'ui/badge';
 import {
     Card,

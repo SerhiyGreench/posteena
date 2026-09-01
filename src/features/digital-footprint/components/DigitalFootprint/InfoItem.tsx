@@ -1,5 +1,5 @@
-import { type ComponentType, type ReactElement } from 'react';
 import { type LucideProps } from 'lucide-react';
+import { type ComponentType, type ReactElement } from 'react';
 import { Skeleton } from 'ui/skeleton';
 
 interface InfoItemProps {

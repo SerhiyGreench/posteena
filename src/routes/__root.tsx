@@ -1,9 +1,11 @@
-import { type ReactElement, type UIEvent, useEffect, useState } from 'react';
 import { TanStackDevtools } from '@tanstack/react-devtools';
 import { Outlet, createRootRoute } from '@tanstack/react-router';
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools';
 import { ThemeProvider, useTheme } from 'next-themes';
+import { type ReactElement, type UIEvent, useEffect, useState } from 'react';
+import { Toaster } from 'ui/sonner';
 import { TooltipProvider } from 'ui/tooltip';
+
 import Header from '@/components/Header';
 import { LayoutProvider } from '@/hooks/useLayout';
 import '@/i18n';
@@ -63,6 +65,7 @@ function RootLayout(): ReactElement {
                             <div className="h-20 shrink-0 md:hidden" />
                         </div>
                     </div>
+                    <Toaster />
                     <TanStackDevtools
                         config={{
                             inspectHotkey: ['Control', 'Meta'],

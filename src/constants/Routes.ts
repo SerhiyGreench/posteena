@@ -6,6 +6,7 @@ export const Routes = {
     DigitalFootprint: '/digital-footprint',
     Notes: '/notes',
     Knowledge: '/knowledge',
+    Invoices: '/invoices',
 } as const;
 
 export type RoutesType = (typeof Routes)[keyof typeof Routes];

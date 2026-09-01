@@ -1,4 +1,3 @@
-import { type ReactElement, useState } from 'react';
 import {
     ChevronDown,
     ChevronUp,
@@ -9,6 +8,7 @@ import {
     MoreVertical,
     Trash,
 } from 'lucide-react';
+import { type ReactElement, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from 'ui/button';
 import {
@@ -26,6 +26,7 @@ import {
     TableRow,
 } from 'ui/table';
 import { Tooltip, TooltipContent, TooltipTrigger } from 'ui/tooltip';
+
 import { FeedbackTooltip } from '@/components/FeedbackTooltip';
 import type { PasswordItem } from '@/features/passwords/types';
 

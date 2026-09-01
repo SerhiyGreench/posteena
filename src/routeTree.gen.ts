@@ -9,37 +9,18 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as PostRouteImport } from './routes/post'
-import { Route as PasswordManagerRouteImport } from './routes/password-manager'
-import { Route as NotesRouteImport } from './routes/notes'
-import { Route as KnowledgeRouteImport } from './routes/knowledge'
-import { Route as DigitalFootprintRouteImport } from './routes/digital-footprint'
-import { Route as CreatePostRouteImport } from './routes/create-post'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as CreatePostRouteImport } from './routes/create-post'
+import { Route as DigitalFootprintRouteImport } from './routes/digital-footprint'
+import { Route as InvoicesRouteImport } from './routes/invoices'
+import { Route as KnowledgeRouteImport } from './routes/knowledge'
+import { Route as NotesRouteImport } from './routes/notes'
+import { Route as PasswordManagerRouteImport } from './routes/password-manager'
+import { Route as PostRouteImport } from './routes/post'
 
-const PostRoute = PostRouteImport.update({
-  id: '/post',
-  path: '/post',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PasswordManagerRoute = PasswordManagerRouteImport.update({
-  id: '/password-manager',
-  path: '/password-manager',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const NotesRoute = NotesRouteImport.update({
-  id: '/notes',
-  path: '/notes',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const KnowledgeRoute = KnowledgeRouteImport.update({
-  id: '/knowledge',
-  path: '/knowledge',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DigitalFootprintRoute = DigitalFootprintRouteImport.update({
-  id: '/digital-footprint',
-  path: '/digital-footprint',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CreatePostRoute = CreatePostRouteImport.update({
@@ -47,9 +28,34 @@ const CreatePostRoute = CreatePostRouteImport.update({
   path: '/create-post',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const DigitalFootprintRoute = DigitalFootprintRouteImport.update({
+  id: '/digital-footprint',
+  path: '/digital-footprint',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InvoicesRoute = InvoicesRouteImport.update({
+  id: '/invoices',
+  path: '/invoices',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const KnowledgeRoute = KnowledgeRouteImport.update({
+  id: '/knowledge',
+  path: '/knowledge',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NotesRoute = NotesRouteImport.update({
+  id: '/notes',
+  path: '/notes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PasswordManagerRoute = PasswordManagerRouteImport.update({
+  id: '/password-manager',
+  path: '/password-manager',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PostRoute = PostRouteImport.update({
+  id: '/post',
+  path: '/post',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -57,6 +63,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/create-post': typeof CreatePostRoute
   '/digital-footprint': typeof DigitalFootprintRoute
+  '/invoices': typeof InvoicesRoute
   '/knowledge': typeof KnowledgeRoute
   '/notes': typeof NotesRoute
   '/password-manager': typeof PasswordManagerRoute
@@ -66,6 +73,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/create-post': typeof CreatePostRoute
   '/digital-footprint': typeof DigitalFootprintRoute
+  '/invoices': typeof InvoicesRoute
   '/knowledge': typeof KnowledgeRoute
   '/notes': typeof NotesRoute
   '/password-manager': typeof PasswordManagerRoute
@@ -76,6 +84,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/create-post': typeof CreatePostRoute
   '/digital-footprint': typeof DigitalFootprintRoute
+  '/invoices': typeof InvoicesRoute
   '/knowledge': typeof KnowledgeRoute
   '/notes': typeof NotesRoute
   '/password-manager': typeof PasswordManagerRoute
@@ -87,6 +96,7 @@ export interface FileRouteTypes {
     | '/'
     | '/create-post'
     | '/digital-footprint'
+    | '/invoices'
     | '/knowledge'
     | '/notes'
     | '/password-manager'
@@ -96,6 +106,7 @@ export interface FileRouteTypes {
     | '/'
     | '/create-post'
     | '/digital-footprint'
+    | '/invoices'
     | '/knowledge'
     | '/notes'
     | '/password-manager'
@@ -105,6 +116,7 @@ export interface FileRouteTypes {
     | '/'
     | '/create-post'
     | '/digital-footprint'
+    | '/invoices'
     | '/knowledge'
     | '/notes'
     | '/password-manager'
@@ -115,6 +127,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CreatePostRoute: typeof CreatePostRoute
   DigitalFootprintRoute: typeof DigitalFootprintRoute
+  InvoicesRoute: typeof InvoicesRoute
   KnowledgeRoute: typeof KnowledgeRoute
   NotesRoute: typeof NotesRoute
   PasswordManagerRoute: typeof PasswordManagerRoute
@@ -123,39 +136,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/post': {
-      id: '/post'
-      path: '/post'
-      fullPath: '/post'
-      preLoaderRoute: typeof PostRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/password-manager': {
-      id: '/password-manager'
-      path: '/password-manager'
-      fullPath: '/password-manager'
-      preLoaderRoute: typeof PasswordManagerRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/notes': {
-      id: '/notes'
-      path: '/notes'
-      fullPath: '/notes'
-      preLoaderRoute: typeof NotesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/knowledge': {
-      id: '/knowledge'
-      path: '/knowledge'
-      fullPath: '/knowledge'
-      preLoaderRoute: typeof KnowledgeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/digital-footprint': {
-      id: '/digital-footprint'
-      path: '/digital-footprint'
-      fullPath: '/digital-footprint'
-      preLoaderRoute: typeof DigitalFootprintRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/create-post': {
@@ -165,11 +150,46 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CreatePostRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/digital-footprint': {
+      id: '/digital-footprint'
+      path: '/digital-footprint'
+      fullPath: '/digital-footprint'
+      preLoaderRoute: typeof DigitalFootprintRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/invoices': {
+      id: '/invoices'
+      path: '/invoices'
+      fullPath: '/invoices'
+      preLoaderRoute: typeof InvoicesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/knowledge': {
+      id: '/knowledge'
+      path: '/knowledge'
+      fullPath: '/knowledge'
+      preLoaderRoute: typeof KnowledgeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/notes': {
+      id: '/notes'
+      path: '/notes'
+      fullPath: '/notes'
+      preLoaderRoute: typeof NotesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/password-manager': {
+      id: '/password-manager'
+      path: '/password-manager'
+      fullPath: '/password-manager'
+      preLoaderRoute: typeof PasswordManagerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/post': {
+      id: '/post'
+      path: '/post'
+      fullPath: '/post'
+      preLoaderRoute: typeof PostRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -179,6 +199,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CreatePostRoute: CreatePostRoute,
   DigitalFootprintRoute: DigitalFootprintRoute,
+  InvoicesRoute: InvoicesRoute,
   KnowledgeRoute: KnowledgeRoute,
   NotesRoute: NotesRoute,
   PasswordManagerRoute: PasswordManagerRoute,

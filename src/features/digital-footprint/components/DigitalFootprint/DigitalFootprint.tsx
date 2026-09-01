@@ -1,4 +1,3 @@
-import { type ReactElement, useEffect, useState } from 'react';
 import {
     Activity,
     Battery,
@@ -17,6 +16,7 @@ import {
     Smartphone,
     Zap,
 } from 'lucide-react';
+import { type ReactElement, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { Button } from 'ui/button';
@@ -27,8 +27,10 @@ import {
     CardHeader,
     CardTitle,
 } from 'ui/card';
+
 import { FeedbackTooltip } from '@/components/FeedbackTooltip';
 import { PageContainer } from '@/components/PageContainer';
+
 import InfoItem from './InfoItem';
 
 interface FootprintData {

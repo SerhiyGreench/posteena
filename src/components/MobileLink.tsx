@@ -1,5 +1,5 @@
-import type { PropsWithChildren, ReactElement } from 'react';
 import { Link, useRouter } from '@tanstack/react-router';
+import type { PropsWithChildren, ReactElement } from 'react';
 import { cn } from 'ui/lib/utils';
 
 export interface MobileLinkProps {

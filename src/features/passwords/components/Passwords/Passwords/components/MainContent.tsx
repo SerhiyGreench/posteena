@@ -1,8 +1,9 @@
-import { type ReactElement } from 'react';
 import { Loader2, Search, ShieldCheck } from 'lucide-react';
+import { type ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from 'ui/button';
 import { CardContent } from 'ui/card';
+
 import ItemForm from '@/features/passwords/components/Passwords/ItemForm';
 import PasswordCard from '@/features/passwords/components/Passwords/PasswordCard';
 import PasswordTable from '@/features/passwords/components/Passwords/PasswordTable';

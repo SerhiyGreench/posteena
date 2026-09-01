@@ -1,9 +1,10 @@
-import { type ReactElement } from 'react';
 import { Dices } from 'lucide-react';
+import { type ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle } from 'ui/card';
 import { Collapsible } from 'ui/collapsible';
 import { cn } from 'ui/lib/utils';
+
 import { PasswordInput } from '@/features/passwords/components/Passwords/PasswordGenerator/components/PasswordInput';
 import { PasswordSettings } from '@/features/passwords/components/Passwords/PasswordGenerator/components/PasswordSettings';
 import { usePasswordGenerator } from '@/features/passwords/components/Passwords/PasswordGenerator/hooks/usePasswordGenerator';

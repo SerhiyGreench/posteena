@@ -1,4 +1,3 @@
-import { type ChangeEvent, type ReactElement, useState } from 'react';
 import { type Editor } from '@tiptap/react';
 import {
     AlignCenter,
@@ -28,11 +27,14 @@ import {
     Undo,
     Video,
 } from 'lucide-react';
+import { type ChangeEvent, type ReactElement, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from 'ui/button';
 import { Input } from 'ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from 'ui/popover';
+
 import { SimpleTooltip } from '@/components/SimpleTooltip';
+
 import MenuButton from './MenuButton';
 
 export interface ToolbarProps {

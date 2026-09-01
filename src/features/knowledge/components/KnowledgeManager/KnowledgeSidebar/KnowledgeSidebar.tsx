@@ -1,27 +1,31 @@
+import {
+    ChevronDown,
+    ChevronRight,
+    CloudUpload,
+    Edit,
+    FileText,
+    Folder,
+    GripVertical,
+    MoreVertical,
+    RefreshCw,
+    Trash,
+} from 'lucide-react';
 import { type DragEvent, type ReactElement, useState } from 'react';
-import { ChevronDown, ChevronRight, CloudUpload, Edit, FileText, Folder, GripVertical, MoreVertical, RefreshCw, Trash } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Button } from 'ui/button';
 import { Card, CardContent } from 'ui/card';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from 'ui/dropdown-menu';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from 'ui/dropdown-menu';
 import { Input } from 'ui/input';
 import { cn } from 'ui/lib/utils';
 import { Skeleton } from 'ui/skeleton';
+
 import { ScrollArea } from '@/components/enhanced/scroll-area-enhanced';
 import type { Knowledge, KnowledgeChapter } from '@/features/knowledge/types';
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 interface KnowledgeSidebarProps {
     knowledge: Knowledge;

@@ -1,0 +1,93 @@
+import type { CurrencyType } from '@/features/invoices/constants/Currencies';
+import type { Invoice } from '@/features/invoices/types';
+import {
+    formatInvoiceDate,
+    formatInvoiceMoney,
+} from '@/features/invoices/utils/invoiceFormatters';
+
+/**
+ * Gmail's compose deep link.
+ *
+ * `view=cm` opens the composer, `fs=1` makes it a full window. Recipient,
+ * subject and body are the only fields a URL can carry — there is no
+ * attachment parameter in Gmail's compose link or in `mailto:`, which is why
+ * the invoice travels as a Drive link rather than a file.
+ */
+const ComposeUrl = 'https://mail.google.com/mail/?view=cm&fs=1';
+
+/** Placeholders available in the subject and body templates. */
+export const EmailPlaceholders = [
+    'number',
+    'customer',
+    'supplier',
+    'amount',
+    'currency',
+    'dueDate',
+    'link',
+] as const;
+
+export interface EmailTemplateValues {
+    number: string;
+    customer: string;
+    supplier: string;
+    amount: string;
+    currency: string;
+    dueDate: string;
+    link: string;
+}
+
+/** Values a template can reference, taken from the invoice snapshot. */
+export function buildEmailValues(
+    invoice: Invoice,
+    link: string,
+): EmailTemplateValues {
+    return {
+        number: invoice.number,
+        customer: invoice.customer.name,
+        supplier: invoice.supplier.name,
+        amount: formatInvoiceMoney(invoice.totals.amountDue, invoice.languages),
+        currency: invoice.currency as CurrencyType,
+        dueDate: formatInvoiceDate(invoice.dueDate),
+        link,
+    };
+}
+
+/**
+ * Replaces `{placeholder}` tokens. Unknown tokens are left as written, so a
+ * typo is visible in the draft rather than silently disappearing.
+ */
+export function expandEmailTemplate(
+    template: string,
+    values: EmailTemplateValues,
+): string {
+    return template.replace(/\{(\w+)\}/g, (match, key: string) =>
+        key in values ? values[key as keyof EmailTemplateValues] : match,
+    );
+}
+
+/**
+ * Builds the Gmail compose URL for an invoice.
+ *
+ * The signed-in Gmail account is always the sender: a URL cannot set `From`,
+ * and Gmail only permits an alternative sender for a verified send-as alias.
+ */
+export function buildGmailComposeUrl(args: {
+    invoice: Invoice;
+    link: string;
+    cc?: string;
+    subjectTemplate: string;
+    bodyTemplate: string;
+}): string {
+    const values = buildEmailValues(args.invoice, args.link);
+    const params = new URLSearchParams({
+        to: args.invoice.customer.email,
+        su: expandEmailTemplate(args.subjectTemplate, values),
+        body: expandEmailTemplate(args.bodyTemplate, values),
+    });
+
+    if (args.cc?.trim()) {
+        params.set('cc', args.cc.trim());
+    }
+
+    return `${ComposeUrl}&${params.toString()}`;
+}

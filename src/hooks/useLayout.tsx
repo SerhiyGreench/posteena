@@ -23,7 +23,9 @@ export function LayoutProvider({ children }: { children: React.ReactNode }) {
     };
 
     return (
-        <LayoutContext.Provider value={{ isFullWidth, setIsFullWidth: toggleFullWidth }}>
+        <LayoutContext.Provider
+            value={{ isFullWidth, setIsFullWidth: toggleFullWidth }}
+        >
             {children}
         </LayoutContext.Provider>
     );

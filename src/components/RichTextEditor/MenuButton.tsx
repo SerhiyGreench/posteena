@@ -1,5 +1,6 @@
 import { type PropsWithChildren, type ReactElement } from 'react';
 import { Toggle } from 'ui/toggle';
+
 import { SimpleTooltip } from '@/components/SimpleTooltip';
 
 export interface MenuButtonProps {

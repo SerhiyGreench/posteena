@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+
 import {
     ALPHABETS,
     DEFAULT_PASSWORD_SETTINGS,
