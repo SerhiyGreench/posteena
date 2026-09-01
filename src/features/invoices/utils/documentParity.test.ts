@@ -3,6 +3,8 @@ import { describe, expect, it } from 'vitest';
 
 import { DefaultInvoiceSettings } from '@/features/invoices/constants/DefaultInvoiceSettings';
 import {
+    DocumentFontSizes,
+    DocumentMetrics,
     StackedLineSpacing,
     SummaryColumns,
     TotalsRow,
@@ -50,15 +52,21 @@ function buildModel(): InvoiceDocumentModel {
     });
 }
 
-/** Point sizes the two renderers must agree on. */
+/**
+ * Point sizes all three renderings must agree on.
+ *
+ * Read from the shared scale rather than restated here: the preview converts
+ * the same numbers to pixels, so a size that only the test knows about is a
+ * size the preview can quietly disagree with.
+ */
 const SharedSizes = {
-    pageMarginPt: 40,
-    titlePt: 22,
-    numberPt: 18,
-    partyNamePt: 12,
-    bodyPt: 9,
-    labelPt: 8,
-    totalDuePt: 13,
+    pageMarginPt: DocumentMetrics.pageMargin,
+    titlePt: DocumentFontSizes.title,
+    numberPt: DocumentFontSizes.number,
+    partyNamePt: DocumentFontSizes.partyName,
+    bodyPt: DocumentFontSizes.body,
+    labelPt: DocumentFontSizes.label,
+    totalDuePt: DocumentFontSizes.totalDueValue,
 };
 
 describe('PDF and DOCX parity', () => {

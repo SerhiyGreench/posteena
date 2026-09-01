@@ -1,7 +1,15 @@
 import { type ReactElement, useEffect, useMemo, useState } from 'react';
 
 import ScaledPage from '@/features/invoices/components/InvoicesManager/ScaledPage';
-import { FieldLabelShare } from '@/features/invoices/constants/DocumentLayout';
+import {
+    BandGapPt,
+    DocumentFontSizes,
+    DocumentMetrics,
+    FieldLabelShare,
+    points,
+    StackedLineHeight,
+    TotalsRow,
+} from '@/features/invoices/constants/DocumentLayout';
 import type { Invoice } from '@/features/invoices/types';
 import { buildInvoiceDocument } from '@/features/invoices/utils/buildInvoiceDocument';
 import {
@@ -88,10 +96,13 @@ export default function InvoicePreview({
     return (
         <ScaledPage width={Page.width}>
             <div
-                className="rounded-lg p-10 text-[13px] leading-snug shadow-sm"
+                className="rounded-lg shadow-sm"
                 style={{
                     width: Page.width,
                     minHeight: Page.minHeight,
+                    padding: points(DocumentMetrics.pageMargin),
+                    fontSize: points(DocumentFontSizes.body),
+                    lineHeight: 1.15,
                     backgroundColor: Paper.background,
                     color: Paper.ink,
                     colorScheme: 'light',
@@ -101,49 +112,79 @@ export default function InvoicePreview({
                     <img
                         src={model.barcode.dataUrl}
                         alt={model.barcode.text}
-                        className="mb-2 h-10"
-                        style={{ width: 150 }}
+                        style={{
+                            width: points(DocumentMetrics.barcodeWidth),
+                            marginBottom: points(
+                                DocumentMetrics.barcodeSpaceBelow,
+                            ),
+                        }}
                     />
                 )}
 
-                <div className="flex items-start justify-between gap-6">
+                <div
+                    className="flex items-start justify-between"
+                    style={{ gap: points(DocumentMetrics.headingGap) }}
+                >
                     <h2
-                        className="text-2xl font-bold tracking-wide uppercase"
-                        style={{ color: Paper.ink }}
+                        className="font-bold tracking-wide uppercase"
+                        style={{
+                            color: Paper.ink,
+                            fontSize: points(DocumentFontSizes.title),
+                        }}
                     >
                         {model.title}
                     </h2>
                     <div className="text-right">
                         <div
-                            className="text-[11px]"
-                            style={{ color: Paper.muted }}
+                            style={{
+                                color: Paper.muted,
+                                fontSize: points(DocumentFontSizes.label),
+                            }}
                         >
                             {model.numberLabel}
                         </div>
-                        <div className="text-xl font-bold">{model.number}</div>
+                        <div
+                            className="font-bold"
+                            style={{
+                                fontSize: points(DocumentFontSizes.number),
+                            }}
+                        >
+                            {model.number}
+                        </div>
                     </div>
                 </div>
 
                 <div
-                    className="mt-2 mb-5 h-0.5 w-full"
-                    style={{ backgroundColor: Paper.ink }}
+                    className="w-full"
+                    style={{
+                        backgroundColor: Paper.ink,
+                        height: points(DocumentMetrics.ruleWidth),
+                        marginTop: points(DocumentMetrics.ruleSpaceAbove),
+                        marginBottom: points(DocumentMetrics.ruleSpaceBelow),
+                    }}
                 />
 
-                <div className="grid grid-cols-2 gap-6">
+                <div
+                    className="grid grid-cols-2"
+                    style={{ gap: points(DocumentMetrics.columnGap) }}
+                >
                     {[model.supplier, model.customer].map(party => (
                         <div key={party.heading}>
                             <div
-                                className="text-[11px] font-semibold uppercase"
-                                style={{ color: Paper.muted }}
+                                className="font-semibold uppercase"
+                                style={{
+                                    color: Paper.muted,
+                                    fontSize: points(
+                                        DocumentFontSizes.blockHeading,
+                                    ),
+                                }}
                             >
                                 {party.heading}
                             </div>
                             {party.addressLines.map((line, index) => (
                                 <div
                                     key={line}
-                                    className={
-                                        index === 0 ? 'text-base font-bold' : ''
-                                    }
+                                    className={index === 0 ? 'font-bold' : ''}
                                 >
                                     {line}
                                 </div>
@@ -157,8 +198,12 @@ export default function InvoicePreview({
                                 {party.fields.map(field => (
                                     <div key={field.label} className="contents">
                                         <dt
-                                            className="text-[11px]"
-                                            style={{ color: Paper.muted }}
+                                            style={{
+                                                color: Paper.muted,
+                                                fontSize: points(
+                                                    DocumentFontSizes.label,
+                                                ),
+                                            }}
                                         >
                                             {field.label}
                                         </dt>
@@ -170,7 +215,13 @@ export default function InvoicePreview({
                     ))}
                 </div>
 
-                <div className="mt-5 grid grid-cols-2 gap-6">
+                <div
+                    className="grid grid-cols-2"
+                    style={{
+                        gap: points(DocumentMetrics.columnGap),
+                        marginTop: points(DocumentMetrics.fieldsSpaceAbove),
+                    }}
+                >
                     {[model.dates, model.payment].map((group, groupIndex) => (
                         <dl
                             key={groupIndex}
@@ -180,8 +231,12 @@ export default function InvoicePreview({
                             {group.map(field => (
                                 <div key={field.label} className="contents">
                                     <dt
-                                        className="text-[11px]"
-                                        style={{ color: Paper.muted }}
+                                        style={{
+                                            color: Paper.muted,
+                                            fontSize: points(
+                                                DocumentFontSizes.label,
+                                            ),
+                                        }}
                                     >
                                         {field.label}
                                     </dt>
@@ -199,8 +254,13 @@ export default function InvoicePreview({
                 </div>
 
                 <div
-                    className="mt-6 mb-2 text-[11px] font-semibold uppercase"
-                    style={{ color: Paper.muted }}
+                    className="font-semibold uppercase"
+                    style={{
+                        color: Paper.muted,
+                        fontSize: points(DocumentFontSizes.blockHeading),
+                        marginTop: points(DocumentMetrics.itemsSpaceAbove),
+                        marginBottom: points(4),
+                    }}
                 >
                     {model.itemsHeading}
                 </div>
@@ -224,9 +284,13 @@ export default function InvoicePreview({
                                 {model.items.headers.map((lines, index) => (
                                     <th
                                         key={lines.join('|')}
-                                        className="px-1 py-1.5 text-[11px] font-semibold break-words hyphens-auto"
+                                        className="px-1 py-1.5 font-semibold break-words hyphens-auto"
                                         style={{
                                             color: Paper.muted,
+                                            fontSize: points(
+                                                DocumentFontSizes.label,
+                                            ),
+                                            lineHeight: StackedLineHeight,
                                             textAlign:
                                                 model.items.aligns[index],
                                         }}
@@ -266,10 +330,20 @@ export default function InvoicePreview({
                     </table>
                 </div>
 
-                <div className="mt-5 flex flex-row items-start justify-between gap-4">
+                <div
+                    className="flex flex-row items-start justify-between"
+                    style={{
+                        gap: points(DocumentMetrics.headingGap),
+                        marginTop: points(DocumentMetrics.totalsSpaceAbove),
+                    }}
+                >
                     <div
-                        className="flex w-[40%] flex-col text-[12px] leading-tight italic"
-                        style={{ color: Paper.muted }}
+                        className="flex flex-col italic"
+                        style={{
+                            color: Paper.muted,
+                            width: `${TotalsRow.words * 100}%`,
+                            lineHeight: StackedLineHeight,
+                        }}
                     >
                         {model.amountInWords.map(field => (
                             <p key={field.label}>
@@ -278,7 +352,7 @@ export default function InvoicePreview({
                         ))}
                     </div>
 
-                    <div className="w-[60%]">
+                    <div style={{ width: `${TotalsRow.totals * 100}%` }}>
                         <dl className="grid grid-cols-[1fr_auto] gap-x-4">
                             {model.summary.map(field => (
                                 <div
@@ -286,8 +360,14 @@ export default function InvoicePreview({
                                     className="contents"
                                 >
                                     <dt
-                                        className="text-right text-[11px] leading-tight"
-                                        style={{ color: Paper.muted }}
+                                        className="text-right"
+                                        style={{
+                                            color: Paper.muted,
+                                            fontSize: points(
+                                                DocumentFontSizes.label,
+                                            ),
+                                            lineHeight: StackedLineHeight,
+                                        }}
                                     >
                                         {field.labelLines.map(line => (
                                             <span key={line} className="block">
@@ -302,18 +382,36 @@ export default function InvoicePreview({
                             ))}
                         </dl>
                         <div
-                            className="mt-3 flex items-baseline justify-between gap-6 rounded px-3 py-2"
+                            className="flex items-baseline justify-between"
                             style={{
                                 backgroundColor: Paper.band,
                                 color: Paper.onBand,
+                                marginTop: points(BandGapPt),
+                                gap: points(12),
+                                padding: points(6),
                             }}
                         >
-                            <span className="flex flex-col text-[12px] leading-tight font-semibold">
+                            <span
+                                className="flex flex-col font-semibold"
+                                style={{
+                                    fontSize: points(
+                                        DocumentFontSizes.totalDueLabel,
+                                    ),
+                                    lineHeight: StackedLineHeight,
+                                }}
+                            >
                                 {model.totalDue.labelLines.map(line => (
                                     <span key={line}>{line}</span>
                                 ))}
                             </span>
-                            <span className="text-lg font-bold whitespace-nowrap tabular-nums">
+                            <span
+                                className="font-bold whitespace-nowrap tabular-nums"
+                                style={{
+                                    fontSize: points(
+                                        DocumentFontSizes.totalDueValue,
+                                    ),
+                                }}
+                            >
                                 {model.totalDue.value}
                             </span>
                         </div>
@@ -321,22 +419,38 @@ export default function InvoicePreview({
                 </div>
 
                 {model.notes.length > 0 && (
-                    <div className="mt-5 flex flex-col gap-1">
+                    <div
+                        className="flex flex-col"
+                        style={{
+                            marginTop: points(DocumentMetrics.footerSpaceAbove),
+                            gap: points(2),
+                        }}
+                    >
                         {model.notes.map(note => (
                             <p key={note}>{note}</p>
                         ))}
                     </div>
                 )}
                 {model.payBySquare && (
-                    <div className="mt-6 flex flex-col items-start gap-1">
+                    <div
+                        className="flex flex-col items-start"
+                        style={{
+                            marginTop: points(DocumentMetrics.footerSpaceAbove),
+                            gap: points(2),
+                        }}
+                    >
                         <img
                             src={model.payBySquare.dataUrl}
                             alt={model.payBySquare.caption}
-                            className="size-28"
+                            style={{
+                                width: points(DocumentMetrics.payBySquareWidth),
+                            }}
                         />
                         <span
-                            className="text-[11px]"
-                            style={{ color: Paper.muted }}
+                            style={{
+                                color: Paper.muted,
+                                fontSize: points(DocumentFontSizes.label),
+                            }}
                         >
                             {model.payBySquare.caption}
                         </span>

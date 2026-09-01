@@ -9,6 +9,8 @@ import type {
 
 import {
     BandGapPt,
+    DocumentFontSizes,
+    DocumentMetrics,
     FieldLabelShare,
     StackedLineHeight,
     TotalsRow,
@@ -20,11 +22,11 @@ import type {
 } from '@/features/invoices/types';
 import { importChunk } from '@/lib/importChunk';
 
-/** A4 width (595.28pt) minus the 40pt page margins on each side. */
-const ContentWidth = 515;
+/** A4 width (595.28pt) minus the page margins on each side. */
+const ContentWidth = Math.round(595.28 - DocumentMetrics.pageMargin * 2);
 
 /** Printed width of the invoice-number barcode, in points. */
-const BarcodeWidth = 150;
+const BarcodeWidth = DocumentMetrics.barcodeWidth;
 
 /** Greyscale only — an invoice is a black-on-white document. */
 const Colors = {
@@ -399,52 +401,76 @@ export function buildPdfDefinition(
 
     return {
         pageSize: 'A4',
-        pageMargins: [40, 40, 40, 56],
+        pageMargins: [
+            DocumentMetrics.pageMargin,
+            DocumentMetrics.pageMargin,
+            DocumentMetrics.pageMargin,
+            DocumentMetrics.pageMargin + 16,
+        ],
         content,
         info: {
             title: `${model.title} ${model.number}`,
             author: model.supplier.addressLines[0] ?? '',
         },
         defaultStyle: {
-            fontSize: 9,
+            fontSize: DocumentFontSizes.body,
             color: Colors.ink,
             lineHeight: 1.15,
         },
         styles: {
             title: {
-                fontSize: 22,
+                fontSize: DocumentFontSizes.title,
                 bold: true,
                 color: Colors.ink,
                 characterSpacing: 1,
             },
-            number: { fontSize: 18, bold: true, alignment: 'right' },
+            number: {
+                fontSize: DocumentFontSizes.number,
+                bold: true,
+                alignment: 'right',
+            },
             blockHeading: {
-                fontSize: 8,
+                fontSize: DocumentFontSizes.blockHeading,
                 bold: true,
                 color: Colors.muted,
                 characterSpacing: 0.6,
                 margin: [0, 0, 0, 4],
             },
-            partyName: { fontSize: 12, bold: true },
-            partyAddress: { fontSize: 9, color: Colors.ink },
-            label: { fontSize: 8, color: Colors.muted },
-            value: { fontSize: 9 },
-            tableHeader: { fontSize: 8, bold: true, color: Colors.muted },
-            tableCell: { fontSize: 9 },
+            partyName: { fontSize: DocumentFontSizes.partyName, bold: true },
+            partyAddress: {
+                fontSize: DocumentFontSizes.body,
+                color: Colors.ink,
+            },
+            label: { fontSize: DocumentFontSizes.label, color: Colors.muted },
+            value: { fontSize: DocumentFontSizes.body },
+            tableHeader: {
+                fontSize: DocumentFontSizes.label,
+                bold: true,
+                color: Colors.muted,
+            },
+            tableCell: { fontSize: DocumentFontSizes.body },
             words: {
-                fontSize: 9,
+                fontSize: DocumentFontSizes.body,
                 italics: true,
                 color: Colors.muted,
                 lineHeight: StackedLineHeight,
             },
-            note: { fontSize: 9, color: Colors.ink, margin: [0, 0, 0, 2] },
+            note: {
+                fontSize: DocumentFontSizes.body,
+                color: Colors.ink,
+                margin: [0, 0, 0, 2],
+            },
             totalDueLabel: {
-                fontSize: 10,
+                fontSize: DocumentFontSizes.totalDueLabel,
                 bold: true,
                 color: Colors.white,
                 lineHeight: StackedLineHeight,
             },
-            totalDueValue: { fontSize: 13, bold: true, color: Colors.white },
+            totalDueValue: {
+                fontSize: DocumentFontSizes.totalDueValue,
+                bold: true,
+                color: Colors.white,
+            },
         },
         footer: (currentPage: number, pageCount: number): PdfContent => ({
             columns: [

@@ -9,6 +9,7 @@ import type {
 
 import {
     BandGapPt,
+    DocumentFontSizes,
     FieldLabelShare,
     StackedLineSpacing,
     SummaryColumns,
@@ -32,14 +33,14 @@ const Colors = {
     white: 'FFFFFF',
 } as const;
 
-/** Font sizes in half-points, as OOXML measures them. */
+/** The shared type scale, doubled: OOXML measures type in half-points. */
 const Sizes = {
-    title: 44,
-    number: 36,
-    partyName: 24,
-    body: 18,
-    label: 16,
-    totalDue: 26,
+    title: DocumentFontSizes.title * 2,
+    number: DocumentFontSizes.number * 2,
+    partyName: DocumentFontSizes.partyName * 2,
+    body: DocumentFontSizes.body * 2,
+    label: DocumentFontSizes.label * 2,
+    totalDue: DocumentFontSizes.totalDueValue * 2,
 } as const;
 
 /** A4 page in twips (1 inch = 1440 twips). */

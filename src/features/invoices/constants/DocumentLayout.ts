@@ -66,3 +66,56 @@ export const BandGapPt = 8;
  * one line.
  */
 export const FieldLabelShare = 0.32;
+
+/**
+ * Type scale in points, shared by all three renderings.
+ *
+ * The PDF takes points directly, the DOCX doubles them into half-points, and
+ * the preview converts them to CSS pixels. Kept here because the preview
+ * exists to show what will be generated: a size that only lives in one of
+ * them is a size the preview quietly lies about.
+ */
+export const DocumentFontSizes = {
+    title: 22,
+    number: 18,
+    blockHeading: 8,
+    partyName: 12,
+    body: 9,
+    label: 8,
+    totalDueLabel: 10,
+    totalDueValue: 13,
+} as const;
+
+/** Page metrics in points. */
+export const DocumentMetrics = {
+    pageMargin: 40,
+    /** Gap between the two columns of a paired block. */
+    columnGap: 24,
+    /** Gap between the title and the invoice number. */
+    headingGap: 16,
+    ruleWidth: 2,
+    ruleSpaceAbove: 6,
+    ruleSpaceBelow: 12,
+    /** Space above the dates and payment block. */
+    fieldsSpaceAbove: 16,
+    /** Space above the line items heading. */
+    itemsSpaceAbove: 18,
+    /** Space above the totals row. */
+    totalsSpaceAbove: 14,
+    /** Space above the notes, and above the payment code under them. */
+    footerSpaceAbove: 20,
+    barcodeWidth: 150,
+    barcodeSpaceBelow: 8,
+    payBySquareWidth: 90,
+} as const;
+
+/**
+ * CSS pixels per point. The preview lays the page out at 96dpi, which is what
+ * `Page.width` in the preview is derived from, so a point is 4/3 of a pixel.
+ */
+export const PointToPixel = 96 / 72;
+
+/** A point measurement as a CSS length, for the on-screen preview. */
+export function points(value: number): string {
+    return `${value * PointToPixel}px`;
+}
