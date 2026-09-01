@@ -65,4 +65,4 @@ export const BandGapPt = 8;
  * as they need, while the values beside them must not — an IBAN belongs on
  * one line.
  */
-export const FieldLabelShare = 0.32;
+export const FieldLabelShare = 0.26;
