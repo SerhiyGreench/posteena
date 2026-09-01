@@ -15,8 +15,8 @@
  * The labels beside it stack one line per language and wrap without harm.
  */
 export const SummaryColumns = {
-    label: 0.4,
-    value: 0.6,
+    label: 0.45,
+    value: 0.55,
 } as const;
 
 /**
@@ -28,6 +28,6 @@ export const SummaryColumns = {
  * over as many lines as it needs.
  */
 export const TotalsRow = {
-    words: 0.45,
-    totals: 0.55,
+    words: 0.4,
+    totals: 0.6,
 } as const;

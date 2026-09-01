@@ -458,9 +458,24 @@ export function amountToWords(
     currency: CurrencyType,
     languages: DocumentLanguageType[],
 ): string {
+    return amountToWordsPerLanguage(amount, currency, languages).join(' / ');
+}
+
+/**
+ * The amount spelled out once per language, in the order they were selected.
+ *
+ * The document prints these under each other rather than slash-joined: a
+ * spelled-out amount is a sentence, and three of them on one line is a wall
+ * of text no one can check against the figures.
+ */
+export function amountToWordsPerLanguage(
+    amount: number,
+    currency: CurrencyType,
+    languages: DocumentLanguageType[],
+): string[] {
     const safeAmount = Math.max(0, amount);
 
-    return languages
-        .map(language => spellAmount(safeAmount, currency, language))
-        .join(' / ');
+    return languages.map(language =>
+        spellAmount(safeAmount, currency, language),
+    );
 }

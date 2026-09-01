@@ -333,12 +333,17 @@ export function buildPdfDefinition(
             columns: [
                 {
                     width: `${TotalsRow.words * 100}%`,
-                    stack: [
-                        {
-                            text: `${model.amountInWords.label}: ${model.amountInWords.value}`,
-                            style: 'words',
-                        },
-                    ],
+                    // One spelled-out amount per language, under each other.
+                    stack: model.amountInWords.map(field => ({
+                        text: `${field.label}: ${field.value}`,
+                        style: 'words',
+                        margin: [0, 0, 0, 3] as [
+                            number,
+                            number,
+                            number,
+                            number,
+                        ],
+                    })),
                 },
                 {
                     width: `${TotalsRow.totals * 100}%`,

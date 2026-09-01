@@ -257,9 +257,14 @@ describe('buildInvoiceDocument', () => {
 
         expect(model.totalDue.value).toBe('1 260,00\u00A0EUR');
         expect(model.dates.map(field => field.value)).toContain('24.08.2026');
-        expect(model.amountInWords.value).toBe(
-            'tisícdvestošesťdesiat eur / one thousand two hundred and sixty euro',
-        );
+        // One entry per language, each carrying that language's own label.
+        expect(model.amountInWords).toEqual([
+            { label: 'Slovom', value: 'tisícdvestošesťdesiat eur' },
+            {
+                label: 'In words',
+                value: 'one thousand two hundred and sixty euro',
+            },
+        ]);
     });
 
     it('renders a single language on request', () => {

@@ -389,7 +389,8 @@ export interface InvoiceDocumentModel {
     items: InvoiceDocumentTable;
     summary: InvoiceDocumentField[];
     totalDue: InvoiceDocumentTotal;
-    amountInWords: InvoiceDocumentField;
+    /** One entry per language: that language's label and the spelled amount. */
+    amountInWords: InvoiceDocumentField[];
     notes: string[];
     /** Rendered payment QR, or null when the invoice cannot produce one. */
     payBySquare: PayBySquareQr | null;

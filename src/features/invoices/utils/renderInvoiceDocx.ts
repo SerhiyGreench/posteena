@@ -484,12 +484,13 @@ function buildDocxChildren(
             new TableRow({
                 children: [
                     plainCell(
-                        [
-                            text(
-                                `${model.amountInWords.label}: ${model.amountInWords.value}`,
-                                { italics: true, color: Colors.muted },
-                            ),
-                        ],
+                        // A paragraph per language, under each other.
+                        model.amountInWords.map(field =>
+                            text(`${field.label}: ${field.value}`, {
+                                italics: true,
+                                color: Colors.muted,
+                            }),
+                        ),
                         summaryColumns[0],
                     ),
                     plainCell(

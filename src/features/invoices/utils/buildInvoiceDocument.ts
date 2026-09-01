@@ -1,5 +1,6 @@
 import type { CurrencyType } from '@/features/invoices/constants/Currencies';
 import type { DocumentLanguageType } from '@/features/invoices/constants/DocumentLanguages';
+import { InvoiceLabels } from '@/features/invoices/constants/InvoiceLabels';
 import {
     type PaymentMethodType,
     PaymentMethods,
@@ -13,7 +14,7 @@ import type {
     Party,
     SupplierProfile,
 } from '@/features/invoices/types';
-import { amountToWords } from '@/features/invoices/utils/amountToWords';
+import { amountToWordsPerLanguage } from '@/features/invoices/utils/amountToWords';
 import {
     calculateLineGross,
     calculateLineNet,
@@ -259,6 +260,11 @@ export function buildInvoiceDocument(invoice: Invoice): InvoiceDocumentModel {
     const money = (value: number): string =>
         `${formatInvoiceMoney(value, languages)}\u00A0${currency}`;
     const { bank } = invoice.supplier;
+    const spelled = amountToWordsPerLanguage(
+        invoice.totals.amountDue,
+        currency,
+        languages,
+    );
 
     return {
         title: label('invoice'),
@@ -319,10 +325,10 @@ export function buildInvoiceDocument(invoice: Invoice): InvoiceDocumentModel {
             labelLines: resolveInvoiceLabelLines('totalDue', languages),
             value: money(invoice.totals.amountDue),
         },
-        amountInWords: {
-            label: label('amountInWords'),
-            value: amountToWords(invoice.totals.amountDue, currency, languages),
-        },
+        amountInWords: spelled.map((value, index) => ({
+            label: InvoiceLabels.amountInWords[languages[index]],
+            value,
+        })),
         notes: invoice.notes.filter(note => note.trim().length > 0),
         // Rasterising these is async; `attachDocumentImages` fills them in.
         payBySquare: null,
