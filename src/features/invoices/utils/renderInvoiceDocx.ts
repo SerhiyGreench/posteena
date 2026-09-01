@@ -8,6 +8,7 @@ import type {
 } from 'docx';
 
 import {
+    BandGapPt,
     StackedLineSpacing,
     SummaryColumns,
     TotalsRow,
@@ -137,7 +138,7 @@ function buildDocxChildren(
             alignment?: (typeof AlignmentType)[keyof typeof AlignmentType];
             spacingBefore?: number;
             spacingAfter?: number;
-            /** Exact line spacing, in twentieths of a point. */
+            /** Line spacing as a multiple, in 240ths of a line. */
             line?: number;
         } = {},
     ): ParagraphType =>
@@ -148,7 +149,7 @@ function buildDocxChildren(
                 after: options.spacingAfter ?? 20,
                 ...(options.line === undefined
                     ? {}
-                    : { line: options.line, lineRule: LineRuleType.EXACT }),
+                    : { line: options.line, lineRule: LineRuleType.AUTO }),
             },
             children: [
                 new TextRun({
@@ -341,33 +342,40 @@ function buildDocxChildren(
             SummaryColumns.label,
             SummaryColumns.value,
         ]);
-        const summaryRows = model.summary.map(
-            field =>
-                new TableRow({
-                    children: [
-                        plainCell(
-                            field.labelLines.map(line =>
-                                text(line, {
-                                    size: Sizes.label,
-                                    color: Colors.muted,
-                                    alignment: AlignmentType.RIGHT,
-                                    spacingAfter: 0,
-                                    line: StackedLineSpacing.label,
-                                }),
-                            ),
-                            summaryColumnWidths[0],
+        const summaryRows = model.summary.map((field, index) => {
+            // Air between the last totals row and the band below it.
+            const last = index === model.summary.length - 1;
+            const spacingAfter = last ? BandGapPt * 20 : 0;
+
+            return new TableRow({
+                children: [
+                    plainCell(
+                        field.labelLines.map((line, lineIndex) =>
+                            text(line, {
+                                size: Sizes.label,
+                                color: Colors.muted,
+                                alignment: AlignmentType.RIGHT,
+                                spacingAfter:
+                                    lineIndex === field.labelLines.length - 1
+                                        ? spacingAfter
+                                        : 0,
+                                line: StackedLineSpacing,
+                            }),
                         ),
-                        plainCell(
-                            [
-                                text(field.value, {
-                                    alignment: AlignmentType.RIGHT,
-                                }),
-                            ],
-                            summaryColumnWidths[1],
-                        ),
-                    ],
-                }),
-        );
+                        summaryColumnWidths[0],
+                    ),
+                    plainCell(
+                        [
+                            text(field.value, {
+                                alignment: AlignmentType.RIGHT,
+                                spacingAfter,
+                            }),
+                        ],
+                        summaryColumnWidths[1],
+                    ),
+                ],
+            });
+        });
 
         const shadedCell = (lines: string[], size: number): TableCellType =>
             new TableCell({
@@ -386,7 +394,7 @@ function buildDocxChildren(
                         color: Colors.white,
                         alignment: AlignmentType.RIGHT,
                         spacingAfter: 0,
-                        line: StackedLineSpacing.body,
+                        line: StackedLineSpacing,
                     }),
                 ),
             });
@@ -499,8 +507,10 @@ function buildDocxChildren(
                             text(`${field.label}: ${field.value}`, {
                                 italics: true,
                                 color: Colors.muted,
-                                spacingAfter: 20,
-                                line: StackedLineSpacing.body,
+                                // No gap between languages: every line in the
+                                // block is spaced by the leading alone.
+                                spacingAfter: 0,
+                                line: StackedLineSpacing,
                             }),
                         ),
                         summaryColumns[0],

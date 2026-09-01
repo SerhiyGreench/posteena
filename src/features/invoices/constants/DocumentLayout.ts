@@ -44,10 +44,16 @@ export const TotalsRow = {
  */
 export const StackedLineHeight = 0.85;
 
-/** OOXML writes exact line spacing in twentieths of a point. */
-export const StackedLineSpacing = {
-    /** 9pt body text at the shared leading. */
-    body: Math.round(9 * StackedLineHeight * 20),
-    /** 8pt labels at the shared leading. */
-    label: Math.round(8 * StackedLineHeight * 20),
-} as const;
+/**
+ * The same leading for Word, in the units OOXML uses for a line-spacing
+ * multiple: 240ths of a line, with `lineRule="auto"`.
+ *
+ * Not an exact height in points. Word honours an exact height literally and
+ * crops whatever does not fit, so a value below the font's own line height
+ * chops the tops and bottoms off the letters — a multiple scales the line
+ * box instead, which is what the PDF's `lineHeight` does too.
+ */
+export const StackedLineSpacing = Math.round(240 * StackedLineHeight);
+
+/** Gap between the last totals row and the filled band, in points. */
+export const BandGapPt = 8;

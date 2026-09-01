@@ -8,6 +8,7 @@ import type {
 } from 'pdfmake/build/pdfmake';
 
 import {
+    BandGapPt,
     StackedLineHeight,
     TotalsRow,
 } from '@/features/invoices/constants/DocumentLayout';
@@ -54,6 +55,19 @@ const PlainLayout: PdfTableLayout = {
     paddingRight: (): number => 6,
     paddingTop: (): number => 1,
     paddingBottom: (): number => 1,
+};
+
+/**
+ * The totals grid: as above, but with air between the last totals row and the
+ * filled band, which is the last row of the same table.
+ */
+const SummaryLayout: PdfTableLayout = {
+    ...PlainLayout,
+    paddingBottom: (index: number, node: unknown): number => {
+        const rows = (node as { table: { body: unknown[] } }).table.body.length;
+
+        return index === rows - 2 ? BandGapPt : 1;
+    },
 };
 
 let cachedPdfMake: PdfMakeStatic | null = null;
@@ -257,7 +271,7 @@ function renderSummary(model: InvoiceDocumentModel): PdfContent {
             widths: ['*', 'auto'],
             body: [...summaryRows, dueRow],
         },
-        layout: PlainLayout,
+        layout: SummaryLayout,
     };
 }
 
@@ -339,16 +353,13 @@ export function buildPdfDefinition(
             columns: [
                 {
                     width: `${TotalsRow.words * 100}%`,
-                    // One spelled-out amount per language, under each other.
+                    // One spelled-out amount per language, under each other,
+                    // every line spaced by the leading alone so a wrapped
+                    // line and a change of language sit the same distance
+                    // apart.
                     stack: model.amountInWords.map(field => ({
                         text: `${field.label}: ${field.value}`,
                         style: 'words',
-                        margin: [0, 0, 0, 3] as [
-                            number,
-                            number,
-                            number,
-                            number,
-                        ],
                     })),
                 },
                 {

@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 
 import { DefaultInvoiceSettings } from '@/features/invoices/constants/DefaultInvoiceSettings';
 import {
+    StackedLineSpacing,
     SummaryColumns,
     TotalsRow,
 } from '@/features/invoices/constants/DocumentLayout';
@@ -146,6 +147,21 @@ async function readDocumentXml(blob: Blob): Promise<string> {
 
     return strFromU8(zip['word/document.xml']);
 }
+
+describe('DOCX line spacing', () => {
+    it('tightens the stacked blocks by a multiple, never an exact height', async () => {
+        const xml = await readDocumentXml(
+            await renderInvoiceDocx(buildModel()),
+        );
+
+        // Word crops whatever does not fit an exact line height, which chops
+        // the tops and bottoms off the letters. A multiple scales the line
+        // box instead.
+        expect(xml).not.toMatch(/lineRule="exact(ly)?"/);
+        expect(xml).toContain(`w:line="${StackedLineSpacing}"`);
+        expect(xml).toContain('w:lineRule="auto"');
+    }, 30_000);
+});
 
 describe('DOCX header rule', () => {
     it('draws the divider on the header cells, not just the table', async () => {

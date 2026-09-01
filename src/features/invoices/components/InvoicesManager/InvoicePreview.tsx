@@ -258,7 +258,7 @@ export default function InvoicePreview({
 
                 <div className="mt-5 flex flex-row items-start justify-between gap-4">
                     <div
-                        className="flex w-[40%] flex-col gap-0.5 text-[12px] leading-tight italic"
+                        className="flex w-[40%] flex-col text-[12px] leading-tight italic"
                         style={{ color: Paper.muted }}
                     >
                         {model.amountInWords.map(field => (
@@ -292,7 +292,7 @@ export default function InvoicePreview({
                             ))}
                         </dl>
                         <div
-                            className="mt-2 flex items-baseline justify-between gap-6 rounded px-3 py-2"
+                            className="mt-3 flex items-baseline justify-between gap-6 rounded px-3 py-2"
                             style={{
                                 backgroundColor: Paper.band,
                                 color: Paper.onBand,
