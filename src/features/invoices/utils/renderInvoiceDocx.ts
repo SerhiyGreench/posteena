@@ -8,6 +8,7 @@ import type {
 } from 'docx';
 
 import {
+    StackedLineSpacing,
     SummaryColumns,
     TotalsRow,
 } from '@/features/invoices/constants/DocumentLayout';
@@ -92,6 +93,7 @@ function buildDocxChildren(
         AlignmentType,
         BorderStyle,
         ImageRun,
+        LineRuleType,
         Paragraph,
         ShadingType,
         Table,
@@ -135,6 +137,8 @@ function buildDocxChildren(
             alignment?: (typeof AlignmentType)[keyof typeof AlignmentType];
             spacingBefore?: number;
             spacingAfter?: number;
+            /** Exact line spacing, in twentieths of a point. */
+            line?: number;
         } = {},
     ): ParagraphType =>
         new Paragraph({
@@ -142,6 +146,9 @@ function buildDocxChildren(
             spacing: {
                 before: options.spacingBefore ?? 0,
                 after: options.spacingAfter ?? 20,
+                ...(options.line === undefined
+                    ? {}
+                    : { line: options.line, lineRule: LineRuleType.EXACT }),
             },
             children: [
                 new TextRun({
@@ -339,13 +346,15 @@ function buildDocxChildren(
                 new TableRow({
                     children: [
                         plainCell(
-                            [
-                                text(field.label, {
+                            field.labelLines.map(line =>
+                                text(line, {
                                     size: Sizes.label,
                                     color: Colors.muted,
                                     alignment: AlignmentType.RIGHT,
+                                    spacingAfter: 0,
+                                    line: StackedLineSpacing.label,
                                 }),
-                            ],
+                            ),
                             summaryColumnWidths[0],
                         ),
                         plainCell(
@@ -377,6 +386,7 @@ function buildDocxChildren(
                         color: Colors.white,
                         alignment: AlignmentType.RIGHT,
                         spacingAfter: 0,
+                        line: StackedLineSpacing.body,
                     }),
                 ),
             });
@@ -489,6 +499,8 @@ function buildDocxChildren(
                             text(`${field.label}: ${field.value}`, {
                                 italics: true,
                                 color: Colors.muted,
+                                spacingAfter: 20,
+                                line: StackedLineSpacing.body,
                             }),
                         ),
                         summaryColumns[0],

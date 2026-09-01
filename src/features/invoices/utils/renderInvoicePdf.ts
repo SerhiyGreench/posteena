@@ -7,7 +7,10 @@ import type {
     PdfTableLayout,
 } from 'pdfmake/build/pdfmake';
 
-import { TotalsRow } from '@/features/invoices/constants/DocumentLayout';
+import {
+    StackedLineHeight,
+    TotalsRow,
+} from '@/features/invoices/constants/DocumentLayout';
 import type {
     InvoiceDocumentField,
     InvoiceDocumentModel,
@@ -210,7 +213,12 @@ function renderItems(model: InvoiceDocumentModel): PdfTableContent {
 /** Renders the totals block, ending with the highlighted amount due. */
 function renderSummary(model: InvoiceDocumentModel): PdfContent {
     const summaryRows = model.summary.map((field): PdfTableCell[] => [
-        { text: field.label, style: 'label', alignment: 'right' },
+        {
+            text: field.labelLines.join('\n'),
+            style: 'label',
+            alignment: 'right',
+            lineHeight: StackedLineHeight,
+        },
         // Same reason as the amount due: an amount and its currency are one
         // token, and a token that does not fit is broken mid-word.
         { text: field.value, style: 'value', alignment: 'right', noWrap: true },
@@ -411,9 +419,19 @@ export function buildPdfDefinition(
             value: { fontSize: 9 },
             tableHeader: { fontSize: 8, bold: true, color: Colors.muted },
             tableCell: { fontSize: 9 },
-            words: { fontSize: 9, italics: true, color: Colors.muted },
+            words: {
+                fontSize: 9,
+                italics: true,
+                color: Colors.muted,
+                lineHeight: StackedLineHeight,
+            },
             note: { fontSize: 9, color: Colors.ink, margin: [0, 0, 0, 2] },
-            totalDueLabel: { fontSize: 10, bold: true, color: Colors.white },
+            totalDueLabel: {
+                fontSize: 10,
+                bold: true,
+                color: Colors.white,
+                lineHeight: StackedLineHeight,
+            },
             totalDueValue: { fontSize: 13, bold: true, color: Colors.white },
         },
         footer: (currentPage: number, pageCount: number): PdfContent => ({

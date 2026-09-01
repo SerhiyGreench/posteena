@@ -334,11 +334,11 @@ export interface InvoiceDocumentField {
 }
 
 /**
- * The amount due, printed in the filled band under the summary.
+ * A row of the totals block, including the amount due in its filled band.
  *
  * The label carries one line per language rather than a slash-joined string:
- * the band is only as wide as the summary column, and "Celkom na úhradu /
- * Total due / Разом до сплати" does not fit on one line there.
+ * the block is narrow, and "Celková suma bez DPH / Total amount excl. VAT /
+ * Загальна сума без ПДВ" does not fit on one line there.
  */
 export interface InvoiceDocumentTotal {
     labelLines: string[];
@@ -387,7 +387,7 @@ export interface InvoiceDocumentModel {
     payment: InvoiceDocumentField[];
     itemsHeading: string;
     items: InvoiceDocumentTable;
-    summary: InvoiceDocumentField[];
+    summary: InvoiceDocumentTotal[];
     totalDue: InvoiceDocumentTotal;
     /** One entry per language: that language's label and the spelled amount. */
     amountInWords: InvoiceDocumentField[];

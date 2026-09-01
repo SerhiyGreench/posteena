@@ -32,3 +32,22 @@ export const TotalsRow = {
     words: 0.4,
     totals: 0.6,
 } as const;
+
+/**
+ * Leading for the blocks that stack one line per language — the spelled-out
+ * amount and the totals labels.
+ *
+ * Those lines are translations of each other, not running prose, so they read
+ * as one item when they sit close together and as separate items when they do
+ * not. Expressed as a multiple of single spacing; the DOCX turns it into
+ * twentieths of a line, which is how OOXML measures line spacing.
+ */
+export const StackedLineHeight = 0.85;
+
+/** OOXML writes exact line spacing in twentieths of a point. */
+export const StackedLineSpacing = {
+    /** 9pt body text at the shared leading. */
+    body: Math.round(9 * StackedLineHeight * 20),
+    /** 8pt labels at the shared leading. */
+    label: Math.round(8 * StackedLineHeight * 20),
+} as const;

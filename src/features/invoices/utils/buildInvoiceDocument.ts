@@ -11,6 +11,7 @@ import type {
     InvoiceDocumentModel,
     InvoiceDocumentParty,
     InvoiceDocumentTable,
+    InvoiceDocumentTotal,
     Party,
     SupplierProfile,
 } from '@/features/invoices/types';
@@ -218,33 +219,42 @@ function buildSummary(
     invoice: Invoice,
     languages: DocumentLanguageType[],
     currency: CurrencyType,
-): InvoiceDocumentField[] {
-    const label = (key: Parameters<typeof resolveInvoiceLabel>[0]): string =>
-        resolveInvoiceLabel(key, languages);
+): InvoiceDocumentTotal[] {
+    // Stacked, not slash-joined: the totals block is too narrow to run three
+    // translations of "Total amount excl. VAT" together on one line.
+    const labelLines = (
+        key: Parameters<typeof resolveInvoiceLabelLines>[0],
+    ): string[] => resolveInvoiceLabelLines(key, languages);
     // A no-break space: the amount and its currency must never land on
     // separate lines.
     const money = (value: number): string =>
         `${formatInvoiceMoney(value, languages)}\u00A0${currency}`;
     const hasVat = invoice.items.some(item => item.vatRate > 0);
 
-    return compactFields([
-        { label: label('subtotal'), value: money(invoice.totals.subtotal) },
+    return [
+        {
+            labelLines: labelLines('subtotal'),
+            value: money(invoice.totals.subtotal),
+        },
         hasVat
             ? {
-                  label: label('totalVat'),
+                  labelLines: labelLines('totalVat'),
                   value: money(invoice.totals.vatAmount),
               }
             : null,
         hasVat
-            ? { label: label('totalGross'), value: money(invoice.totals.total) }
+            ? {
+                  labelLines: labelLines('totalGross'),
+                  value: money(invoice.totals.total),
+              }
             : null,
         invoice.totals.paidInAdvance > 0
             ? {
-                  label: label('paidInAdvance'),
+                  labelLines: labelLines('paidInAdvance'),
                   value: money(invoice.totals.paidInAdvance),
               }
             : null,
-    ]);
+    ].filter((row): row is InvoiceDocumentTotal => row !== null);
 }
 
 /**

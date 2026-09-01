@@ -49,6 +49,8 @@ declare module 'pdfmake/build/pdfmake' {
         border?: [boolean, boolean, boolean, boolean];
         /** Keeps the text on one line, overflowing rather than breaking it. */
         noWrap?: boolean;
+        /** Leading, as a multiple of the font's own line height. */
+        lineHeight?: number;
     }
 
     export interface PdfTableDefinition {
