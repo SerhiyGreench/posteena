@@ -220,8 +220,10 @@ function buildSummary(
 ): InvoiceDocumentField[] {
     const label = (key: Parameters<typeof resolveInvoiceLabel>[0]): string =>
         resolveInvoiceLabel(key, languages);
+    // A no-break space: the amount and its currency must never land on
+    // separate lines.
     const money = (value: number): string =>
-        `${formatInvoiceMoney(value, languages)} ${currency}`;
+        `${formatInvoiceMoney(value, languages)}\u00A0${currency}`;
     const hasVat = invoice.items.some(item => item.vatRate > 0);
 
     return compactFields([
@@ -255,7 +257,7 @@ export function buildInvoiceDocument(invoice: Invoice): InvoiceDocumentModel {
     const label = (key: Parameters<typeof resolveInvoiceLabel>[0]): string =>
         resolveInvoiceLabel(key, languages);
     const money = (value: number): string =>
-        `${formatInvoiceMoney(value, languages)} ${currency}`;
+        `${formatInvoiceMoney(value, languages)}\u00A0${currency}`;
     const { bank } = invoice.supplier;
 
     return {
@@ -314,9 +316,8 @@ export function buildInvoiceDocument(invoice: Invoice): InvoiceDocumentModel {
         items: buildItemsTable(invoice, languages),
         summary: buildSummary(invoice, languages, currency),
         totalDue: {
-            label: label('totalDue'),
+            labelLines: resolveInvoiceLabelLines('totalDue', languages),
             value: money(invoice.totals.amountDue),
-            strong: true,
         },
         amountInWords: {
             label: label('amountInWords'),

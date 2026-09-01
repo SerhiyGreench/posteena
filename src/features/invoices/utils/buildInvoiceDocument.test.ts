@@ -86,7 +86,10 @@ describe('buildInvoiceDocument', () => {
         expect(model.title).toBe('Faktúra / Invoice');
         expect(model.supplier.heading).toBe('Dodávateľ / Supplier');
         expect(model.customer.heading).toBe('Odberateľ / Customer');
-        expect(model.totalDue.label).toBe('Celkom na úhradu / Total due');
+        expect(model.totalDue.labelLines).toEqual([
+            'Celkom na úhradu',
+            'Total due',
+        ]);
     });
 
     it('carries the supplier and customer snapshots into the address blocks', () => {
@@ -252,7 +255,7 @@ describe('buildInvoiceDocument', () => {
     it('formats amounts, dates and the amount in words', () => {
         const model = buildInvoiceDocument(buildInvoice());
 
-        expect(model.totalDue.value).toBe('1 260,00 EUR');
+        expect(model.totalDue.value).toBe('1 260,00\u00A0EUR');
         expect(model.dates.map(field => field.value)).toContain('24.08.2026');
         expect(model.amountInWords.value).toBe(
             'tisícdvestošesťdesiat eur / one thousand two hundred and sixty euro',
@@ -267,7 +270,7 @@ describe('buildInvoiceDocument', () => {
         expect(model.title).toBe('Invoice');
         expect(model.supplier.heading).toBe('Supplier');
         expect(model.items.rows[0]).toContain('Software development services');
-        expect(model.totalDue.value).toBe('1,260.00 EUR');
+        expect(model.totalDue.value).toBe('1,260.00\u00A0EUR');
     });
 
     it('uses the Slovak line description for Slovak documents', () => {

@@ -19,6 +19,7 @@ import {
 } from '@/features/invoices/types';
 import {
     buildEmailValues,
+    buildGmailAppUrl,
     buildGmailComposeUrl,
     buildMailtoUrl,
     expandEmailTemplate,
@@ -711,7 +712,9 @@ export function useInvoices(): UseInvoicesResult {
                     },
                 });
 
-                return draft.url;
+                // The draft is complete in Gmail; on a phone it has to be
+                // opened in the app rather than in a browser tab.
+                return isAndroid() ? buildGmailAppUrl(draft.url) : draft.url;
             }
 
             const stored = invoice.files.find(

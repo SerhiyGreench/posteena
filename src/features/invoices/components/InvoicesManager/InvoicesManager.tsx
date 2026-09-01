@@ -128,9 +128,9 @@ export default function InvoicesManager(): ReactElement {
         try {
             const url = await composeEmail(invoice);
 
-            if (url.startsWith('mailto:')) {
-                // Android hands this to the mail app; opening a tab for it
-                // would leave a blank page behind.
+            if (!url.startsWith('http')) {
+                // `mailto:` and `intent:` are handed to an installed app;
+                // opening a tab for either would leave a blank page behind.
                 window.location.href = url;
 
                 return;

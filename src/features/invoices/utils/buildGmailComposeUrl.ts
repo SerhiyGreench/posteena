@@ -126,3 +126,32 @@ export function buildMailtoUrl(args: {
 
     return `mailto:${encodeURIComponent(args.invoice.customer.email)}?${query}`;
 }
+
+/** Gmail's Android package name. */
+const GmailAndroidPackage = 'com.google.android.gm';
+
+/**
+ * Rewrites a Gmail web link as an Android intent that launches the Gmail app.
+ *
+ * A plain https link only reaches the app if Android has verified Gmail as the
+ * handler for mail.google.com, which it often has not — so the draft opens in
+ * a browser tab instead. Naming the package explicitly leaves nothing to that
+ * verification, and `browser_fallback_url` keeps the web link working on a
+ * device with no Gmail app installed.
+ *
+ * The fragment is dropped: an intent URL has no room for one, and Gmail
+ * publishes no deep link to an individual draft. The app therefore opens on
+ * the mail list, with the freshly created draft at the top of Drafts.
+ */
+export function buildGmailAppUrl(webUrl: string): string {
+    const url = new URL(webUrl);
+
+    return [
+        `intent://${url.host}${url.pathname}${url.search}`,
+        '#Intent',
+        'scheme=https',
+        `package=${GmailAndroidPackage}`,
+        `S.browser_fallback_url=${encodeURIComponent(webUrl)}`,
+        'end',
+    ].join(';');
+}

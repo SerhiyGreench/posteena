@@ -215,7 +215,9 @@ function renderSummary(model: InvoiceDocumentModel): PdfContent {
 
     const dueRow: PdfTableCell[] = [
         {
-            text: model.totalDue.label,
+            // Stacked like the table headings: the band is only as wide as
+            // the summary column.
+            text: model.totalDue.labelLines.join('\n'),
             style: 'totalDueLabel',
             fillColor: Colors.band,
             alignment: 'right',

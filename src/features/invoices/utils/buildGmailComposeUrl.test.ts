@@ -4,6 +4,7 @@ import { DefaultInvoiceSettings } from '@/features/invoices/constants/DefaultInv
 import type { Invoice } from '@/features/invoices/types';
 import {
     buildEmailValues,
+    buildGmailAppUrl,
     buildGmailComposeUrl,
     buildMailtoUrl,
     expandEmailTemplate,
@@ -156,5 +157,28 @@ describe('buildMailtoUrl', () => {
                 bodyTemplate: '{link}',
             }),
         ).not.toContain('cc=');
+    });
+});
+
+describe('buildGmailAppUrl', () => {
+    const draft = 'https://mail.google.com/mail/u/0/#drafts?compose=msg-1';
+    const url = buildGmailAppUrl(draft);
+
+    it('names the Gmail package, so Android does not need a verified app link', () => {
+        expect(url.startsWith('intent://mail.google.com/mail/u/0/')).toBe(true);
+        expect(url).toContain(';package=com.google.android.gm;');
+        expect(url).toContain(';scheme=https;');
+        expect(url.endsWith(';end')).toBe(true);
+    });
+
+    it('falls back to the web link when Gmail is not installed', () => {
+        expect(url).toContain(
+            `S.browser_fallback_url=${encodeURIComponent(draft)}`,
+        );
+    });
+
+    it('drops the fragment, which an intent URL cannot carry', () => {
+        // Everything up to `#Intent` is the target; no second `#` may appear.
+        expect(url.split('#')).toHaveLength(2);
     });
 });

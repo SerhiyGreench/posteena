@@ -350,7 +350,7 @@ function buildDocxChildren(
                 }),
         );
 
-        const shadedCell = (value: string, size: number): TableCellType =>
+        const shadedCell = (lines: string[], size: number): TableCellType =>
             new TableCell({
                 borders: cellBorders,
                 shading: {
@@ -359,14 +359,16 @@ function buildDocxChildren(
                     fill: Colors.band,
                 },
                 margins: { top: 100, bottom: 100, left: 120, right: 120 },
-                children: [
-                    text(value, {
+                // A paragraph per language, matching the stacked headings.
+                children: lines.map(line =>
+                    text(line, {
                         bold: true,
                         size,
                         color: Colors.white,
                         alignment: AlignmentType.RIGHT,
+                        spacingAfter: 0,
                     }),
-                ],
+                ),
             });
 
         return new Table({
@@ -377,8 +379,8 @@ function buildDocxChildren(
                 ...summaryRows,
                 new TableRow({
                     children: [
-                        shadedCell(model.totalDue.label, Sizes.body),
-                        shadedCell(model.totalDue.value, Sizes.totalDue),
+                        shadedCell(model.totalDue.labelLines, Sizes.body),
+                        shadedCell([model.totalDue.value], Sizes.totalDue),
                     ],
                 }),
             ],

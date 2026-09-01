@@ -125,7 +125,7 @@ export default function InvoicePreview({
                     style={{ backgroundColor: Paper.ink }}
                 />
 
-                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                <div className="grid grid-cols-2 gap-6">
                     {[model.supplier, model.customer].map(party => (
                         <div key={party.heading}>
                             <div
@@ -161,7 +161,7 @@ export default function InvoicePreview({
                     ))}
                 </div>
 
-                <div className="mt-5 grid grid-cols-1 gap-6 sm:grid-cols-2">
+                <div className="mt-5 grid grid-cols-2 gap-6">
                     {[model.dates, model.payment].map((group, groupIndex) => (
                         <dl
                             key={groupIndex}
@@ -256,7 +256,7 @@ export default function InvoicePreview({
                     </table>
                 </div>
 
-                <div className="mt-5 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                <div className="mt-5 flex flex-row items-start justify-between gap-4">
                     <p
                         className="max-w-sm text-[12px] italic"
                         style={{ color: Paper.muted }}
@@ -264,7 +264,7 @@ export default function InvoicePreview({
                         {model.amountInWords.label}: {model.amountInWords.value}
                     </p>
 
-                    <div className="w-full sm:w-auto">
+                    <div className="w-auto">
                         <dl className="grid grid-cols-[1fr_auto] gap-x-4">
                             {model.summary.map(field => (
                                 <div key={field.label} className="contents">
@@ -287,8 +287,10 @@ export default function InvoicePreview({
                                 color: Paper.onBand,
                             }}
                         >
-                            <span className="text-[12px] font-semibold">
-                                {model.totalDue.label}
+                            <span className="flex flex-col text-[12px] font-semibold">
+                                {model.totalDue.labelLines.map(line => (
+                                    <span key={line}>{line}</span>
+                                ))}
                             </span>
                             <span className="text-lg font-bold tabular-nums">
                                 {model.totalDue.value}
