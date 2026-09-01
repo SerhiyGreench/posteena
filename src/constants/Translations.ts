@@ -286,6 +286,7 @@ export const Translations = {
                 removeItem: 'Remove line',
                 save: 'Save',
                 close: 'Close',
+                openEmail: 'Open Gmail',
             },
             form: {
                 newTitle: 'New invoice',
@@ -452,6 +453,7 @@ export const Translations = {
                 issued: 'Invoice {{number}} issued',
                 generated: '{{fileName}} generated',
                 deleted: 'Deleted',
+                emailReady: 'The e-mail is ready',
             },
             confirmDeleteInvoice: 'Delete invoice {{number}}?',
         },
@@ -777,6 +779,7 @@ export const Translations = {
                 removeItem: 'Видалити рядок',
                 save: 'Зберегти',
                 close: 'Закрити',
+                openEmail: 'Відкрити Gmail',
             },
             form: {
                 newTitle: 'Новий рахунок',
@@ -944,6 +947,7 @@ export const Translations = {
                 issued: 'Рахунок {{number}} виставлено',
                 generated: '{{fileName}} згенеровано',
                 deleted: 'Видалено',
+                emailReady: 'Лист готовий',
             },
             confirmDeleteInvoice: 'Видалити рахунок {{number}}?',
         },

@@ -129,9 +129,25 @@ export default function InvoicesManager(): ReactElement {
             const url = await composeEmail(invoice);
 
             if (!url.startsWith('http')) {
-                // `mailto:` and `intent:` are handed to an installed app;
-                // opening a tab for either would leave a blank page behind.
-                window.location.href = url;
+                // `mailto:` and `intent:` hand the message to an installed
+                // app, and Chrome only allows that from a live user gesture.
+                // Creating the draft — rendering the PDF, uploading it,
+                // calling Gmail — takes longer than the few seconds a tap
+                // stays valid for, so navigating from here is silently
+                // dropped. The link in the toast gives the launch its own
+                // tap, and being a real link is handled by the browser
+                // rather than by script.
+                toast.success(t('invoices.toast.emailReady'), {
+                    duration: 30_000,
+                    action: (
+                        <a
+                            href={url}
+                            className="bg-primary text-primary-foreground shrink-0 rounded-md px-2.5 py-1 text-xs font-medium"
+                        >
+                            {t('invoices.actions.openEmail')}
+                        </a>
+                    ),
+                });
 
                 return;
             }
