@@ -327,21 +327,22 @@ export interface InvoiceRegistry {
  * A resolved `label: value` pair ready to be printed.
  */
 export interface InvoiceDocumentField {
-    label: string;
+    /**
+     * The label, one line per language.
+     *
+     * Stacked rather than slash-joined so the label column stays narrow —
+     * "Variabilný symbol / Payment reference" on one line leaves no room for
+     * the value beside it, and an IBAN then wraps.
+     */
+    labelLines: string[];
     value: string;
     /** Render the value in bold — used for the due date and the amount due. */
     strong?: boolean;
 }
 
-/**
- * A row of the totals block, including the amount due in its filled band.
- *
- * The label carries one line per language rather than a slash-joined string:
- * the block is narrow, and "Celková suma bez DPH / Total amount excl. VAT /
- * Загальна сума без ПДВ" does not fit on one line there.
- */
-export interface InvoiceDocumentTotal {
-    labelLines: string[];
+/** A line that belongs to a single language: its own label, its own text. */
+export interface InvoiceDocumentLine {
+    label: string;
     value: string;
 }
 
@@ -387,10 +388,10 @@ export interface InvoiceDocumentModel {
     payment: InvoiceDocumentField[];
     itemsHeading: string;
     items: InvoiceDocumentTable;
-    summary: InvoiceDocumentTotal[];
-    totalDue: InvoiceDocumentTotal;
+    summary: InvoiceDocumentField[];
+    totalDue: InvoiceDocumentField;
     /** One entry per language: that language's label and the spelled amount. */
-    amountInWords: InvoiceDocumentField[];
+    amountInWords: InvoiceDocumentLine[];
     notes: string[];
     /** Rendered payment QR, or null when the invoice cannot produce one. */
     payBySquare: PayBySquareQr | null;

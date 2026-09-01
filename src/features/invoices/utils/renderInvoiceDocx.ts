@@ -198,12 +198,16 @@ function buildDocxChildren(
                     new TableRow({
                         children: [
                             plainCell(
-                                [
-                                    text(field.label, {
+                                // A paragraph per language, so the label
+                                // column stays narrow.
+                                field.labelLines.map(line =>
+                                    text(line, {
                                         size: Sizes.label,
                                         color: Colors.muted,
+                                        spacingAfter: 0,
+                                        line: StackedLineSpacing,
                                     }),
-                                ],
+                                ),
                                 labelWidth,
                             ),
                             plainCell(

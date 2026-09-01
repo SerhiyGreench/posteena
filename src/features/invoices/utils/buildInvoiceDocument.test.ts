@@ -166,7 +166,7 @@ describe('buildInvoiceDocument', () => {
     it('states that the supplier is not VAT registered', () => {
         const model = buildInvoiceDocument(buildInvoice());
         const vatField = model.supplier.fields.find(field =>
-            field.label.includes('IČ DPH'),
+            field.labelLines.includes('IČ DPH'),
         );
 
         expect(vatField?.value).toBe(
@@ -293,5 +293,30 @@ describe('buildInvoiceDocument', () => {
         expect(values).toContain('SK24 9999 0000 0000 0000 1234');
         expect(values).toContain('TESTSKBX');
         expect(values).toContain('20260009');
+    });
+});
+
+describe('field labels', () => {
+    it('stacks each language on its own line', () => {
+        const model = buildInvoiceDocument(buildInvoice());
+        const bank = model.payment.find(field =>
+            field.labelLines.includes('Banka'),
+        );
+
+        expect(bank?.labelLines).toEqual(['Banka', 'Bank']);
+    });
+
+    it('collapses a label both languages spell the same', () => {
+        const model = buildInvoiceDocument(buildInvoice());
+        const iban = model.payment.find(field =>
+            field.labelLines.includes('IBAN'),
+        );
+        const swift = model.payment.find(field =>
+            field.labelLines.includes('SWIFT'),
+        );
+
+        // Otherwise the same word prints twice, one line above the other.
+        expect(iban?.labelLines).toEqual(['IBAN']);
+        expect(swift?.labelLines).toEqual(['SWIFT']);
     });
 });

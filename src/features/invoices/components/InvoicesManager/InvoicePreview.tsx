@@ -146,12 +146,22 @@ export default function InvoicePreview({
                             ))}
                             <dl className="mt-2 grid grid-cols-[auto_1fr] gap-x-3">
                                 {party.fields.map(field => (
-                                    <div key={field.label} className="contents">
+                                    <div
+                                        key={field.labelLines.join()}
+                                        className="contents"
+                                    >
                                         <dt
-                                            className="text-[11px]"
+                                            className="text-[11px] leading-tight"
                                             style={{ color: Paper.muted }}
                                         >
-                                            {field.label}
+                                            {field.labelLines.map(line => (
+                                                <span
+                                                    key={line}
+                                                    className="block"
+                                                >
+                                                    {line}
+                                                </span>
+                                            ))}
                                         </dt>
                                         <dd>{field.value}</dd>
                                     </div>
@@ -168,12 +178,19 @@ export default function InvoicePreview({
                             className="grid grid-cols-[auto_1fr] gap-x-3"
                         >
                             {group.map(field => (
-                                <div key={field.label} className="contents">
+                                <div
+                                    key={field.labelLines.join()}
+                                    className="contents"
+                                >
                                     <dt
-                                        className="text-[11px]"
+                                        className="text-[11px] leading-tight"
                                         style={{ color: Paper.muted }}
                                     >
-                                        {field.label}
+                                        {field.labelLines.map(line => (
+                                            <span key={line} className="block">
+                                                {line}
+                                            </span>
+                                        ))}
                                     </dt>
                                     <dd
                                         className={

@@ -51,7 +51,10 @@ export const InvoiceLabels = {
         uk: 'Номер рахунку',
     },
     iban: { sk: 'IBAN', en: 'IBAN', uk: 'IBAN' },
-    swift: { sk: 'SWIFT', en: 'SWIFT / BIC', uk: 'SWIFT / BIC' },
+    // One spelling in every language: stacked labels print each distinct
+    // variant on its own line, so "SWIFT" above "SWIFT / BIC" reads as the
+    // same word twice.
+    swift: { sk: 'SWIFT', en: 'SWIFT', uk: 'SWIFT' },
 
     issueDate: {
         sk: 'Dátum vyhotovenia',
