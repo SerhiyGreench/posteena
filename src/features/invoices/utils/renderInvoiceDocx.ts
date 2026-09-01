@@ -13,6 +13,7 @@ import type {
     InvoiceDocumentParty,
 } from '@/features/invoices/types';
 import { dataUrlToBytes } from '@/features/invoices/utils/createPayBySquareQr';
+import { importChunk } from '@/lib/importChunk';
 
 /** Hex colours without the leading hash, which is how OOXML expects them. */
 const Colors = {
@@ -68,7 +69,7 @@ let cachedDocx: DocxModule | null = null;
  */
 async function loadDocx(): Promise<DocxModule> {
     if (!cachedDocx) {
-        cachedDocx = await import('docx');
+        cachedDocx = await importChunk(() => import('docx'));
     }
 
     return cachedDocx;

@@ -12,6 +12,7 @@ import type {
     InvoiceDocumentModel,
     InvoiceDocumentParty,
 } from '@/features/invoices/types';
+import { importChunk } from '@/lib/importChunk';
 
 /** A4 width (595.28pt) minus the 40pt page margins on each side. */
 const ContentWidth = 515;
@@ -97,8 +98,8 @@ async function loadPdfMake(): Promise<PdfMakeStatic> {
     }
 
     const [pdfMakeModule, vfsModule] = await Promise.all([
-        import('pdfmake/build/pdfmake'),
-        import('pdfmake/build/vfs_fonts'),
+        importChunk(() => import('pdfmake/build/pdfmake')),
+        importChunk(() => import('pdfmake/build/vfs_fonts')),
     ]);
 
     const pdfMake = pdfMakeModule.default;

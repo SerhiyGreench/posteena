@@ -1,4 +1,5 @@
 import type { Invoice } from '@/features/invoices/types';
+import { importChunk, StaleDeploymentError } from '@/lib/importChunk';
 
 /** Rendered QR, sized for the bottom-left corner of the document. */
 export interface PayBySquareQr {
@@ -58,7 +59,9 @@ export function canCreatePayBySquare(invoice: Invoice): boolean {
  * image. Returns the compressed, base32-encoded string banking apps read.
  */
 export async function encodePayBySquare(invoice: Invoice): Promise<string> {
-    const { encode, PaymentOptions } = await import('bysquare/pay');
+    const { encode, PaymentOptions } = await importChunk(
+        () => import('bysquare/pay'),
+    );
     const { bank } = invoice.supplier;
 
     return encode(
@@ -108,7 +111,7 @@ export async function createPayBySquareQr(
 
     try {
         const payload = await encodePayBySquare(invoice);
-        const { default: QRCode } = await import('qrcode');
+        const { default: QRCode } = await importChunk(() => import('qrcode'));
         // One alphanumeric segment, not the mixed numeric/alphanumeric split
         // the encoder picks by default: the reference codes are single-segment
         // and picky bank scanners are happiest with the same shape.
@@ -124,6 +127,11 @@ export async function createPayBySquareQr(
 
         return { dataUrl, caption: Caption };
     } catch (error) {
+        // A stale deployment is worth reporting; the user has to reload.
+        if (error instanceof StaleDeploymentError) {
+            throw error;
+        }
+
         // A malformed IBAN should not stop the invoice from being generated.
         console.error('Failed to build the PAY by square code:', error);
 

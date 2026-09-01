@@ -2,6 +2,7 @@ import {
     encodeGrayscalePng,
     toPngDataUrl,
 } from '@/features/invoices/utils/encodeGrayscalePng';
+import { importChunk, StaleDeploymentError } from '@/lib/importChunk';
 
 /** Rendered Code 128 barcode, printed above the invoice header. */
 export interface InvoiceBarcode {
@@ -40,7 +41,7 @@ export async function createInvoiceBarcode(
     }
 
     try {
-        const bwip = await import('bwip-js/browser');
+        const bwip = await importChunk(() => import('bwip-js/browser'));
 
         // bwip-js only ships canvas and SVG backends; a canvas would tie
         // document generation to a browser, so the bars are painted straight
@@ -118,6 +119,11 @@ export async function createInvoiceBarcode(
             widthToHeight: width / height,
         };
     } catch (error) {
+        // A stale deployment is worth reporting; the user has to reload.
+        if (error instanceof StaleDeploymentError) {
+            throw error;
+        }
+
         // A barcode is decoration; never let it stop the invoice generating.
         console.error('Failed to build the invoice barcode:', error);
 
