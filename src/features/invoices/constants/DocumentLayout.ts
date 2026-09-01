@@ -57,3 +57,12 @@ export const StackedLineSpacing = Math.round(240 * StackedLineHeight);
 
 /** Gap between the last totals row and the filled band, in points. */
 export const BandGapPt = 8;
+
+/**
+ * Share of a field grid taken by its label column.
+ *
+ * Deliberately small: the labels are slash-joined and wrap over as many lines
+ * as they need, while the values beside them must not — an IBAN belongs on
+ * one line.
+ */
+export const FieldLabelShare = 0.32;

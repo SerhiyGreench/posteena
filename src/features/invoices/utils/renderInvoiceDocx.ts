@@ -9,6 +9,7 @@ import type {
 
 import {
     BandGapPt,
+    FieldLabelShare,
     StackedLineSpacing,
     SummaryColumns,
     TotalsRow,
@@ -187,7 +188,10 @@ function buildDocxChildren(
             return text('');
         }
 
-        const [labelWidth, valueWidth] = splitWidth(width, [0.4, 0.6]);
+        const [labelWidth, valueWidth] = splitWidth(width, [
+            FieldLabelShare,
+            1 - FieldLabelShare,
+        ]);
 
         return new Table({
             width: dxa(width),
@@ -198,16 +202,12 @@ function buildDocxChildren(
                     new TableRow({
                         children: [
                             plainCell(
-                                // A paragraph per language, so the label
-                                // column stays narrow.
-                                field.labelLines.map(line =>
-                                    text(line, {
+                                [
+                                    text(field.label, {
                                         size: Sizes.label,
                                         color: Colors.muted,
-                                        spacingAfter: 0,
-                                        line: StackedLineSpacing,
                                     }),
-                                ),
+                                ],
                                 labelWidth,
                             ),
                             plainCell(

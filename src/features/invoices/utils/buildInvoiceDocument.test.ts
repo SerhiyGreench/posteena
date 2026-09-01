@@ -166,7 +166,7 @@ describe('buildInvoiceDocument', () => {
     it('states that the supplier is not VAT registered', () => {
         const model = buildInvoiceDocument(buildInvoice());
         const vatField = model.supplier.fields.find(field =>
-            field.labelLines.includes('IČ DPH'),
+            field.label.includes('IČ DPH'),
         );
 
         expect(vatField?.value).toBe(
@@ -297,26 +297,22 @@ describe('buildInvoiceDocument', () => {
 });
 
 describe('field labels', () => {
-    it('stacks each language on its own line', () => {
+    it('keeps the field grids on one slash-joined line', () => {
         const model = buildInvoiceDocument(buildInvoice());
-        const bank = model.payment.find(field =>
-            field.labelLines.includes('Banka'),
-        );
+        const bank = model.payment.find(field => field.label.includes('Banka'));
 
-        expect(bank?.labelLines).toEqual(['Banka', 'Bank']);
+        // Only the totals stack; these labels wrap instead, so the value
+        // column beside them stays wide enough for an IBAN.
+        expect(bank?.label).toBe('Banka / Bank');
     });
 
-    it('collapses a label both languages spell the same', () => {
+    it('spells SWIFT the same in every language', () => {
         const model = buildInvoiceDocument(buildInvoice());
-        const iban = model.payment.find(field =>
-            field.labelLines.includes('IBAN'),
-        );
         const swift = model.payment.find(field =>
-            field.labelLines.includes('SWIFT'),
+            field.label.includes('SWIFT'),
         );
 
-        // Otherwise the same word prints twice, one line above the other.
-        expect(iban?.labelLines).toEqual(['IBAN']);
-        expect(swift?.labelLines).toEqual(['SWIFT']);
+        // "SWIFT / SWIFT / BIC" otherwise, which reads as two labels.
+        expect(swift?.label).toBe('SWIFT');
     });
 });

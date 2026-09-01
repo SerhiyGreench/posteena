@@ -9,6 +9,7 @@ import type {
 
 import {
     BandGapPt,
+    FieldLabelShare,
     StackedLineHeight,
     TotalsRow,
 } from '@/features/invoices/constants/DocumentLayout';
@@ -149,7 +150,7 @@ async function loadPdfMake(): Promise<PdfMakeStatic> {
  */
 function renderFieldGrid(
     fields: InvoiceDocumentField[],
-    labelWidth: number | string = 'auto',
+    labelWidth: number | string = `${FieldLabelShare * 100}%`,
 ): PdfContent {
     if (fields.length === 0) {
         return { text: '' };
@@ -157,16 +158,9 @@ function renderFieldGrid(
 
     return {
         table: {
-            // The label column is only as wide as its longest stacked line,
-            // so the value beside it gets everything else — enough for an
-            // IBAN on one line.
             widths: [labelWidth, '*'],
             body: fields.map((field): PdfTableCell[] => [
-                {
-                    text: field.labelLines.join('\n'),
-                    style: 'label',
-                    lineHeight: StackedLineHeight,
-                },
+                { text: field.label, style: 'label' },
                 {
                     text: field.value,
                     style: 'value',

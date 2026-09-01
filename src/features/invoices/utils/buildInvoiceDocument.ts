@@ -11,6 +11,7 @@ import type {
     InvoiceDocumentModel,
     InvoiceDocumentParty,
     InvoiceDocumentTable,
+    InvoiceDocumentTotal,
     Party,
     SupplierProfile,
 } from '@/features/invoices/types';
@@ -81,34 +82,31 @@ function buildSupplierBlock(
 ): InvoiceDocumentParty {
     const label = (key: Parameters<typeof resolveInvoiceLabel>[0]): string =>
         resolveInvoiceLabel(key, languages);
-    const labelLines = (
-        key: Parameters<typeof resolveInvoiceLabelLines>[0],
-    ): string[] => resolveInvoiceLabelLines(key, languages);
 
     return {
         heading: label('supplier'),
         addressLines: buildAddressLines(supplier, languages, official),
         fields: compactFields([
             {
-                labelLines: labelLines('registrationNumber'),
+                label: label('registrationNumber'),
                 value: supplier.registrationNumber,
             },
-            { labelLines: labelLines('taxNumber'), value: supplier.taxNumber },
+            { label: label('taxNumber'), value: supplier.taxNumber },
             supplier.vatRegistered
                 ? {
-                      labelLines: labelLines('vatNumber'),
+                      label: label('vatNumber'),
                       value: supplier.vatNumber,
                   }
                 : {
-                      labelLines: labelLines('vatNumber'),
+                      label: label('vatNumber'),
                       value: label('notVatRegistered'),
                   },
             {
-                labelLines: labelLines('commercialRegister'),
+                label: label('commercialRegister'),
                 value: supplier.commercialRegister,
             },
-            { labelLines: labelLines('email'), value: supplier.email },
-            { labelLines: labelLines('phone'), value: supplier.phone },
+            { label: label('email'), value: supplier.email },
+            { label: label('phone'), value: supplier.phone },
         ]),
     };
 }
@@ -124,21 +122,18 @@ function buildCustomerBlock(
 ): InvoiceDocumentParty {
     const label = (key: Parameters<typeof resolveInvoiceLabel>[0]): string =>
         resolveInvoiceLabel(key, languages);
-    const labelLines = (
-        key: Parameters<typeof resolveInvoiceLabelLines>[0],
-    ): string[] => resolveInvoiceLabelLines(key, languages);
 
     return {
         heading: label('customer'),
         addressLines: buildAddressLines(customer, languages, official),
         fields: compactFields([
             {
-                labelLines: labelLines('registrationNumber'),
+                label: label('registrationNumber'),
                 value: customer.registrationNumber,
             },
-            { labelLines: labelLines('taxNumber'), value: customer.taxNumber },
-            { labelLines: labelLines('vatNumber'), value: customer.vatNumber },
-            { labelLines: labelLines('email'), value: customer.email },
+            { label: label('taxNumber'), value: customer.taxNumber },
+            { label: label('vatNumber'), value: customer.vatNumber },
+            { label: label('email'), value: customer.email },
         ]),
     };
 }
@@ -227,7 +222,7 @@ function buildSummary(
     invoice: Invoice,
     languages: DocumentLanguageType[],
     currency: CurrencyType,
-): InvoiceDocumentField[] {
+): InvoiceDocumentTotal[] {
     // Stacked, not slash-joined: the totals block is too narrow to run three
     // translations of "Total amount excl. VAT" together on one line.
     const labelLines = (
@@ -262,7 +257,7 @@ function buildSummary(
                   value: money(invoice.totals.paidInAdvance),
               }
             : null,
-    ].filter((row): row is InvoiceDocumentField => row !== null);
+    ].filter((row): row is InvoiceDocumentTotal => row !== null);
 }
 
 /**
@@ -275,9 +270,6 @@ export function buildInvoiceDocument(invoice: Invoice): InvoiceDocumentModel {
     const { languages, currency } = invoice;
     const label = (key: Parameters<typeof resolveInvoiceLabel>[0]): string =>
         resolveInvoiceLabel(key, languages);
-    const labelLines = (
-        key: Parameters<typeof resolveInvoiceLabelLines>[0],
-    ): string[] => resolveInvoiceLabelLines(key, languages);
     const money = (value: number): string =>
         `${formatInvoiceMoney(value, languages)}\u00A0${currency}`;
     const { bank } = invoice.supplier;
@@ -303,45 +295,45 @@ export function buildInvoiceDocument(invoice: Invoice): InvoiceDocumentModel {
         ),
         dates: compactFields([
             {
-                labelLines: labelLines('issueDate'),
+                label: label('issueDate'),
                 value: formatInvoiceDate(invoice.issueDate),
             },
             {
-                labelLines: labelLines('supplyDate'),
+                label: label('supplyDate'),
                 value: formatInvoiceDate(invoice.supplyDate),
             },
             {
-                labelLines: labelLines('dueDate'),
+                label: label('dueDate'),
                 value: formatInvoiceDate(invoice.dueDate),
                 strong: true,
             },
             {
-                labelLines: labelLines('orderNumber'),
+                label: label('orderNumber'),
                 value: invoice.orderNumber,
             },
         ]),
         payment: compactFields([
             {
-                labelLines: labelLines('paymentMethod'),
+                label: label('paymentMethod'),
                 value: resolvePaymentMethod(invoice.paymentMethod, languages),
             },
-            { labelLines: labelLines('bank'), value: bank.bankName },
-            { labelLines: labelLines('iban'), value: bank.iban },
-            { labelLines: labelLines('swift'), value: bank.swift },
+            { label: label('bank'), value: bank.bankName },
+            { label: label('iban'), value: bank.iban },
+            { label: label('swift'), value: bank.swift },
             {
-                labelLines: labelLines('accountNumber'),
+                label: label('accountNumber'),
                 value: bank.accountNumber,
             },
             {
-                labelLines: labelLines('variableSymbol'),
+                label: label('variableSymbol'),
                 value: invoice.symbols.variableSymbol,
             },
             {
-                labelLines: labelLines('constantSymbol'),
+                label: label('constantSymbol'),
                 value: invoice.symbols.constantSymbol,
             },
             {
-                labelLines: labelLines('specificSymbol'),
+                label: label('specificSymbol'),
                 value: invoice.symbols.specificSymbol,
             },
         ]),
