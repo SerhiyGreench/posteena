@@ -47,6 +47,8 @@ declare module 'pdfmake/build/pdfmake' {
         rowSpan?: number;
         margin?: [number, number, number, number];
         border?: [boolean, boolean, boolean, boolean];
+        /** Keeps the text on one line, overflowing rather than breaking it. */
+        noWrap?: boolean;
     }
 
     export interface PdfTableDefinition {

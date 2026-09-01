@@ -202,7 +202,10 @@ export default function InvoicesManager(): ReactElement {
                     </p>
                 </div>
 
-                <div className="flex items-center gap-2">
+                {/* Wrapped onto its own line on a phone, the row spans the
+                    width so sync and the new-invoice button sit at opposite
+                    ends rather than bunching up on the left. */}
+                <div className="flex w-full items-center justify-between gap-2 sm:w-auto sm:justify-end">
                     {isSyncing && (
                         <span className="text-muted-foreground flex items-center gap-1.5 text-xs">
                             <Loader2 className="size-3.5 animate-spin" />

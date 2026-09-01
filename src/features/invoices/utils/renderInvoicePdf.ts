@@ -7,6 +7,7 @@ import type {
     PdfTableLayout,
 } from 'pdfmake/build/pdfmake';
 
+import { SummaryColumns } from '@/features/invoices/constants/DocumentLayout';
 import type {
     InvoiceDocumentField,
     InvoiceDocumentModel,
@@ -229,12 +230,20 @@ function renderSummary(model: InvoiceDocumentModel): PdfContent {
             fillColor: Colors.band,
             alignment: 'right',
             margin: [6, 6, 6, 6],
+            // The amount is one unbreakable token; without this the renderer
+            // would hyphenate it into "EU" and "R" rather than overflow.
+            noWrap: true,
         },
     ];
 
     return {
         table: {
-            widths: ['60%', '40%'],
+            // The value column carries "1 260,00 EUR" as a single token, so
+            // it gets the larger share; the stacked labels wrap happily.
+            widths: [
+                `${SummaryColumns.label * 100}%`,
+                `${SummaryColumns.value * 100}%`,
+            ],
             body: [...summaryRows, dueRow],
         },
         layout: PlainLayout,

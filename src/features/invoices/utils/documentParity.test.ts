@@ -2,6 +2,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { DefaultInvoiceSettings } from '@/features/invoices/constants/DefaultInvoiceSettings';
+import { SummaryColumns } from '@/features/invoices/constants/DocumentLayout';
 import type { InvoiceDocumentModel } from '@/features/invoices/types';
 import { buildInvoiceDocument } from '@/features/invoices/utils/buildInvoiceDocument';
 import { calculateInvoiceTotals } from '@/features/invoices/utils/calculateInvoiceTotals';
@@ -101,6 +102,28 @@ describe('PDF and DOCX parity', () => {
                 : [];
 
         expect(widths).toEqual(['60%', '40%']);
+    });
+
+    it('gives the totals value column room for the whole amount', () => {
+        const serialised = JSON.stringify(definition.content);
+
+        // Both renderers split the totals block by the same shared ratio.
+        expect(serialised).toContain(
+            `["${SummaryColumns.label * 100}%","${SummaryColumns.value * 100}%"]`,
+        );
+        expect(SummaryColumns.value).toBeGreaterThan(SummaryColumns.label);
+    });
+
+    it('never breaks the amount due across lines', () => {
+        // "1 260,00 EUR" is one token; a narrow column used to hyphenate it
+        // into "EU" and "R".
+        const serialised = JSON.stringify(definition.content);
+        const dueCell = serialised.slice(
+            serialised.indexOf('totalDueValue') - 200,
+            serialised.indexOf('totalDueValue') + 200,
+        );
+
+        expect(dueCell).toContain('"noWrap":true');
     });
 });
 

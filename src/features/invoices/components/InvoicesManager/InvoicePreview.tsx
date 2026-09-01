@@ -274,7 +274,7 @@ export default function InvoicePreview({
                                     >
                                         {field.label}
                                     </dt>
-                                    <dd className="text-right tabular-nums">
+                                    <dd className="text-right whitespace-nowrap tabular-nums">
                                         {field.value}
                                     </dd>
                                 </div>
@@ -292,7 +292,7 @@ export default function InvoicePreview({
                                     <span key={line}>{line}</span>
                                 ))}
                             </span>
-                            <span className="text-lg font-bold tabular-nums">
+                            <span className="text-lg font-bold whitespace-nowrap tabular-nums">
                                 {model.totalDue.value}
                             </span>
                         </div>

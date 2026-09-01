@@ -7,6 +7,7 @@ import type {
     Table as TableType,
 } from 'docx';
 
+import { SummaryColumns } from '@/features/invoices/constants/DocumentLayout';
 import type {
     InvoiceDocumentField,
     InvoiceDocumentModel,
@@ -323,7 +324,10 @@ function buildDocxChildren(
 
     /** Totals stack, closing with the highlighted amount due. */
     const summaryTable = (width: number): TableType => {
-        const summaryColumnWidths = splitWidth(width, [0.6, 0.4]);
+        const summaryColumnWidths = splitWidth(width, [
+            SummaryColumns.label,
+            SummaryColumns.value,
+        ]);
         const summaryRows = model.summary.map(
             field =>
                 new TableRow({
