@@ -91,3 +91,38 @@ export function buildGmailComposeUrl(args: {
 
     return `${ComposeUrl}&${params.toString()}`;
 }
+
+/**
+ * Builds a `mailto:` link for the same message.
+ *
+ * On Android the OS hands `mailto:` to the installed mail app, so the invoice
+ * opens in Gmail itself rather than in Gmail's mobile web composer. The fields
+ * a mailto can carry are the same ones the compose URL carries, so nothing is
+ * lost by taking this route on a phone.
+ *
+ * Percent-encoding is done by hand rather than with `URLSearchParams`, which
+ * encodes a space as `+`; mail apps show that literally in the subject line.
+ */
+export function buildMailtoUrl(args: {
+    invoice: Invoice;
+    link: string;
+    cc?: string;
+    subjectTemplate: string;
+    bodyTemplate: string;
+}): string {
+    const values = buildEmailValues(args.invoice, args.link);
+    const params = [
+        ['subject', expandEmailTemplate(args.subjectTemplate, values)],
+        ['body', expandEmailTemplate(args.bodyTemplate, values)],
+    ];
+
+    if (args.cc?.trim()) {
+        params.push(['cc', args.cc.trim()]);
+    }
+
+    const query = params
+        .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
+        .join('&');
+
+    return `mailto:${encodeURIComponent(args.invoice.customer.email)}?${query}`;
+}

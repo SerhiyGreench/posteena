@@ -4,17 +4,12 @@ import { useTranslation } from 'react-i18next';
 import { Badge } from 'ui/badge';
 import { Button } from 'ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from 'ui/card';
-import {
-    Dialog,
-    DialogContent,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-} from 'ui/dialog';
+import { Dialog, DialogContent, DialogFooter } from 'ui/dialog';
 import { Label } from 'ui/label';
 import { Switch } from 'ui/switch';
 
 import AsyncButton from '@/features/invoices/components/InvoicesManager/AsyncButton';
+import DialogTopBar from '@/features/invoices/components/InvoicesManager/DialogTopBar';
 import PartyFieldset from '@/features/invoices/components/InvoicesManager/PartyFieldset';
 import type { Party } from '@/features/invoices/types';
 import { createEmptyParty } from '@/features/invoices/utils/createInvoiceDraft';
@@ -185,12 +180,13 @@ export default function CompaniesPanel({
                     }
                 }}
             >
-                <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
-                    <DialogHeader>
-                        <DialogTitle>
-                            {t('invoices.actions.editCompany')}
-                        </DialogTitle>
-                    </DialogHeader>
+                <DialogContent
+                    className="max-h-[90vh] overflow-y-auto sm:max-w-2xl"
+                    showCloseButton={false}
+                >
+                    <DialogTopBar>
+                        {t('invoices.actions.editCompany')}
+                    </DialogTopBar>
 
                     {editing && (
                         <>

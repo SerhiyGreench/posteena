@@ -3,12 +3,13 @@ import { type ReactElement, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { Button } from 'ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from 'ui/dialog';
+import { Dialog, DialogContent } from 'ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from 'ui/tabs';
 
 import LoginScreen from '@/components/LoginScreen';
 import { PageContainer } from '@/components/PageContainer';
 import AsyncButton from '@/features/invoices/components/InvoicesManager/AsyncButton';
+import DialogTopBar from '@/features/invoices/components/InvoicesManager/DialogTopBar';
 import InvoiceEditor from '@/features/invoices/components/InvoicesManager/InvoiceEditor';
 import InvoiceList from '@/features/invoices/components/InvoicesManager/InvoiceList';
 import InvoicePreview from '@/features/invoices/components/InvoicesManager/InvoicePreview';
@@ -126,6 +127,14 @@ export default function InvoicesManager(): ReactElement {
     const handleEmail = async (invoice: Invoice): Promise<void> => {
         try {
             const url = await composeEmail(invoice);
+
+            if (url.startsWith('mailto:')) {
+                // Android hands this to the mail app; opening a tab for it
+                // would leave a blank page behind.
+                window.location.href = url;
+
+                return;
+            }
 
             // Gmail's composer opens in its own tab, leaving the app in place.
             window.open(url, '_blank', 'noopener,noreferrer');
@@ -268,16 +277,17 @@ export default function InvoicesManager(): ReactElement {
                     }
                 }}
             >
-                <DialogContent className="max-h-[92vh] overflow-y-auto sm:max-w-4xl">
-                    <DialogHeader>
-                        <DialogTitle>
-                            {editing?.status === InvoiceStatuses.Draft
-                                ? t('invoices.form.newTitle')
-                                : t('invoices.form.editTitle', {
-                                      number: editing?.number ?? '',
-                                  })}
-                        </DialogTitle>
-                    </DialogHeader>
+                <DialogContent
+                    className="max-h-[92vh] overflow-y-auto sm:max-w-4xl"
+                    showCloseButton={false}
+                >
+                    <DialogTopBar>
+                        {editing?.status === InvoiceStatuses.Draft
+                            ? t('invoices.form.newTitle')
+                            : t('invoices.form.editTitle', {
+                                  number: editing?.number ?? '',
+                              })}
+                    </DialogTopBar>
 
                     {editing && (
                         <InvoiceEditor
@@ -301,12 +311,11 @@ export default function InvoicesManager(): ReactElement {
                     }
                 }}
             >
-                <DialogContent className="max-h-[92vh] overflow-y-auto sm:max-w-4xl">
-                    <DialogHeader>
-                        <DialogTitle>
-                            {t('invoices.actions.preview')}
-                        </DialogTitle>
-                    </DialogHeader>
+                <DialogContent
+                    className="max-h-[92vh] overflow-y-auto sm:max-w-4xl"
+                    showCloseButton={false}
+                >
+                    <DialogTopBar>{t('invoices.actions.preview')}</DialogTopBar>
 
                     {previewing && <InvoicePreview invoice={previewing} />}
                 </DialogContent>

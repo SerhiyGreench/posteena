@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 
+import { loadScript } from '@/lib/loadScript';
 import { Storage } from '@/lib/Storage';
 
 const GDRIVE_TOKEN_KEY = 'gdrive_access_token';
@@ -128,20 +129,17 @@ export function useAuth(): {
 
             // Ensure GAPI is loaded
             if (typeof gapi === 'undefined' || !gapi.client) {
-                const script = document.createElement('script');
-                script.src = 'https://apis.google.com/js/api.js';
-                script.onload = () => {
-                    gapi.load('client', async () => {
-                        await gapi.client.init({
-                            discoveryDocs: [DISCOVERY_DOC],
-                        });
-                        gapi.client.setToken({ access_token: token });
-                        if (mounted) {
-                            void fetchUserInfo();
-                        }
+                await loadScript('https://apis.google.com/js/api.js');
+
+                gapi.load('client', async () => {
+                    await gapi.client.init({
+                        discoveryDocs: [DISCOVERY_DOC],
                     });
-                };
-                document.body.appendChild(script);
+                    gapi.client.setToken({ access_token: token });
+                    if (mounted) {
+                        void fetchUserInfo();
+                    }
+                });
             } else {
                 gapi.client.setToken({ access_token: token });
                 void fetchUserInfo();

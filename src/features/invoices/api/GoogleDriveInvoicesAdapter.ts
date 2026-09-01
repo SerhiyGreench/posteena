@@ -3,6 +3,7 @@ import type {
     InvoiceRegistry,
     InvoicesStorageAdapter,
 } from '@/features/invoices/types';
+import { loadScript } from '@/lib/loadScript';
 import { Storage } from '@/lib/Storage';
 
 const DISCOVERY_DOC =
@@ -94,27 +95,6 @@ declare const google: GoogleIdentity;
 /** Escapes a value for interpolation into a Drive query string. */
 function escapeQueryValue(value: string): string {
     return value.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
-}
-
-/** Loads a script tag once and resolves when it has finished executing. */
-function loadScript(src: string): Promise<void> {
-    return new Promise<void>((resolve, reject) => {
-        const existing = document.querySelector<HTMLScriptElement>(
-            `script[src="${src}"]`,
-        );
-
-        if (existing) {
-            resolve();
-
-            return;
-        }
-
-        const script = document.createElement('script');
-        script.src = src;
-        script.onload = () => resolve();
-        script.onerror = () => reject(new Error(`Failed to load ${src}`));
-        document.body.appendChild(script);
-    });
 }
 
 /**

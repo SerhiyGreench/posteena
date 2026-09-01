@@ -4,6 +4,7 @@ import type {
     KnowledgeArticle,
     KnowledgeStorageAdapter,
 } from '@/features/knowledge/types';
+import { loadScript } from '@/lib/loadScript';
 import { Storage } from '@/lib/Storage';
 
 const DISCOVERY_DOC =
@@ -47,38 +48,29 @@ export class GoogleDriveKnowledgeAdapter implements KnowledgeStorageAdapter {
             return;
         }
 
-        await new Promise<void>(resolve => {
-            const script = document.createElement('script');
-            script.src = 'https://apis.google.com/js/api.js';
-            script.onload = () => {
-                gapi.load('client', async () => {
-                    await gapi.client.init({
-                        discoveryDocs: [DISCOVERY_DOC],
-                    });
-                    this.isGapiInitialized = true;
-                    resolve();
-                });
-            };
-            document.body.appendChild(script);
-        });
+        await loadScript('https://apis.google.com/js/api.js');
 
         await new Promise<void>(resolve => {
-            const script = document.createElement('script');
-            script.src = 'https://accounts.google.com/gsi/client';
-            script.onload = () => {
-                this.tokenClient = google.accounts.oauth2.initTokenClient({
-                    client_id: this.clientId,
-                    scope: SCOPES,
-                    callback: (response: TokenResponse) => {
-                        if (response.error !== undefined) {
-                            throw response;
-                        }
-                        this.setSession(response);
-                    },
+            gapi.load('client', async () => {
+                await gapi.client.init({
+                    discoveryDocs: [DISCOVERY_DOC],
                 });
+                this.isGapiInitialized = true;
                 resolve();
-            };
-            document.body.appendChild(script);
+            });
+        });
+
+        await loadScript('https://accounts.google.com/gsi/client');
+
+        this.tokenClient = google.accounts.oauth2.initTokenClient({
+            client_id: this.clientId,
+            scope: SCOPES,
+            callback: (response: TokenResponse) => {
+                if (response.error !== undefined) {
+                    throw response;
+                }
+                this.setSession(response);
+            },
         });
 
         const stored = Storage.get<StoredSession | null>(

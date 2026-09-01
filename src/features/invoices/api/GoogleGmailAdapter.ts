@@ -4,6 +4,7 @@ import {
     type MimeMessage,
     toBase64Url,
 } from '@/features/invoices/utils/buildMimeMessage';
+import { loadScript } from '@/lib/loadScript';
 import { Storage } from '@/lib/Storage';
 
 /**
@@ -90,24 +91,6 @@ async function describeFailure(response: Response): Promise<string> {
     }
 
     return `Gmail rejected the draft (${response.status}): ${message}`;
-}
-
-/** Loads a script once, resolving immediately if it is already present. */
-function loadScript(src: string): Promise<void> {
-    return new Promise<void>((resolve, reject) => {
-        if (document.querySelector<HTMLScriptElement>(`script[src="${src}"]`)) {
-            resolve();
-
-            return;
-        }
-
-        const script = document.createElement('script');
-
-        script.src = src;
-        script.onload = () => resolve();
-        script.onerror = () => reject(new Error(`Failed to load ${src}`));
-        document.body.appendChild(script);
-    });
 }
 
 /**

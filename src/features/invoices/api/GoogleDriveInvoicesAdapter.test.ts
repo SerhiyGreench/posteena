@@ -5,6 +5,7 @@ import { StorageKeys } from '@/constants/StorageKeys';
 import { GoogleDriveInvoicesAdapter } from '@/features/invoices/api/GoogleDriveInvoicesAdapter';
 import type { InvoiceRegistry } from '@/features/invoices/types';
 import { createInitialRegistry } from '@/features/invoices/utils/normaliseRegistry';
+import { resetLoadedScripts, ScriptLoadedAttribute } from '@/lib/loadScript';
 import { Storage } from '@/lib/Storage';
 
 interface FakeGlobal {
@@ -39,8 +40,10 @@ function installFakeGapi(): { listCalls: number } {
         setToken: vi.fn(),
     };
 
-    // The adapter skips loading a script that is already on the page, which
-    // jsdom would otherwise never fire `onload` for.
+    // Stand in for scripts that have already executed: jsdom never fires
+    // `onload` for a tag it did not fetch.
+    resetLoadedScripts();
+
     for (const src of [
         'https://apis.google.com/js/api.js',
         'https://accounts.google.com/gsi/client',
@@ -48,6 +51,7 @@ function installFakeGapi(): { listCalls: number } {
         const script = document.createElement('script');
 
         script.src = src;
+        script.setAttribute(ScriptLoadedAttribute, 'true');
         document.body.appendChild(script);
     }
 

@@ -20,6 +20,7 @@ import {
 import {
     buildEmailValues,
     buildGmailComposeUrl,
+    buildMailtoUrl,
     expandEmailTemplate,
 } from '@/features/invoices/utils/buildGmailComposeUrl';
 import {
@@ -47,6 +48,7 @@ import {
     resolveDriveFileName,
     resolveDriveFolderSegments,
 } from '@/features/invoices/utils/resolveDriveTarget';
+import { isAndroid } from '@/lib/platform';
 import { Storage } from '@/lib/Storage';
 
 export interface UseInvoicesResult {
@@ -745,13 +747,19 @@ export function useInvoices(): UseInvoicesResult {
                 });
             }
 
-            return buildGmailComposeUrl({
+            const message = {
                 invoice,
                 link,
                 cc: email.cc,
                 subjectTemplate: email.subject,
                 bodyTemplate: email.body,
-            });
+            };
+
+            // On a phone the mail app beats Gmail's mobile web composer, and
+            // Android routes `mailto:` straight to it.
+            return isAndroid()
+                ? buildMailtoUrl(message)
+                : buildGmailComposeUrl(message);
         },
         [adapter, gmail, persist, registry, renderDocument, storeDocument],
     );

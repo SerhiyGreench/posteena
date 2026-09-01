@@ -5,6 +5,7 @@ import type { Invoice } from '@/features/invoices/types';
 import {
     buildEmailValues,
     buildGmailComposeUrl,
+    buildMailtoUrl,
     expandEmailTemplate,
 } from '@/features/invoices/utils/buildGmailComposeUrl';
 import { calculateInvoiceTotals } from '@/features/invoices/utils/calculateInvoiceTotals';
@@ -108,5 +109,52 @@ describe('buildGmailComposeUrl', () => {
         // The em dash and newline must survive the round trip.
         expect(url).not.toContain('\n');
         expect(url).toContain('%E2%80%94');
+    });
+});
+
+describe('buildMailtoUrl', () => {
+    const url = buildMailtoUrl({
+        invoice: buildInvoice(),
+        link: Link,
+        cc: 'accountant@example.com',
+        subjectTemplate: 'Invoice {number} — {supplier}',
+        bodyTemplate: 'Hello {customer},\nSee {link}',
+    });
+    const [recipient, query] = url.replace('mailto:', '').split('?');
+    const params = new URLSearchParams(query);
+
+    it('is a mailto link, so Android opens the mail app', () => {
+        expect(url.startsWith('mailto:')).toBe(true);
+    });
+
+    it('addresses the customer', () => {
+        expect(recipient).toBe('customer%40example.com');
+    });
+
+    it('carries the same subject, body and Cc as the compose URL', () => {
+        expect(params.get('subject')).toBe(
+            'Invoice 20260009 — Example Supplier s. r. o.',
+        );
+        expect(params.get('body')).toBe(
+            `Hello Example Customer Ltd,\nSee ${Link}`,
+        );
+        expect(params.get('cc')).toBe('accountant@example.com');
+    });
+
+    it('encodes a space as %20 rather than +', () => {
+        // Mail apps show a literal "+" in the subject line otherwise.
+        expect(url).toContain('Invoice%2020260009');
+        expect(url).not.toContain('+');
+    });
+
+    it('omits Cc when none is configured', () => {
+        expect(
+            buildMailtoUrl({
+                invoice: buildInvoice(),
+                link: Link,
+                subjectTemplate: '{number}',
+                bodyTemplate: '{link}',
+            }),
+        ).not.toContain('cc=');
     });
 });
