@@ -2,7 +2,10 @@
 import { describe, expect, it } from 'vitest';
 
 import { DefaultInvoiceSettings } from '@/features/invoices/constants/DefaultInvoiceSettings';
-import { SummaryColumns } from '@/features/invoices/constants/DocumentLayout';
+import {
+    SummaryColumns,
+    TotalsRow,
+} from '@/features/invoices/constants/DocumentLayout';
 import type { InvoiceDocumentModel } from '@/features/invoices/types';
 import { buildInvoiceDocument } from '@/features/invoices/utils/buildInvoiceDocument';
 import { calculateInvoiceTotals } from '@/features/invoices/utils/calculateInvoiceTotals';
@@ -112,6 +115,16 @@ describe('PDF and DOCX parity', () => {
             `["${SummaryColumns.label * 100}%","${SummaryColumns.value * 100}%"]`,
         );
         expect(SummaryColumns.value).toBeGreaterThan(SummaryColumns.label);
+    });
+
+    it('gives the totals block the wider half of its row', () => {
+        const serialised = JSON.stringify(definition.content);
+
+        // Both renderers split that row by the same shared ratio.
+        expect(serialised).toContain(`"${TotalsRow.words * 100}%"`);
+        expect(serialised).toContain(`"${TotalsRow.totals * 100}%"`);
+        expect(TotalsRow.totals).toBeGreaterThan(TotalsRow.words);
+        expect(TotalsRow.words + TotalsRow.totals).toBeCloseTo(1);
     });
 
     it('never breaks the amount due across lines', () => {

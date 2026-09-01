@@ -258,13 +258,13 @@ export default function InvoicePreview({
 
                 <div className="mt-5 flex flex-row items-start justify-between gap-4">
                     <p
-                        className="max-w-sm text-[12px] italic"
+                        className="w-[45%] text-[12px] italic"
                         style={{ color: Paper.muted }}
                     >
                         {model.amountInWords.label}: {model.amountInWords.value}
                     </p>
 
-                    <div className="w-auto">
+                    <div className="w-[55%]">
                         <dl className="grid grid-cols-[1fr_auto] gap-x-4">
                             {model.summary.map(field => (
                                 <div key={field.label} className="contents">

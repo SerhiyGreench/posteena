@@ -7,7 +7,10 @@ import type {
     Table as TableType,
 } from 'docx';
 
-import { SummaryColumns } from '@/features/invoices/constants/DocumentLayout';
+import {
+    SummaryColumns,
+    TotalsRow,
+} from '@/features/invoices/constants/DocumentLayout';
 import type {
     InvoiceDocumentField,
     InvoiceDocumentModel,
@@ -211,7 +214,10 @@ function buildDocxChildren(
 
     const headerColumns = splitWidth(ContentWidth, [0.6, 0.4]);
     const partyColumns = splitWidth(ContentWidth, [0.5, 0.5]);
-    const summaryColumns = splitWidth(ContentWidth, [0.55, 0.45]);
+    const summaryColumns = splitWidth(ContentWidth, [
+        TotalsRow.words,
+        TotalsRow.totals,
+    ]);
 
     const partyBlock = (
         party: InvoiceDocumentParty,

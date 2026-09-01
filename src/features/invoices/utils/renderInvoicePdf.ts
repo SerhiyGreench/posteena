@@ -7,7 +7,10 @@ import type {
     PdfTableLayout,
 } from 'pdfmake/build/pdfmake';
 
-import { SummaryColumns } from '@/features/invoices/constants/DocumentLayout';
+import {
+    SummaryColumns,
+    TotalsRow,
+} from '@/features/invoices/constants/DocumentLayout';
 import type {
     InvoiceDocumentField,
     InvoiceDocumentModel,
@@ -329,7 +332,7 @@ export function buildPdfDefinition(
         {
             columns: [
                 {
-                    width: '55%',
+                    width: `${TotalsRow.words * 100}%`,
                     stack: [
                         {
                             text: `${model.amountInWords.label}: ${model.amountInWords.value}`,
@@ -337,7 +340,10 @@ export function buildPdfDefinition(
                         },
                     ],
                 },
-                { width: '45%', stack: [renderSummary(model)] },
+                {
+                    width: `${TotalsRow.totals * 100}%`,
+                    stack: [renderSummary(model)],
+                },
             ],
             columnGap: 16,
             margin: [0, 14, 0, 0],

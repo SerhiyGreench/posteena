@@ -18,3 +18,16 @@ export const SummaryColumns = {
     label: 0.4,
     value: 0.6,
 } as const;
+
+/**
+ * Split of the row under the line items, between the amount in words and the
+ * totals block that ends in the filled band.
+ *
+ * The totals block takes the larger half: it has to hold a stacked label and
+ * a whole amount side by side, and the words beside it are prose that wraps
+ * over as many lines as it needs.
+ */
+export const TotalsRow = {
+    words: 0.45,
+    totals: 0.55,
+} as const;
