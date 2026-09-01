@@ -1,6 +1,7 @@
 import { type ReactElement, useEffect, useMemo, useState } from 'react';
 
 import ScaledPage from '@/features/invoices/components/InvoicesManager/ScaledPage';
+import { FieldLabelShare } from '@/features/invoices/constants/DocumentLayout';
 import type { Invoice } from '@/features/invoices/types';
 import { buildInvoiceDocument } from '@/features/invoices/utils/buildInvoiceDocument';
 import {
@@ -38,6 +39,9 @@ const Paper = {
  * A4 at 96dpi, matching the page the PDF and DOCX renderers target. The
  * preview is laid out at this width whatever the screen is, and scaled to fit.
  */
+/** The label/value split the PDF and DOCX field grids use. */
+const FieldGridColumns = `${FieldLabelShare * 100}% 1fr`;
+
 const Page = {
     width: 794,
     minHeight: 1123,
@@ -144,7 +148,12 @@ export default function InvoicePreview({
                                     {line}
                                 </div>
                             ))}
-                            <dl className="mt-2 grid grid-cols-[auto_1fr] gap-x-3">
+                            <dl
+                                className="mt-2 grid gap-x-3"
+                                style={{
+                                    gridTemplateColumns: FieldGridColumns,
+                                }}
+                            >
                                 {party.fields.map(field => (
                                     <div key={field.label} className="contents">
                                         <dt
@@ -165,12 +174,13 @@ export default function InvoicePreview({
                     {[model.dates, model.payment].map((group, groupIndex) => (
                         <dl
                             key={groupIndex}
-                            className="grid grid-cols-[auto_1fr] gap-x-3"
+                            className="grid gap-x-3"
+                            style={{ gridTemplateColumns: FieldGridColumns }}
                         >
                             {group.map(field => (
                                 <div key={field.label} className="contents">
                                     <dt
-                                        className="text-right text-[11px]"
+                                        className="text-[11px]"
                                         style={{ color: Paper.muted }}
                                     >
                                         {field.label}
