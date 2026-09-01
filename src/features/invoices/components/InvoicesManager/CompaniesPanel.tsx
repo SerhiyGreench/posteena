@@ -181,7 +181,7 @@ export default function CompaniesPanel({
                 }}
             >
                 <DialogContent
-                    className="max-h-[90vh] overflow-y-auto sm:max-w-2xl"
+                    className="overflow-y-auto sm:max-w-2xl"
                     showCloseButton={false}
                 >
                     <DialogTopBar>

@@ -297,7 +297,7 @@ export default function InvoicesManager(): ReactElement {
                 }}
             >
                 <DialogContent
-                    className="max-h-[92vh] overflow-y-auto sm:max-w-4xl"
+                    className="overflow-y-auto sm:max-w-4xl"
                     showCloseButton={false}
                 >
                     <DialogTopBar>
@@ -331,7 +331,7 @@ export default function InvoicesManager(): ReactElement {
                 }}
             >
                 <DialogContent
-                    className="max-h-[92vh] overflow-y-auto sm:max-w-4xl"
+                    className="overflow-y-auto sm:max-w-4xl"
                     showCloseButton={false}
                 >
                     <DialogTopBar>{t('invoices.actions.preview')}</DialogTopBar>
