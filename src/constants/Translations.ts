@@ -440,6 +440,12 @@ export const Translations = {
                 officialCountryNames: 'Use official state names',
                 officialCountryNamesHint:
                     'Prints "Slovak Republic" rather than "Slovakia". Intl only knows the common name, so countries outside the built-in list keep it.',
+                logo: 'Logo',
+                logoHint:
+                    'Printed in the top right corner of every invoice, over the page rather than in it, so nothing else moves. PNG, JPEG, WebP, GIF or SVG; it is converted once on attach.',
+                logoAttach: 'Attach logo',
+                logoReplace: 'Replace logo',
+                logoRemove: 'Remove',
                 transfer: 'Import / export',
                 transferHint:
                     'Exports your company, numbering, defaults, Drive output and the customer list as a JSON file. Importing replaces all of those; issued invoices are never touched.',
@@ -934,6 +940,12 @@ export const Translations = {
                 officialCountryNames: 'Використовувати офіційні назви держав',
                 officialCountryNamesHint:
                     'Друкує «Словацька Республіка» замість «Словаччина». Intl знає лише загальну назву, тому країни поза вбудованим списком її зберігають.',
+                logo: 'Логотип',
+                logoHint:
+                    'Друкується у верхньому правому куті кожного рахунку — поверх сторінки, а не в ній, тому нічого не зсувається. PNG, JPEG, WebP, GIF або SVG; конвертується один раз під час додавання.',
+                logoAttach: 'Додати логотип',
+                logoReplace: 'Замінити логотип',
+                logoRemove: 'Видалити',
                 transfer: 'Імпорт / експорт',
                 transferHint:
                     'Експортує вашу компанію, нумерацію, типові значення, налаштування Drive і список замовників у файл JSON. Імпорт замінює їх усі; виставлені рахунки не змінюються.',

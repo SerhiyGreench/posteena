@@ -147,6 +147,7 @@ export function normaliseRegistry(
             },
             drive: { ...defaults.drive, ...stored?.drive },
             email: { ...defaults.email, ...stored?.email },
+            logo: stored?.logo ?? null,
         },
         companies: (registry.companies ?? []).map(normaliseParty),
         invoices: (registry.invoices ?? []).map(normaliseInvoice),

@@ -119,3 +119,13 @@ export const PointToPixel = 96 / 72;
 export function points(value: number): string {
     return `${value * PointToPixel}px`;
 }
+
+/**
+ * Height of the supplier logo in the top right corner, in points.
+ *
+ * Only the height is fixed; the width follows the image's own proportions.
+ * The logo is drawn outside the flow of the page, so it never moves anything
+ * — which is also why it has to stay short enough to sit in the band the
+ * barcode occupies.
+ */
+export const LogoHeightPt = 46;

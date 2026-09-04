@@ -101,6 +101,8 @@ declare module 'pdfmake/build/pdfmake' {
         height?: number;
         margin?: [number, number, number, number];
         alignment?: PdfAlignment;
+        /** Draws at a fixed point on the page, outside the flow. */
+        absolutePosition?: { x: number; y: number };
     }
 
     export interface PdfCanvasContent {

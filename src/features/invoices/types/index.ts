@@ -293,12 +293,29 @@ export interface EmailSettings {
 /**
  * Global, rarely changing configuration stored in Google Drive.
  */
+/**
+ * A logo to print on the invoice.
+ *
+ * Held as a PNG data URL because all three renderings need the same bytes:
+ * pdfmake and the DOCX both want a raster, and a data URL survives the
+ * settings export, which is plain JSON. Whatever the user attaches — SVG
+ * included — is rasterised once, on attach.
+ */
+export interface InvoiceLogo {
+    dataUrl: string;
+    /** Pixel size of the stored image, for keeping its aspect ratio. */
+    width: number;
+    height: number;
+}
+
 export interface InvoiceSettings {
     supplier: SupplierProfile;
     numbering: InvoiceNumbering;
     defaults: InvoiceDefaults;
     drive: DriveOutputSettings;
     email: EmailSettings;
+    /** Printed in the top right corner, or null when none is attached. */
+    logo: InvoiceLogo | null;
 }
 
 /**
@@ -397,6 +414,8 @@ export interface InvoiceDocumentModel {
     /** One entry per language: that language's label and the spelled amount. */
     amountInWords: InvoiceDocumentLine[];
     notes: string[];
+    /** The supplier's logo, or null when none is attached. */
+    logo: InvoiceLogo | null;
     /** Rendered payment QR, or null when the invoice cannot produce one. */
     payBySquare: PayBySquareQr | null;
     /** Code 128 of the invoice number, printed above the header. */

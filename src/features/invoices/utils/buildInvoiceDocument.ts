@@ -12,6 +12,7 @@ import type {
     InvoiceDocumentParty,
     InvoiceDocumentTable,
     InvoiceDocumentTotal,
+    InvoiceLogo,
     Party,
     SupplierProfile,
 } from '@/features/invoices/types';
@@ -266,7 +267,10 @@ function buildSummary(
  * Everything language and format dependent is resolved here, so the PDF and
  * DOCX renderers receive plain strings and only decide about layout.
  */
-export function buildInvoiceDocument(invoice: Invoice): InvoiceDocumentModel {
+export function buildInvoiceDocument(
+    invoice: Invoice,
+    logo: InvoiceLogo | null = null,
+): InvoiceDocumentModel {
     const { languages, currency } = invoice;
     const label = (key: Parameters<typeof resolveInvoiceLabel>[0]): string =>
         resolveInvoiceLabel(key, languages);
@@ -349,6 +353,7 @@ export function buildInvoiceDocument(invoice: Invoice): InvoiceDocumentModel {
             value,
         })),
         notes: invoice.notes.filter(note => note.trim().length > 0),
+        logo,
         // Rasterising these is async; `attachDocumentImages` fills them in.
         payBySquare: null,
         barcode: null,

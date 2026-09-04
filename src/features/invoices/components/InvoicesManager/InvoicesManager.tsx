@@ -336,7 +336,12 @@ export default function InvoicesManager(): ReactElement {
                 >
                     <DialogTopBar>{t('invoices.actions.preview')}</DialogTopBar>
 
-                    {previewing && <InvoicePreview invoice={previewing} />}
+                    {previewing && (
+                        <InvoicePreview
+                            invoice={previewing}
+                            logo={settings.logo}
+                        />
+                    )}
                 </DialogContent>
             </Dialog>
         </PageContainer>

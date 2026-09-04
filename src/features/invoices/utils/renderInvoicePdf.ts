@@ -12,6 +12,7 @@ import {
     DocumentFontSizes,
     DocumentMetrics,
     FieldLabelShare,
+    LogoHeightPt,
     StackedLineHeight,
     TotalsRow,
 } from '@/features/invoices/constants/DocumentLayout';
@@ -22,8 +23,11 @@ import type {
 } from '@/features/invoices/types';
 import { importChunk } from '@/lib/importChunk';
 
-/** A4 width (595.28pt) minus the page margins on each side. */
-const ContentWidth = Math.round(595.28 - DocumentMetrics.pageMargin * 2);
+/** A4 in points, as pdfmake lays it out. */
+const PageWidth = 595.28;
+
+/** A4 width minus the page margins on each side. */
+const ContentWidth = Math.round(PageWidth - DocumentMetrics.pageMargin * 2);
 
 /** Printed width of the invoice-number barcode, in points. */
 const BarcodeWidth = DocumentMetrics.barcodeWidth;
@@ -288,6 +292,21 @@ export function buildPdfDefinition(
     model: InvoiceDocumentModel,
 ): PdfDocumentDefinition {
     const content: PdfContent[] = [];
+
+    if (model.logo) {
+        const width = (model.logo.width / model.logo.height) * LogoHeightPt;
+
+        content.push({
+            image: model.logo.dataUrl,
+            width,
+            // Absolutely positioned, so it is taken out of the flow: the logo
+            // is an overlay in the corner and moves nothing on the page.
+            absolutePosition: {
+                x: PageWidth - DocumentMetrics.pageMargin - width,
+                y: DocumentMetrics.pageMargin,
+            },
+        });
+    }
 
     if (model.barcode) {
         content.push({

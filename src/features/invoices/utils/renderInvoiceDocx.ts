@@ -10,7 +10,10 @@ import type {
 import {
     BandGapPt,
     DocumentFontSizes,
+    DocumentMetrics,
     FieldLabelShare,
+    LogoHeightPt,
+    PointToPixel,
     StackedLineSpacing,
     SummaryColumns,
     TotalsRow,
@@ -45,6 +48,9 @@ const Sizes = {
 
 /** A4 page in twips (1 inch = 1440 twips). */
 const PageSize = { width: 11906, height: 16838 } as const;
+
+/** The same page width in points, for positioning floating objects. */
+const PageWidthPt = PageSize.width / 20;
 /** 40pt, matching the PDF page margin exactly (1pt = 20 twips). */
 const PageMargin = 800;
 
@@ -62,6 +68,13 @@ const BarcodeWidthPixels = 200;
  * it percentages collapses every column to a millimetre.
  */
 const ContentWidth = PageSize.width - PageMargin * 2;
+
+/** OOXML positions floating objects in English Metric Units. */
+const EmuPerPoint = 12700;
+
+function emu(points: number): number {
+    return Math.round(points * EmuPerPoint);
+}
 
 /** Splits a width into whole twips by the given ratios. */
 function splitWidth(total: number, ratios: number[]): number[] {
@@ -95,6 +108,7 @@ function buildDocxChildren(
     const {
         AlignmentType,
         BorderStyle,
+        HorizontalPositionRelativeFrom,
         ImageRun,
         LineRuleType,
         Paragraph,
@@ -103,6 +117,8 @@ function buildDocxChildren(
         TableCell,
         TableRow,
         TextRun,
+        TextWrappingType,
+        VerticalPositionRelativeFrom,
         WidthType,
     } = docx;
 
@@ -570,7 +586,54 @@ function buildDocxChildren(
           ]
         : [];
 
+    const logoWidthPt = model.logo
+        ? (model.logo.width / model.logo.height) * LogoHeightPt
+        : 0;
+
+    // Anchored to the page and wrapped by nothing, so it floats over the
+    // corner without moving a single line. The paragraph exists only to carry
+    // the anchor, so its line is set to a twentieth of a point.
+    const logoBlock: ParagraphType[] = model.logo
+        ? [
+              new Paragraph({
+                  spacing: {
+                      before: 0,
+                      after: 0,
+                      line: 1,
+                      lineRule: LineRuleType.EXACT,
+                  },
+                  children: [
+                      new ImageRun({
+                          type: 'png',
+                          data: dataUrlToBytes(model.logo.dataUrl),
+                          transformation: {
+                              width: Math.round(logoWidthPt * PointToPixel),
+                              height: Math.round(LogoHeightPt * PointToPixel),
+                          },
+                          floating: {
+                              horizontalPosition: {
+                                  relative: HorizontalPositionRelativeFrom.PAGE,
+                                  offset: emu(
+                                      PageWidthPt -
+                                          DocumentMetrics.pageMargin -
+                                          logoWidthPt,
+                                  ),
+                              },
+                              verticalPosition: {
+                                  relative: VerticalPositionRelativeFrom.PAGE,
+                                  offset: emu(DocumentMetrics.pageMargin),
+                              },
+                              wrap: { type: TextWrappingType.NONE },
+                              allowOverlap: true,
+                          },
+                      }),
+                  ],
+              }),
+          ]
+        : [];
+
     return [
+        ...logoBlock,
         ...barcodeBlock,
         headerTable,
         text('', { spacingAfter: 200 }),

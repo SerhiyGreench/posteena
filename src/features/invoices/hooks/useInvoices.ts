@@ -363,9 +363,9 @@ export function useInvoices(): UseInvoicesResult {
             invoice: Invoice,
             fileFormat: InvoiceFileFormatType,
         ): Promise<{ blob: Blob; fileName: string; folderPath: string }> => {
-            const { drive } = registry.settings;
+            const { drive, logo } = registry.settings;
             const model = await attachDocumentImages(
-                buildInvoiceDocument(invoice),
+                buildInvoiceDocument(invoice, logo),
                 invoice,
             );
 

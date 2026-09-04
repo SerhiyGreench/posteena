@@ -5,6 +5,7 @@ import { Button } from 'ui/button';
 import { Input } from 'ui/input';
 
 import FormField from '@/features/invoices/components/InvoicesManager/FormField';
+import NumberField from '@/features/invoices/components/InvoicesManager/NumberField';
 import type { CurrencyType } from '@/features/invoices/constants/Currencies';
 import type { DocumentLanguageType } from '@/features/invoices/constants/DocumentLanguages';
 import type { InvoiceLineItem } from '@/features/invoices/types';
@@ -17,13 +18,6 @@ export interface InvoiceItemsEditorProps {
     currency: CurrencyType;
     languages: DocumentLanguageType[];
     onChange: (items: InvoiceLineItem[]) => void;
-}
-
-/** Parses a numeric input, tolerating both comma and dot decimal separators. */
-function parseNumber(value: string): number {
-    const parsed = Number.parseFloat(value.replace(',', '.'));
-
-    return Number.isFinite(parsed) ? parsed : 0;
 }
 
 /**
@@ -136,43 +130,28 @@ export default function InvoiceItemsEditor({
 
                     <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
                         <FormField label={t('invoices.form.quantity')}>
-                            <Input
-                                inputMode="decimal"
-                                value={String(item.quantity)}
-                                onChange={event =>
-                                    updateItem(item.id, {
-                                        quantity: parseNumber(
-                                            event.target.value,
-                                        ),
-                                    })
+                            <NumberField
+                                value={item.quantity}
+                                onChange={quantity =>
+                                    updateItem(item.id, { quantity })
                                 }
                             />
                         </FormField>
 
                         <FormField label={t('invoices.form.unitPrice')}>
-                            <Input
-                                inputMode="decimal"
-                                value={String(item.unitPrice)}
-                                onChange={event =>
-                                    updateItem(item.id, {
-                                        unitPrice: parseNumber(
-                                            event.target.value,
-                                        ),
-                                    })
+                            <NumberField
+                                value={item.unitPrice}
+                                onChange={unitPrice =>
+                                    updateItem(item.id, { unitPrice })
                                 }
                             />
                         </FormField>
 
                         <FormField label={t('invoices.form.vatRate')}>
-                            <Input
-                                inputMode="decimal"
-                                value={String(item.vatRate)}
-                                onChange={event =>
-                                    updateItem(item.id, {
-                                        vatRate: parseNumber(
-                                            event.target.value,
-                                        ),
-                                    })
+                            <NumberField
+                                value={item.vatRate}
+                                onChange={vatRate =>
+                                    updateItem(item.id, { vatRate })
                                 }
                             />
                         </FormField>

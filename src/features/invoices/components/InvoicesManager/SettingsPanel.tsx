@@ -1,4 +1,4 @@
-import { Download, Upload } from 'lucide-react';
+import { Download, ImagePlus, Trash2, Upload } from 'lucide-react';
 import {
     type ChangeEvent,
     type ReactElement,
@@ -19,6 +19,7 @@ import CompaniesPanel from '@/features/invoices/components/InvoicesManager/Compa
 import FormField from '@/features/invoices/components/InvoicesManager/FormField';
 import InvoiceItemsEditor from '@/features/invoices/components/InvoicesManager/InvoiceItemsEditor';
 import MultiSelectField from '@/features/invoices/components/InvoicesManager/MultiSelectField';
+import NumberField from '@/features/invoices/components/InvoicesManager/NumberField';
 import PartyFieldset from '@/features/invoices/components/InvoicesManager/PartyFieldset';
 import SelectField from '@/features/invoices/components/InvoicesManager/SelectField';
 import type { CurrencyType } from '@/features/invoices/constants/Currencies';
@@ -56,6 +57,7 @@ import {
     paymentMethodOptions,
     schedulePeriodOptions,
 } from '@/features/invoices/utils/invoiceSelectOptions';
+import { loadInvoiceLogo } from '@/features/invoices/utils/loadInvoiceLogo';
 import { resolveScheduledDates } from '@/features/invoices/utils/resolveScheduledDates';
 
 export interface SettingsPanelProps {
@@ -88,6 +90,30 @@ export default function SettingsPanel({
     const { t } = useTranslation();
     const [draft, setDraft] = useState<InvoiceSettings>(settings);
     const fileInput = useRef<HTMLInputElement>(null);
+    const logoInput = useRef<HTMLInputElement>(null);
+    const [logoError, setLogoError] = useState<string | null>(null);
+
+    /** Rasterises the chosen image and keeps it with the rest of the settings. */
+    const handleLogo = async (
+        event: ChangeEvent<HTMLInputElement>,
+    ): Promise<void> => {
+        const file = event.target.files?.[0];
+
+        event.target.value = '';
+        setLogoError(null);
+
+        if (!file) {
+            return;
+        }
+
+        try {
+            setDraft({ ...draft, logo: await loadInvoiceLogo(file) });
+        } catch (error) {
+            setLogoError(
+                error instanceof Error ? error.message : String(error),
+            );
+        }
+    };
 
     /** Reads the chosen file, then clears the input so the same file can be re-picked. */
     const handleFile = async (
@@ -402,20 +428,11 @@ export default function SettingsPanel({
 
                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
                         <FormField label={t('invoices.form.vatRate')}>
-                            <Input
-                                inputMode="decimal"
-                                value={String(draft.defaults.vatRate)}
-                                onChange={event => {
-                                    const parsed = Number.parseFloat(
-                                        event.target.value.replace(',', '.'),
-                                    );
-
-                                    updateDefaults({
-                                        vatRate: Number.isFinite(parsed)
-                                            ? parsed
-                                            : 0,
-                                    });
-                                }}
+                            <NumberField
+                                value={draft.defaults.vatRate}
+                                onChange={vatRate =>
+                                    updateDefaults({ vatRate })
+                                }
                             />
                         </FormField>
 
@@ -779,6 +796,67 @@ export default function SettingsPanel({
                         onSave={onSaveCompany}
                         onRemove={onRemoveCompany}
                     />
+                </CardContent>
+            </Card>
+
+            <Card>
+                <CardHeader>
+                    <CardTitle className="text-base">
+                        {t('invoices.settings.logo')}
+                    </CardTitle>
+                </CardHeader>
+                <CardContent className="flex flex-col gap-3">
+                    <p className="text-muted-foreground text-xs">
+                        {t('invoices.settings.logoHint')}
+                    </p>
+
+                    {draft.logo && (
+                        <div className="flex w-fit items-center justify-center rounded-md border p-3">
+                            <img
+                                src={draft.logo.dataUrl}
+                                alt=""
+                                className="h-16 w-auto"
+                            />
+                        </div>
+                    )}
+
+                    <div className="flex flex-wrap gap-2">
+                        <Button
+                            variant="outline"
+                            className="gap-2"
+                            onClick={() => logoInput.current?.click()}
+                        >
+                            <ImagePlus className="size-4" />
+                            {draft.logo
+                                ? t('invoices.settings.logoReplace')
+                                : t('invoices.settings.logoAttach')}
+                        </Button>
+                        {draft.logo && (
+                            <Button
+                                variant="ghost"
+                                className="gap-2"
+                                onClick={() =>
+                                    setDraft({ ...draft, logo: null })
+                                }
+                            >
+                                <Trash2 className="size-4" />
+                                {t('invoices.settings.logoRemove')}
+                            </Button>
+                        )}
+                        <input
+                            ref={logoInput}
+                            type="file"
+                            accept="image/png,image/jpeg,image/webp,image/gif,image/svg+xml"
+                            className="hidden"
+                            onChange={event => void handleLogo(event)}
+                        />
+                    </div>
+
+                    {logoError && (
+                        <p className="text-destructive text-xs" role="alert">
+                            {logoError}
+                        </p>
+                    )}
                 </CardContent>
             </Card>
 

@@ -6,11 +6,12 @@ import {
     DocumentFontSizes,
     DocumentMetrics,
     FieldLabelShare,
+    LogoHeightPt,
     points,
     StackedLineHeight,
     TotalsRow,
 } from '@/features/invoices/constants/DocumentLayout';
-import type { Invoice } from '@/features/invoices/types';
+import type { Invoice, InvoiceLogo } from '@/features/invoices/types';
 import { buildInvoiceDocument } from '@/features/invoices/utils/buildInvoiceDocument';
 import {
     createInvoiceBarcode,
@@ -23,6 +24,12 @@ import {
 
 export interface InvoicePreviewProps {
     invoice: Invoice;
+    /**
+     * The logo to print, which lives in settings rather than on the invoice:
+     * one company has one logo, and a copy per invoice would weigh the
+     * registry down with the same image over and over.
+     */
+    logo?: InvoiceLogo | null;
 }
 
 /**
@@ -64,8 +71,12 @@ const Page = {
  */
 export default function InvoicePreview({
     invoice,
+    logo = null,
 }: InvoicePreviewProps): ReactElement {
-    const base = useMemo(() => buildInvoiceDocument(invoice), [invoice]);
+    const base = useMemo(
+        () => buildInvoiceDocument(invoice, logo),
+        [invoice, logo],
+    );
     const [images, setImages] = useState<{
         payBySquare: PayBySquareQr | null;
         barcode: InvoiceBarcode | null;
@@ -96,7 +107,7 @@ export default function InvoicePreview({
     return (
         <ScaledPage width={Page.width}>
             <div
-                className="rounded-lg shadow-sm"
+                className="relative rounded-lg shadow-sm"
                 style={{
                     width: Page.width,
                     minHeight: Page.minHeight,
@@ -108,6 +119,26 @@ export default function InvoicePreview({
                     colorScheme: 'light',
                 }}
             >
+                {model.logo && (
+                    // Positioned absolutely, like the corner it is drawn into
+                    // in the PDF and the floating anchor in the DOCX: the logo
+                    // is an overlay and moves nothing on the page.
+                    <img
+                        src={model.logo.dataUrl}
+                        alt=""
+                        style={{
+                            position: 'absolute',
+                            top: points(DocumentMetrics.pageMargin),
+                            right: points(DocumentMetrics.pageMargin),
+                            height: points(LogoHeightPt),
+                            width: points(
+                                (model.logo.width / model.logo.height) *
+                                    LogoHeightPt,
+                            ),
+                        }}
+                    />
+                )}
+
                 {model.barcode && (
                     <img
                         src={model.barcode.dataUrl}

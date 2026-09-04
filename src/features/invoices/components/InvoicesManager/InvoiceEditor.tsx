@@ -17,6 +17,7 @@ import AsyncButton from '@/features/invoices/components/InvoicesManager/AsyncBut
 import FormField from '@/features/invoices/components/InvoicesManager/FormField';
 import InvoiceItemsEditor from '@/features/invoices/components/InvoicesManager/InvoiceItemsEditor';
 import MultiSelectField from '@/features/invoices/components/InvoicesManager/MultiSelectField';
+import NumberField from '@/features/invoices/components/InvoicesManager/NumberField';
 import PartyFieldset from '@/features/invoices/components/InvoicesManager/PartyFieldset';
 import SelectField from '@/features/invoices/components/InvoicesManager/SelectField';
 import type { CurrencyType } from '@/features/invoices/constants/Currencies';
@@ -325,29 +326,16 @@ export default function InvoiceEditor({
                                 <FormField
                                     label={t('invoices.form.paidInAdvance')}
                                 >
-                                    <Input
-                                        inputMode="decimal"
-                                        value={String(
-                                            draft.totals.paidInAdvance,
-                                        )}
-                                        onChange={event => {
-                                            const parsed = Number.parseFloat(
-                                                event.target.value.replace(
-                                                    ',',
-                                                    '.',
-                                                ),
-                                            );
-
+                                    <NumberField
+                                        value={draft.totals.paidInAdvance}
+                                        onChange={paidInAdvance =>
                                             update({
                                                 totals: {
                                                     ...draft.totals,
-                                                    paidInAdvance:
-                                                        Number.isFinite(parsed)
-                                                            ? parsed
-                                                            : 0,
+                                                    paidInAdvance,
                                                 },
-                                            });
-                                        }}
+                                            })
+                                        }
                                     />
                                 </FormField>
                             </div>

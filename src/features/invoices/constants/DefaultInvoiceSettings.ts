@@ -94,4 +94,5 @@ export const DefaultInvoiceSettings: InvoiceSettings = {
         fileNamePattern: '{number}_{customer}',
         autoUpload: true,
     },
+    logo: null,
 };
